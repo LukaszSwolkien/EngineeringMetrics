@@ -74,12 +74,12 @@ export CONFLUENCE_URL=https://conf.mycompany.com/
 ```
 Note! There are better ways of managing secrets. Use above example on your own risk!
 
-## run jupyter, setup notebook(s) to calculate and publish metrics
+## Run jupyter, setup notebook(s) to calculate and publish metrics
 
 `jupyter notebook`
 
 
-## if you have notebooks setup you can execute all of them from the command line using below script
+if you have notebooks setup you can execute all of them from the command line using below script
 
 `./gen_dashboards.sh`
 
