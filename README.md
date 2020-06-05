@@ -22,7 +22,7 @@ Note that you need to specify Workload & Statuses to determin which issues are r
 
     Available analysis:
 
-    - Historical independency metrics ('all issues' vs 'issues with dependencies' - stacked bar chart with independency factor 0-100 on the Y axis and last 6 dates on the X axis)
+    - Historical independency metrics ('all issues' vs 'issues with dependencies' - stacked bar chart with independency factor 0-100 on the Y axis and last 8 dates on the X axis)
     - External dependency by Squad (Jira external projects)
     - Issues with dependency by Initiative (Jira Epic in Squad project)
     - Dependency issues initiatives (Jira Epics in external projects)
