@@ -4,7 +4,6 @@
 This is the library to analyze Jira issues to measure teams efficiency in terms of engineering processes, structure and practices. Metrics once calculated can be later published on the Confluance page (Confluance Jira macros are supported for dynamic data refresh). It is also possible to publish data to the html file. All the setup can be done in jupyter notebooks.
 The ultimate goal is to use those metrics to continuously improve efficiency and enable fast delivery
 
-# Features
 ## Algorithms
 
 1. __Dependency factor__ calculates the number of issues with external dependencies to the total number of issues not Done yet, but after refinement (estimated in the backlog or already planned for the sprint).
@@ -74,7 +73,7 @@ export CONFLUENCE_URL=https://conf.mycompany.com/
 ```
 Note! There are better ways of managing secrets. Use above example on your own risk!
 
-## Run jupyter notebook(s) to calculate and publish metrics
+# Run jupyter notebook(s) to calculate and publish metrics
 
 `jupyter notebook`
 
