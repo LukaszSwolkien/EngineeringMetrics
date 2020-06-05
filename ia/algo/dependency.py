@@ -49,7 +49,6 @@ def count_internal(list_of_issues, internal_projects):
 
 
 def count_by_link_type(list_of_issues):
-    # Note! checks all linkedIssues (not just filtered in linked_issues)
     linked_issues = {}
     seen = set()
     for issue_cache in list_of_issues:
@@ -73,16 +72,6 @@ def count_by_link_type(list_of_issues):
 
 def dependency_factor(jira_access, jql):
     '''After refinement (in backlog or in sprint)'''
-    # project = DANCOE and status in ("Waiting for 3rd Party", "Waiting for Development", Blocked, "Waiting for Test")
-    # project = DANCOE and status not in ("Open", "Done", "In Analysis")
-    #select_all_issues_after_refinement = f'project = {project_id} AND issuetype not in ("Test", "Sub-Task") and status not in ("Done", "In Analysis")'
-    
-    # if created_start_date:
-    #     select_all_issues_after_refinement += f' and createdDate > {created_start_date}'
-    
-    # if created_end_date:
-    #     select_all_issues_after_refinement += f'and createdDate < {created_end_date}'
-
     all_issues = ticket.search_issues(jira_access, jql)
     all_with_dep = [i for i in all_issues if len(i.load_linked_issues())>0]
     percentage = round(len(all_with_dep)*100/len(all_issues), 2) if len(all_issues) else 0

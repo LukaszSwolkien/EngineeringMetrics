@@ -16,7 +16,7 @@ def pie_chart(labels, values,title=None, explode=None):
     f = plt.figure(1, figsize=(8,4))
     ax1 = f.add_subplot(111)
     patches, texts, autotexts = ax1.pie(values, explode=explode, labels=labels, labeldistance=1.05, autopct=make_autopct(values), textprops={'fontsize': 12})#shadow=True)
-    ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+    ax1.axis('equal') 
     if title:
         ax1.set_title(f'{title}\n', fontsize="15")
     f.tight_layout()
@@ -45,8 +45,8 @@ def pie_charts(stats_list, fig_num=None, title=None, sub_titles=None):
             labeldistance=1.05, 
             autopct=make_autopct(values), 
             textprops={'fontsize': 12}
-        )#shadow=True)
-        ax.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+        )
+        ax.axis('equal')
         if title:
             ax.set_title(f'{title}\n', fontsize="15")
     f.tight_layout()

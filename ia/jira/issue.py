@@ -122,7 +122,6 @@ class IssueCache:
         return self._linked_issues
 
     def load_linked_issues(self, max_level=2, filter_out_status=('Done')):
-        # link_selector == 'external' supported only to select issues from different jira projects
         load_external_issues(self, max_level, filter_out_status)
         return self._linked_issues
 
@@ -175,11 +174,10 @@ def get_indirect_external_dependencies(jira_access, issue, links_with_external_d
 
         if is_internal(link.key, project_name) and (link.type.name == 'Dependancy' and l_type == 'outwardIssue' or link.type.name == 'Blocks' and l_type == 'inwardIssue'):
             if link.key in keys_with_external_dep:
-                print(f'Found hidden dependency: {link.key}')
+                print(f'Found indirect dependency: {link.key}')
                 links.add(link)
             else:
                 # Recurtion to check other internal links which may have dependency on the issue with external dependency
-                # print(f'To check: {link.key}')
                 l_issue = get_issue_by_key(jira_access, link.key)
                 links = links.union(get_indirect_external_dependencies(jira_access, l_issue, links_with_external_deps))
 
