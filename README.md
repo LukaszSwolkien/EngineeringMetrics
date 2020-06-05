@@ -74,7 +74,7 @@ export CONFLUENCE_URL=https://conf.mycompany.com/
 ```
 Note! There are better ways of managing secrets. Use above example on your own risk!
 
-## Run jupyter, setup notebook(s) to calculate and publish metrics
+## Run jupyter notebook(s) to calculate and publish metrics
 
 `jupyter notebook`
 
@@ -83,6 +83,6 @@ if you have notebooks setup you can execute all of them from the command line us
 
 `./gen_dashboards.sh`
 
-Go to your Confluance page to see generated dashboard
+Go to your Confluance page to see generated dashboard(s)
 
 
