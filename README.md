@@ -31,7 +31,7 @@ Note that you need to specify Workload & Statuses to determin which issues are r
     - Total Independency metric:  sum(all_issues) / sum(all_with_dep)
     - Total independency history chart
 
-2. Project progress calculates progress of the project based on number of issues dones vs defined for the given epic(initiative)
+2. __Project progress__ calculates progress of the project based on number of issues dones vs defined for the given epic(initiative)
 
     Available analysis:
     - Percentage done
