@@ -15,8 +15,6 @@ def make_autopct(values):
 def pie_chart(labels, values,title=None, explode=None):
     f = plt.figure(1, figsize=(8,4))
     ax1 = f.add_subplot(111)
-    # ax1.pie(values, explode=explode, labels=labels, autopct='%1.1f%%', shadow=True)#, startangle=90)
-    # values = sorted(values)
     patches, texts, autotexts = ax1.pie(values, explode=explode, labels=labels, labeldistance=1.05, autopct=make_autopct(values), textprops={'fontsize': 12})#shadow=True)
     ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
     if title:

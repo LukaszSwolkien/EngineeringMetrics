@@ -1,115 +1,6 @@
 from confluence.client import Confluence, ContentType, ConfluenceError
 import uuid
 
-"""
-'<p>task&nbsp;
-<ac:link>
-    <ri:user ri:userkey="ff8081815eb91d5b015ecd131a180011" />
-</ac:link>
-</p>
-
-
-<ac:link>
-    <ri:page ri:content-title="SDP Features - Dependencies after refinement" />
-    <ac:plain-text-link-body><![CDATA[SDP Features]]></ac:plain-text-link-body>
-</ac:link>
-
-<p><br /></p>
-
-<p>Pie</p>
-<p>
-    <ac:structured-macro ac:name="jirachart" ac:schema-version="1" ac:macro-id="f36229e5-be43-4d97-84f7-00f8c22211f1">
-        <ac:parameter ac:name="border">false</ac:parameter>
-        <ac:parameter ac:name="showinfor">false</ac:parameter>
-        <ac:parameter ac:name="server">Jira</ac:parameter>
-        <ac:parameter ac:name="jql">project%20%3D%20danmr</ac:parameter>
-        <ac:parameter ac:name="statType">statuses</ac:parameter>
-        <ac:parameter ac:name="chartType">pie</ac:parameter>
-        <ac:parameter ac:name="width">500</ac:parameter>
-        <ac:parameter ac:name="isAuthenticated">true</ac:parameter>
-        <ac:parameter ac:name="serverId">d753b24c-57c4-3424-ad99-05d1c0e9e64c</ac:parameter>
-    </ac:structured-macro>
-</p>'
-
-
-'<p>
-task&nbsp;
-<ac:link>
-    <ri:user ri:userkey="ff8081815eb91d5b015ecd131a180011" />
-</ac:link>
-</p>
-
-
-'<p>task&nbsp;<ac:link><ri:user ri:userkey="ff8081815eb91d5b015ecd131a180011" /></ac:link></p>
-
-<p>
-    <ac:structured-macro ac:name="include" ac:schema-version="1" ac:macro-id="8bce3bad-37d2-49ef-a51b-134eef909c94">
-        <ac:parameter ac:name="">
-            <ac:link>
-                <ri:page ri:content-title="Test2" />
-            </ac:link>
-        </ac:parameter>
-    </ac:structured-macro>
-</p>
-'
-
-'<p class="auto-cursor-target"><br /></p>
-<table class="relative-table" style="width: 50%;">
-    <colgroup>
-        <col style="width: 40%;" />
-        <col style="width: 20%;" />
-        <col style="width: 20%;" />
-        <col style="width: 20%;" />
-    </colgroup>
-    
-    <tbody>
-        <tr>
-            <th>Squad</th>
-            <th>Factor</th>
-            <th>Date</th>
-            <th>Trend</th>
-        </tr>
-        <tr>
-            <td>
-                <ac:link><ri:page ri:content-title="SDP Features - Dependencies after refinement" />
-                    <ac:plain-text-link-body><![CDATA[SDP Features]]></ac:plain-text-link-body>
-                </ac:link>
-            </td>
-
-            <td>80%</td>
-            <td>25/05/2020</td>
-            <td>
-            <strong><span style="color: rgb(0,255,0);">&uarr;</span></strong>
-            </td>
-        </tr>
-        <tr>
-            <td>SDP compliance</td>
-            <td>90%</td>
-            <td>25/05/2020</td>
-            <td><strong><span style="color: rgb(0,0,255);">&rarr;</span></strong></td>
-        </tr>
-        <tr><td>SDP Core</td>
-            <td>75%</td>
-            <td>25/05/2020</td>
-            <td><span style="color: rgb(255,0,0);"><strong>&darr;</strong></span></td>
-        </tr>
-        <tr>
-            <td><br /></td>
-            <td><br /></td>
-            <td><br /></td>
-            <td><br /></td>
-        </tr>
-        <tr>
-            <td><br /></td>
-            <td><br /></td>
-            <td><br /></td>
-            <td><br /></td>
-        </tr>
-    </tbody>
-</table>
-<p class="auto-cursor-target"></p>'
-"""
-
 
 def rightwards_arrow(color='rgb(0,0,255)'):
     return f'<span style="font-weight: bold; color: {color};">&rarr;</span>'
@@ -124,8 +15,6 @@ def downwards_arrow(color='rgb(255,0,0)'):
 
 
 def format_table(data, width=50):
-    # data is an dict with keys representing collums anv values is a list of values for the collumn
-
     def _colgroup(no_col):
         colgroup = '<colgroup>'
         width = 100/(no_col+1)
@@ -215,8 +104,6 @@ def format_text(format, text):
 
 
 def embed_image(filename):
-    # return f'<p><ac:image ac:height="{height}"><ri:attachment ri:filename="{filename}" /></ac:image></p>'
-    # return f'<p><ac:image ac:width="{width}"><ri:attachment ri:filename="{filename}" /></ac:image></p>'
     return f'<p><ac:image><ri:attachment ri:filename="{filename}" /></ac:image></p>'
 
 
@@ -230,7 +117,6 @@ def embed_images(filename_list):
 
 def embed_jira_macro(jql_query, columns="key,summary,type,assignee,reporter,priority,status,issuelinks,epic name,sprint", maximum_issues=20):
     macro_id = str(uuid.uuid4())
-    #project = dansdp and issuetype = &quot;User Story&quot; and status = &quot;Waiting for development&quot; order by rank asc   
     jql_query = jql_query.replace('"', "&quot;")
     return f'<p><ac:structured-macro ac:name="jira" ac:schema-version="1" ac:macro-id="{macro_id}">\
 <ac:parameter ac:name="server">Jira</ac:parameter>\
@@ -287,7 +173,6 @@ class PageBuilder:
                 expand=['body.storage', 'version']
                 )
         else:
-            # print(f'parent_content_id={parent_content_id}, parent_title={parent_page_title}, title={title}, space={space_key}')
             result = self.cli.create_content(
                 ContentType.PAGE, 
                 title, 

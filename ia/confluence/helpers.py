@@ -14,6 +14,6 @@ def utc_timestamp():
 
 def get_project_name(jira_obj, project_id):
     project = jira_obj.project(project_id)
-    return project.name.replace("Data + Analytics - ","").replace("Data + Analytics – ", "") if project else project_id
+    return project.name #.replace("Data + Analytics - ","").replace("Data + Analytics – ", "") if project else project_id
 
 

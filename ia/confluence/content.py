@@ -14,8 +14,6 @@ def metrics_history_chart(metrics_history, title='Independence factor', days=8):
     total_counts = [len(i.get('all_issues')) for i in values]
     part_counts = [len(i.get('all_with_dep')) for i in values]
     plt = charts.bar_chart_percent_stacked(dates, total_counts, part_counts)
-    # values = [i.get('independence') for i in metrics_history.history.values()]
-    # plt = charts.bar_chart_by_dates(dates, values)
     bar_chart_filename = f'{title} chart {datetime.datetime.utcnow():%Y-%m-%d %H_%M_%S}.png'
     plt.savefig(bar_chart_filename)
     plt.close()
@@ -132,8 +130,6 @@ def project_report(percentage, all_issues, jql_all_issues, status_done, product_
 
         content += page.format_text("h4", 'Reminding work')
         content += page.embed_expand_macro(page.embed_jira_macro(f'{jql_all_issues} and status not in ({status_done})'), "Reminding work")
-        # content += page.format_text("h5", 'Open issues split')
-        # content += page.embed_pie_marco(jql=f'{jql_all_issues} and status=Open', stat_type='issuetype')
 
         if product_name:
             content += page.format_text("h4", f'Risks')
