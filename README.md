@@ -5,34 +5,41 @@ This is the library to analyze Jira issues to measure teams efficiency in terms 
 The ultimate goal is to use those metrics to continuously improve efficiency and enable fast delivery
 
 # Features
-1. Algorithms
+## Algorithms
 
-Dependency factor calculates the number of issues with external dependencies to the total number of issues not Done yet, but after refinement (estimated in the backlog or already planned for the sprint).
-Note that you need to specify Workload & Statuses to determin which issues are read for development (after refinement)
+1. __Dependency factor__ calculates the number of issues with external dependencies to the total number of issues not Done yet, but after refinement (estimated in the backlog or already planned for the sprint).
+Note that you need to specify Workload & Statuses to determin which issues are read for development (after refinement) 
 
-Issues selection in the example (DAN_dependency_factor_after_refinement.ipynb) is based on the below JQL:
+    Issues selection in the example (notebooks/Dependency_metrics.ipynb) is based on the below JQL:
 
-`'project = {jira_project_id} AND issuetype not in ("Test", "Sub-Task", "Release", "Risk", "Incident") and status not in ("Done", "In Analysis", "Open")'`
+    `'project = {jira_project_id} AND issuetype not in ("Test", "Sub-Task", "Release", "Risk", "Incident") and status not in ("Done", "In Analysis", "Open")'`
 
-The dependency factor algorithm is following below criterias:
+    The dependency factor algorithm is following below criterias:
 
-1. search for 'external' dependencies, which might be direct or indirect (ignore pure internal dependencies)
+    - search for 'external' dependencies, which might be direct or indirect (ignore pure internal dependencies)
+    - link type  == ("Is blocked by", "Depends on").
+    - filter out linked dependency if status == ('Done'). 
 
-2. link type  == ("Is blocked by", "Depends on").
+    Available analysis:
 
-3. filter out linked dependency if status == ('Done'). 
+    - Historical independency metrics ('all issues' vs 'issues with dependencies' - stacked bar chart with independency factor 0-100 on the Y axis and last 6 dates on the X axis)
+    - External dependency by Squad (Jira external projects)
+    - Issues with dependency by Initiative (Jira Epic in Squad project)
+    - Dependency issues initiatives (Jira Epics in external projects)
+    - Dependency graphs showing up to second level links
+    - External but in DM vs external outside of DM
+    - Total Independency metric:  sum(all_issues) / sum(all_with_dep)
+    - Total independency history chart
 
-Available analysis:
+2. Project progress calculates progress of the project based on number of issues dones vs defined for the given epic(initiative)
 
-1. Historical independency metrics ('all issues' vs 'issues with dependencies' - stacked bar chart with independency factor 0-100 on the Y axis and last 6 dates on the X axis)
-2. External dependency by Squad (Jira external projects)
-3. Issues with dependency by Initiative (Jira Epic in Squad project)
-4. Dependency issues initiatives (Jira Epics in external projects)
-5. Dependency graphs showing up to second level links
-6. External but in DM vs external outside of DM
-7. Total Independency metric:  sum(all_issues) / sum(all_with_dep)
-8. Total independency history chart
-
+    Available analysis:
+    - Percentage done
+    - Sprint details
+    - Pie chart by issue type (Confluance Jira macro)
+    - Reminding work
+    - Risks
+    - Blocked stories (list and dependency graphs)
 # Setup project
 `python3 -m venv venv`
 `. ./venv/bin/activate`
@@ -61,7 +68,7 @@ export CONFLUENCE_URL=https://conf.mycompany.com/
 ```
 Note! There are better ways of managing secrets. Use above example on your own risk!
 
-## run jupyter to create notebooks to define metrics
+## run jupyter, setup notebook(s) to calculate and publish metrics
 
 `jupyter notebook`
 
