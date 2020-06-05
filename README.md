@@ -31,7 +31,13 @@ Note that you need to specify Workload & Statuses to determin which issues are r
     - Total Independency metric:  sum(all_issues) / sum(all_with_dep)
     - Total independency history chart
 
-2. __Project progress__ calculates progress of the project based on number of issues dones vs defined for the given epic(initiative)
+2. __Project progress__ calculates progress of the project based on number of issues done vs defined for the given epic(initiative)
+
+    Issues selection in the example (notebooks/Project_execution_metrics.ipynb) is based on the below parameters:
+
+    `jql = f'"Epic Link" = {epic_key}'`
+    
+    `status_done=('Done', 'Waiting for production')`
 
     Available analysis:
     - Percentage done
