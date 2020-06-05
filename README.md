@@ -47,11 +47,12 @@ Note that you need to specify Workload & Statuses to determin which issues are r
     - Blocked stories (list and dependency graphs)
 # Setup project
 `python3 -m venv venv`
+
 `. ./venv/bin/activate`
 
 `pip install -r requirements.txt `
 
-if case of `error: Error locating graphviz` on Mac OS than you need to do following steps:
+if case of `error: Error locating graphviz` on Mac OS do following:
 
 `brew install graphviz`
 
