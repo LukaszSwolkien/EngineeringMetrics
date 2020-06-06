@@ -46,13 +46,14 @@ Note that you need to specify Workload & Statuses to determin which issues are R
     - Risks
     - Blocked stories (list and dependency graphs)
 # Setup project
+
+Create virtual environment
 `python3 -m venv venv`
 
-`. ./venv/bin/activate`
-
-
-
 ### MAC OS
+Activate venv
+
+`. ./venv/bin/activate`
 
 `pip install -r requirements.txt `
 
@@ -73,14 +74,16 @@ Step 1:
 `https://graphviz.gitlab.io/_pages/Download/Download_windows.html`
 
 Step 2:
-Add C:\Program Files (x86)\Graphviz2.38\bin to your PATH environment variable.
+Add below path to your PATH environment variable
 
-Step 3:
-Re-open cmd and activate venv
+`C:\Program Files (x86)\Graphviz2.38\bin`
 
-Step 4:
+Step 3: Re-open command line and activate venv
 
-Download prebuild binaries for pygraphviz and install in active vevn
+`venv\Scripts\activate`
+
+Step 4: Download prebuild binaries for pygraphviz and install in active venv
+
 `https://github.com/CristiFati/Prebuilt-Binaries/tree/master/PyGraphviz/v1.5/Graphviz-2.42.2`
 
 For example in case of python 3.7
