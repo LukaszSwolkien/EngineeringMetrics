@@ -65,33 +65,32 @@ in case of `error: Error locating graphviz` on Mac OS do following:
 ### Windows 10
 
 `pip install -r requirements_win10.txt `
+
 Install Graphviz:
+
+Step 1:
 
 `https://graphviz.gitlab.io/_pages/Download/Download_windows.html`
 
-Than please install whl
+Step 2:
+Add C:\Program Files (x86)\Graphviz2.38\bin to your PATH environment variable.
+
+Step 3:
+Re-open cmd and activate venv
+
+Step 4:
+
+Download prebuild binaries for pygraphviz and install in active vevn
+`https://github.com/CristiFati/Prebuilt-Binaries/tree/master/PyGraphviz/v1.5/Graphviz-2.42.2`
+
+For example in case of python 3.7
+
 `pip install pygraphviz-1.5-cp37-cp37m-win_amd64.whl`
 
-Build Tools for Visual Studio first
+In case of python 3.8
 
-`https://visualstudio.microsoft.com/downloads/`
+`pip install pygraphviz-1.5-cp38-cp38-win_amd64.whl`
 
-Clone pygraphviz repo:
-
-`git clone https://github.com/pygraphviz/pygraphviz.git` 
-
-Patch the code to make it working with python3
-
-patch: Kagami@fe442dc
-`https://github.com/Kagami/pygraphviz/commit/fe442dc16accb629c3feaf157af75f67ccabbd6e`
-
-build pygraphviz:
-`python setup.py install `
-
-Then install:
-
-`pip install --global-option=build_ext --global-option="-IC:\Program Files\Graphviz2.38\include" --global-option="-LC:\Program Files\Graphviz2.38\lib" pygraphviz`
- 
 # Environment settings
 
 Please remember to define following parameters in your ENV variables, example:
