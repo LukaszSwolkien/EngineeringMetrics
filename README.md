@@ -7,7 +7,7 @@ The ultimate goal is to use those metrics to continuously improve efficiency and
 ## Algorithms
 
 1. __Dependency factor__ calculates the number of issues with external dependencies to the total number of issues not Done yet, but after refinement (estimated in the backlog or already planned for the sprint).
-Note that you need to specify Workload & Statuses to determin which issues are read for development (after refinement) 
+Note that you need to specify Workload & Statuses to determin which issues are Ready for Development (after refinement) 
 
     Issues selection in the example (notebooks/Dependency_metrics.ipynb) is based on the below JQL:
 
@@ -50,13 +50,47 @@ Note that you need to specify Workload & Statuses to determin which issues are r
 
 `. ./venv/bin/activate`
 
+
+
+### MAC OS
+
 `pip install -r requirements.txt `
 
-if case of `error: Error locating graphviz` on Mac OS do following:
+in case of `error: Error locating graphviz` on Mac OS do following:
 
 `brew install graphviz`
 
 `pip install pygraphviz --install-option="--include-path=/usr/local/include/graphviz/" --install-option="--library-path=/usr/local/lib/graphviz"`
+
+### Windows 10
+
+`pip install -r requirements_win10.txt `
+Install Graphviz:
+
+`https://graphviz.gitlab.io/_pages/Download/Download_windows.html`
+
+Than please install whl
+`pip install pygraphviz-1.5-cp37-cp37m-win_amd64.whl`
+
+Build Tools for Visual Studio first
+
+`https://visualstudio.microsoft.com/downloads/`
+
+Clone pygraphviz repo:
+
+`git clone https://github.com/pygraphviz/pygraphviz.git` 
+
+Patch the code to make it working with python3
+
+patch: Kagami@fe442dc
+`https://github.com/Kagami/pygraphviz/commit/fe442dc16accb629c3feaf157af75f67ccabbd6e`
+
+build pygraphviz:
+`python setup.py install `
+
+Then install:
+
+`pip install --global-option=build_ext --global-option="-IC:\Program Files\Graphviz2.38\include" --global-option="-LC:\Program Files\Graphviz2.38\lib" pygraphviz`
  
 # Environment settings
 
