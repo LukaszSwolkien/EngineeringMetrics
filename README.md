@@ -4,6 +4,8 @@
 Analyze Jira issues to measure teams efficiency in terms of engineering processes, structure and practices. Metrics once calculated can be later published on the Confluance page (Confluance Jira macros are supported for dynamic data refresh). It is also possible to publish data to the html file. All the setup can be done in jupyter notebooks.
 The ultimate goal is to use those metrics to continuously improve efficiency and enable fast delivery
 
+There are many tools available, such as eazyBI, but thanks to the custom code we can do everything. This approach also does not require any administrator privileges in Jira or Confluance. Just use the credentials of your regular user to access data in Jira and generate a custom dashboard on the Confluance page(s).
+
 ## Algorithms
 
 1. __Dependency factor__ calculates the number of issues with external dependencies to the total number of issues not Done yet, but after refinement (estimated in the backlog or already planned for the sprint).
@@ -122,4 +124,23 @@ if you have notebooks setup you can execute all of them from the command line us
 
 Go to your Confluance page to see generated dashboard(s)
 
+# Roadmap
 
+1. Organize code to make it easy to read (structure to reflect functionality not layers)
+
+More engineering metrics:
+2. Add more planning and execution metric
+Teams are also working on the other issues during sprint then just new project(epic). We need to measure the amount of work done compared to work carried over to the next iteration. Unlike the Story Points, the percentage of work done compared to planned can be compared between teams. Such metrics can also be aggregated for the organisation level
+3. Add Quality metrics on different levels (organisation level, squad level, chapter level). Goal is to monitor negative impact on end user, error budget, waste factor. 
+Key results:
+- 15% or less Change Failure Rate (organisation level)
+- 10% or less BAU is enough to make maintenance backlog stable (squad level)
+- 90% or more of test cases for the Release are in the regression test suite (squd level)
+- 10% or less of Releases are for SLO hardening. Error budget 99% SLO/MTTR (squad level).
+- 100% tests automation for scenarios likely to happen with medium or high chance of occurance (QA chapter level)
+4. Add Delivery metrics
+Key result: 
+- Deployment frequency to production no less then every 3 days (aim many times a day)
+- Cycle time
+- Lead time for changes
+...
