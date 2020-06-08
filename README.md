@@ -130,8 +130,7 @@ Go to your Confluance page to see generated dashboard(s)
 
 Add more engineering metrics:
 
-2. Add more planning and execution metric
-Teams are also working on the other issues during sprint then just new project(epic). We need to measure the amount of work done compared to work carried over to the next iteration. Unlike the Story Points, the percentage of work done compared to planned can be compared between teams. Such metrics can also be aggregated for the organisation level
+2. Add more Planning and Execution metrics. Measure the amount of work done compared to work carried over to the next iteration. Unlike the Story Points, the percentage of work done compared to planned can be compared between teams. Such metrics can also be aggregated for the organisation level
 3. Add Quality metrics on different levels (organisation level, squad level, chapter level). Goal is to monitor negative impact on end user, error budget, waste factor. 
 Key results:
 - 15% or less Change Failure Rate (organisation level)
@@ -144,4 +143,3 @@ Key result:
 - Deployment frequency to production no less then every 3 days (aim many times a day)
 - Cycle time
 - Lead time for changes
-...
