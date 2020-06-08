@@ -126,9 +126,10 @@ Go to your Confluance page to see generated dashboard(s)
 
 # Roadmap
 
-1. Organize code to make it easy to read (structure to reflect functionality not layers)
+1. Reorganize code to make it easy to read (structure to reflect functionality not layers)
 
-More engineering metrics:
+Add more engineering metrics:
+
 2. Add more planning and execution metric
 Teams are also working on the other issues during sprint then just new project(epic). We need to measure the amount of work done compared to work carried over to the next iteration. Unlike the Story Points, the percentage of work done compared to planned can be compared between teams. Such metrics can also be aggregated for the organisation level
 3. Add Quality metrics on different levels (organisation level, squad level, chapter level). Goal is to monitor negative impact on end user, error budget, waste factor. 
