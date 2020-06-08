@@ -1,7 +1,5 @@
 '''Dependency factor calculator'''
-from ia.jira import issue as ticket
-from datetime import datetime
-from ia.jira import links as issuelinks
+from ia.common.jira.issue import search_issues
 
 
 def get_link_key(link):
@@ -72,7 +70,7 @@ def count_by_link_type(list_of_issues):
 
 def dependency_factor(jira_access, jql):
     '''After refinement (in backlog or in sprint)'''
-    all_issues = ticket.search_issues(jira_access, jql)
+    all_issues = search_issues(jira_access, jql)
     all_with_dep = [i for i in all_issues if len(i.load_linked_issues())>0]
     percentage = round(len(all_with_dep)*100/len(all_issues), 2) if len(all_issues) else 0
     return percentage, all_issues, all_with_dep

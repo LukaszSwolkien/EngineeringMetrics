@@ -1,5 +1,5 @@
-import ia.exception as iae
-from ia.jira import connect
+import ia.common.exception as iae
+from ia.common.jira.connection import connect
 import pytest
 import os
 

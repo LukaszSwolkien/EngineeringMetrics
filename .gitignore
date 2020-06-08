@@ -4,5 +4,6 @@ __pycache__/
 venv/
 png
 metrics.json
+spike.py
 *.png
 *.html

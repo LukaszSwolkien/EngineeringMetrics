@@ -1,4 +1,4 @@
-from ia.algo import dependency as dep
+import ia.dependency.algo as dep
 import pytest
 import mock
 import tests.fakes as fakes

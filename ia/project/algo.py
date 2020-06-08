@@ -1,9 +1,5 @@
 '''Project status calculator'''
-from ia.jira import issue as ticket
-from datetime import datetime
-from ia.jira import links as issuelinks
-import ia.viz.charts as charts
-import datetime
+import ia.common.jira.issue as ticket
 
 
 def progress(jira_access, jql, status_done=('Done', 'Waiting for production')):

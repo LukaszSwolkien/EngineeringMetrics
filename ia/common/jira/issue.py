@@ -1,16 +1,11 @@
 """Helpers to access jira issue fields"""
+from ia.common.jira.links import get_external_dependencies, is_internal
 from jira import JIRAError
-from ia.jira.links import get_external_dependencies, is_internal
-# from functools import lru_cache
 from cachetools import cached
 
-# def get_issue(jira_obj, issue_id, expand_args=None):
-#     """Fetch issue data"""
-#     return jira_obj.issue(issue_id, expand=expand_args)
 
-#(maxsize=None)
-# @lru_cache
 issues_cache = {}
+
 @cached(cache = issues_cache)
 def get_issue_by_key(jira_obj, issue_key):
     issue_details = []
@@ -19,6 +14,8 @@ def get_issue_by_key(jira_obj, issue_key):
         issue_details = jira_obj.search_issues(jql)
     except JIRAError as error:
         # print(f"error_code:{error.status_code}, error_msg:{error.text}")
+        # import traceback, sys
+        # traceback.print_stack(file=sys.stdout)
         pass
     issue = issue_details[0] if len(issue_details) else None
     return IssueCache(jira_obj, issue) if issue else None
@@ -54,11 +51,9 @@ def get_issue_in_json(jira_obj, issue_id):
     return {'issue':issue_details, 'error':error}
 
 
-# def get_epic(jira_obj, issue):
-#     if hasattr(issue, 'epic_link'):
-#         epic_id = issue.epic_link
-#         return get_issue(jira_obj, epic_id)
-#     return None
+def get_project_name(jira_obj, project_id):
+    project = jira_obj.project(project_id)
+    return project.name
 
 
 def get_open_sprint(issue):
@@ -111,8 +106,9 @@ class IssueCache:
         if not self._epic_name:
             try:
                 epic_key = self.issue.fields.customfield_12120
-                self._epic_issue = get_issue_by_key(self._jira, epic_key)
-                self._epic_name = self._epic_issue.fields.customfield_12121
+                if epic_key is not None:
+                    self._epic_issue = get_issue_by_key(self._jira, epic_key)
+                    self._epic_name = self._epic_issue.fields.customfield_12121
             except Exception:
                 # keep defaults
                 pass

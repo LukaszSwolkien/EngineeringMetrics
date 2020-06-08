@@ -1,7 +1,7 @@
 import pytest
 from mock import Mock, PropertyMock, MagicMock
 from jira import Issue
-from ia.jira import links as issuelinks
+from ia.common.jira import links as issuelinks
 import tests.fakes as fakes
 
 

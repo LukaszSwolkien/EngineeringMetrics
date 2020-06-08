@@ -1,10 +1,9 @@
-from ia.confluence import page
-from ia.jira import issue as ticket
-from ia.confluence import helpers
-from ia.algo import dependency as dep
-import ia.viz.graph as graph
-import ia.viz.charts as charts
-from ia.db import metrics
+import ia.common.viz.confpage as page
+import ia.common.viz.graph as graph
+import ia.common.viz.charts as charts
+import ia.common.jira.issue as ticket
+import ia.dependency.algo as dep
+import ia.dependency.metrics_store as metrics_store
 import datetime
 
 
@@ -89,63 +88,6 @@ def dependency_report(independence, all_issues, all_with_dep, metrics_history=No
     return content, attachments
 
 
-def sprint_report(jira_access, board_name, project_key):
-    board = jira_access.boards(type="scrum", name=board_name)[0]
-    sprint = jira_access.sprints(board_id=board.id, state='active')[0]
-    
-    content = page.format_text("h4", f'Current Sprint: {sprint.name}')
-    content += page.format_text("p", f'Start: {sprint.startDate.split("T")[0]}, End: {sprint.endDate.split("T")[0]}')
-    content += page.format_text("p", f'Goal: "{sprint.goal}"')
-
-    content += page.embed_expand_macro(
-        page.embed_jira_macro(f'project = "{project_key}" and sprint in OpenSprints()'), 
-            "Ongoing in current sprint"
-    )
-
-    return content
-
-
-def risks_report(product_name):
-    return page.embed_jira_macro(
-        f'issuetype = risk and "Project / Product" ~ "{product_name}" and issuetype = Risk',
-        columns="key,summary,assignee,reporter,status,rag status computed,issuelinks"
-    )
-
-
-def project_report(percentage, all_issues, jql_all_issues, status_done, product_name=None, board_name=None):
-    content = ""
-    attachments = []
-    if len(all_issues) > 0:
-        jira_access = all_issues[0].jira_access
-        project_key = all_issues[0].project.name
-
-        content += page.format_text("h4", f'Percentage done: {percentage}%')
-
-        if board_name:
-            content += sprint_report(jira_access, board_name, project_key)
-        
-        content += page.format_text("h4", f'All issues: {len(all_issues)}')
-        content += page.embed_expand_macro(page.embed_jira_macro(jql_all_issues), "All issues")
-        content += page.embed_pie_marco(jql=jql_all_issues, stat_type='statuses')
-
-        content += page.format_text("h4", 'Reminding work')
-        content += page.embed_expand_macro(page.embed_jira_macro(f'{jql_all_issues} and status not in ({status_done})'), "Reminding work")
-
-        if product_name:
-            content += page.format_text("h4", f'Risks')
-            content += risks_report(product_name)
-
-        issues_with_links = [i for i in all_issues if len(i.load_linked_issues())>0]
-        if len(issues_with_links):
-            content += page.format_text('h4', f'Blocked stories')
-            content += page.embed_jira_macro(f'status = Blocked and {jql_all_issues}')
-            dependency_content, dependency_graphs = dependency_analysis(issues_with_links)
-            content += dependency_content
-            attachments += dependency_graphs
-   
-    return content, attachments
-    
-
 def publish_dependency_report(
     conf_url,
     conf_username,
@@ -229,7 +171,7 @@ def publish_dependency_summary_report(
             
         table['Trend'].append(trend_arrow)
 
-    total_m = metrics.merge(metrics_history.values())
+    total_m = metrics_store.merge(metrics_history.values())
 
     new_content += page.format_text("h3", f'DM factor = {total_m.latest["independence"]}% ')
 

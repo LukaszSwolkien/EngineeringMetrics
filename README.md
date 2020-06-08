@@ -132,19 +132,35 @@ if you have notebooks setup you can execute all of them from the command line us
 
 Go to your Confluance page to see generated dashboard(s)
 
-# Roadmap
+# Code structure
 
-1. Reorganize code to make it easy to read (structure to reflect functionality not layers)
+ia.common - package with common stuff
+
+- jira - package with jira access features
+
+- viz - package with features to visualise data. 
+
+    - confpage module has useful methods to upload content on Confluance page
+    - charts are representing data on pie, bar, etc chart plots
+    - graph are representing relations between jira issues
+
+ia.dependency - package to calculate and publish dependency analysis
+
+ia.project - package to calculate and publish project  analysis
+
+ia.quality - package to calculate and publish quality analysis
+
+# Roadmap
 
 Add more engineering metrics:
 
-2. Add more Planning and Execution metrics. Measure the amount of work done compared to work carried over to the next iteration. Unlike the Story Points, the percentage of work done compared to planned can be compared between teams. Such metrics can also be aggregated for the organisation level
+1. Add more Planning and Execution metrics. Measure the amount of work done compared to work carried over to the next iteration. Unlike the Story Points, the percentage of work done compared to planned can be compared between teams. Such metrics can also be aggregated for the organisation level
 
     Example of key results:
 
     - 90% of sprint content committed by the team is delivered to production
 
-3. Add Quality metrics on different levels (organisation level, squad level, chapter level). Goal is to monitor negative impact on end user, error budget, waste factor, etc.
+2. Add Quality metrics on different levels (organisation level, squad level, chapter level). Goal is to monitor negative impact on end user, error budget, waste factor, etc.
 
     Example of key results:
 
@@ -154,10 +170,10 @@ Add more engineering metrics:
     - 10% or less of Releases are for SLO hardening. Error budget 99% SLO/MTTR (squad level).
     - 100% tests automation for scenarios likely to happen with medium or high chance of occurance (QA chapter level)
 
-4. Add Delivery metrics
+3. Add Delivery metrics
 
     Example of key results:
 
     - Deployment frequency to production no less then every 3 days (aim many times a day)
-    - Cycle time
-    - Lead time for changes
+    - Cycle time ?
+    - Lead time for changes ?
