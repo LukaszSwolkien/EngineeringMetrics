@@ -1,10 +1,10 @@
 ﻿README
 ======
 
-Analyze Jira issues to measure teams efficiency in terms of engineering processes, structure and practices. Metrics once calculated can be later published on the Confluance page (Confluance Jira macros are supported for dynamic data refresh). It is also possible to publish data to the html file. All the setup can be done in jupyter notebooks.
+Analyze Jira issues to measure teams efficiency in terms of engineering processes, structure and practices. Metrics once calculated can be later published on the Confluance page (Confluance Jira macros are supported for dynamic data refresh). It is also possible to publish data to the html file (notebook result). All the setup can be done in jupyter notebooks.
 The ultimate goal is to use those metrics to continuously improve efficiency and enable fast delivery
 
-There are many tools available, such as eazyBI, but thanks to the custom code we can do everything. This approach also does not require any administrator privileges in Jira or Confluance. Just use the credentials of your regular user to access data in Jira and generate a custom dashboard on the Confluance page(s).
+There are many tools available, such as eazyBI or build in Jira dashboard gadgets and Confluance macros, but thanks to the custom code we can do everything. This approach also does not require any administrator privileges in Jira or Confluance. Just use the credentials of your regular user to access data in Jira and generate a custom dashboard on the Confluance page(s). You can also add custom code to generate report in any other format
 
 ## Algorithms
 
@@ -152,9 +152,14 @@ ia.quality - package to calculate and publish quality analysis
 
 # Roadmap
 
+Code improvements:
+
+1. Move 'building blocks' of each dashboard to class Element and create generic ConfluanceDashboard with the publish method to construct custom dashboard from elements, i.e. conf_dashboard.publish([independency_trends, dependency_split, dependency_graph])
+
+
 Add more engineering metrics:
 
-1. Add more Planning and Execution metrics. Measure the amount of work done compared to work carried over to the next iteration. Unlike the Story Points, the percentage of work done compared to planned can be compared between teams. Such metrics can also be aggregated for the organisation level
+1. Add execution metrics. Measure the amount of work done compared to work carried over to the next iteration. Unlike the Story Points, the percentage of work done compared to planned can be compared between teams. Such metrics can also be aggregated on the organisation level
 
     Example of key results:
 
@@ -164,16 +169,7 @@ Add more engineering metrics:
 
     Example of key results:
 
-    - 15% or less Change Failure Rate (organisation level)
-    - 10% or less BAU is enough to make maintenance backlog stable (squad level)
-    - 90% or more of test cases for the Release are in the regression test suite (squd level)
-    - 10% or less of Releases are for SLO hardening. Error budget 99% SLO/MTTR (squad level).
-    - 100% tests automation for scenarios likely to happen with medium or high chance of occurance (QA chapter level)
-
-3. Add Delivery metrics
-
-    Example of key results:
-
-    - Deployment frequency to production no less then every 3 days (aim many times a day)
-    - Cycle time ?
-    - Lead time for changes ?
+    - 15% or less Change Failure Rate
+    - 10% or less BAU is enough to make maintenance backlog stable
+    - 90% or more of test cases executed at least once a week
+    
