@@ -158,7 +158,7 @@ import ia.common.jira.connection as jira_access
 import ia.dependency.confelem as elements
 import ia.dependency.algo as dependency
 import ia.dependency.metrics_store as metrics
-import ia.common.viz.conf.dashboard as confboard
+import ia.common.viz.conf.dashboard as conf
 
 # Access variables
 jira_url = os.environ['JIRA_URL']
@@ -171,11 +171,11 @@ conf_password = os.environ['CONFLUENCE_PASSWORD']
 
 # Report variables
 jira_project_id = "DANMR"
-conf_space_key = "~lswolkien"
-conf_parent_page = "Reports"
-conf_page_title = "Independence report"
+space = "~lswolkien"
+parent_page = "Reports"
+page_title = "Independence report"
 
-dashboard = confboard.Dashboard(conf_url, conf_username, conf_password, conf_page_title, conf_space_key, conf_parent_page)
+dashboard = conf.Dashboard(conf_url, conf_username, conf_password, page_title, space, parent_page)
 jira =  jira_access.connect(jira_url, basic_auth=(jira_username, jira_password))
 
 JQL = f'project = {jira_project_id} and status not in ("Done", "In Analysis")'
