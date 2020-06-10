@@ -185,12 +185,12 @@ independency_factor = 100-p
 metrics.save('BacklogRefinement', jira_project_id, independency_factor, all_issues, all_with_dep)
 metrics_history = metrics.read_independence_stats('BacklogRefinement', jira_project_id)
 
-report_head = confboard.Element(
-    confboard.report_head, # callable which returns content and attachments for the dashboard element
+report_head = conf.Element(
+    conf.report_head, # callable which returns content and attachments for the dashboard element
     [conf_page_title, "External dependencies in backlog after refinement"] # arguments for callable object
 )
 
-report_dependency = confboard.Element(
+report_dependency = conf.Element(
     elements.dependency_report, # callable which returns content and attachments for the dashboard element
     [independency_factor, all_issues, all_with_dep, metrics_history] # arguments for callable object
 )
