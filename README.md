@@ -140,9 +140,9 @@ ia.common - package with common stuff
 
 - viz - package with features to visualise data. 
 
-    - confpage module has useful methods to upload content on Confluance page
-    - charts are representing data on pie, bar, etc chart plots
-    - graph are representing relations between jira issues
+    - conf - useful methods to upload content on Confluance page
+    - charts - pie, bar, etc... chart plots
+    - graph - visualise relations between jira issues
 
 ia.dependency - package to calculate and publish dependency analysis
 
