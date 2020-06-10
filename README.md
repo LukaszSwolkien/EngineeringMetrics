@@ -152,7 +152,7 @@ ia.quality - package to calculate and publish quality analysis
 
 # Usage example:
 
-```
+```py
 import os
 import ia.common.jira.connection as jira_access
 import ia.dependency.confelem as elements
