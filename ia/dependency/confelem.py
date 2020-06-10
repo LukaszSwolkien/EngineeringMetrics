@@ -1,4 +1,5 @@
-import ia.common.viz.confpage as page
+import ia.common.viz.conf.page as page
+import ia.common.viz.conf.dashboard as confboard
 import ia.common.viz.graph as graph
 import ia.common.viz.charts as charts
 import ia.common.jira.issue as ticket
@@ -33,6 +34,22 @@ def inter_extern_stats_pie_chart(stats, title=None):
     plt.savefig(pie_chart_filename)
     plt.close()
     return pie_chart_filename  
+
+
+def internal_vs_external_dependencies(jira_access, projects_list, metrics, title="Internal vs external dependencies"):
+    attachments = []
+    dm_all_with_dep = [ticket.get_issue_by_key(jira_access, issue_key) for issue_key in metrics.latest["all_with_dep"]]
+    inter_extern_stats = dep.count_internal(dm_all_with_dep, projects_list)  
+    chart_file = inter_extern_stats_pie_chart(inter_extern_stats, title)
+    attachments.append(chart_file)
+    content = page.embed_image(filename = chart_file)
+    
+    issues_with_internal_dep = inter_extern_stats['internal']
+    issues_with_external_dep = inter_extern_stats['external']
+    content += page.embed_expand_macro(page.embed_jira_macro(f'issuekey in ({", ".join(issues_with_internal_dep)})'), 'Issues with internal dependencies')
+    content += page.embed_expand_macro(page.embed_jira_macro(f'issuekey in ({", ".join(issues_with_external_dep)})'), 'Issues with external dependencies')    
+
+    return content, attachments
 
 
 def dependency_graph(issue_cache):
@@ -88,70 +105,9 @@ def dependency_report(independence, all_issues, all_with_dep, metrics_history=No
     return content, attachments
 
 
-def publish_dependency_report(
-    conf_url,
-    conf_username,
-    conf_password,
-    conf_space_key,
-    conf_page_title,
-    conf_parent_page,
-    independency_factor,
-    all_issues,
-    all_with_dep,
-    metrics_history=None,
-    report_title='External dependency factor for issues after refinement', 
-    report_description="The number of issues with external dependencies to the total number of issues not Done yet, but after refinement (in the backlog or in the sprint)"
-    ):
-    new_content = page.format_text("h5", f"Report timestamp {datetime.datetime.now():%Y-%m-%d %H:%M}")
-    new_content += page.format_text("h2", report_title)
-    new_content += page.format_text("p", report_description)
-    
-    page_content, page_attachments = dependency_report(independency_factor, all_issues, all_with_dep, metrics_history) 
-    
-    new_content += page_content
-    with page.Confluence(conf_url, (conf_username, conf_password)) as c:
-        page_builder = page.PageBuilder(c)
-        page_builder.create_or_update(
-            space_key=conf_space_key, 
-            title=conf_page_title, 
-            new_content=new_content, 
-            attachments = page_attachments,
-            parent_page_title=conf_parent_page
-        )
-
-
-def internal_vs_external_dependencies(jira_access, projects_list, metrics, title="Internal vs external dependencies"):
+def dependency_summary(jira_access, metrics_history, project_list):
+    new_content = ''
     attachments = []
-    dm_all_with_dep = [ticket.get_issue_by_key(jira_access, issue_key) for issue_key in metrics.latest["all_with_dep"]]
-    inter_extern_stats = dep.count_internal(dm_all_with_dep, projects_list)  
-    chart_file = inter_extern_stats_pie_chart(inter_extern_stats, title)
-    attachments.append(chart_file)
-    content = page.embed_image(filename = chart_file)
-    
-    issues_with_internal_dep = inter_extern_stats['internal']
-    issues_with_external_dep = inter_extern_stats['external']
-    content += page.embed_expand_macro(page.embed_jira_macro(f'issuekey in ({", ".join(issues_with_internal_dep)})'), 'Issues with internal dependencies')
-    content += page.embed_expand_macro(page.embed_jira_macro(f'issuekey in ({", ".join(issues_with_external_dep)})'), 'Issues with external dependencies')    
-
-    return content, attachments
-
-
-def publish_dependency_summary_report(
-        conf_url,
-        conf_username,
-        conf_password,
-        conf_space_key,
-        conf_parent_page,
-        conf_summary_page,
-        projects, 
-        metrics_history,
-        jira_access=None # needed only to display more analysis for merged metrics
-    ):
-    attachments = []
-        
-    new_content = page.format_text("h5", f"Report timestamp {datetime.datetime.now():%Y-%m-%d %H:%M}")
-    new_content += page.format_text("h2", "Independence after refinement")
-
     table = {
         'Squad': [],
         'Factor': [],
@@ -180,19 +136,11 @@ def publish_dependency_summary_report(
     new_content += page.embed_image(filename = chart_file)
 
     if jira_access is not None:
-        more_analysis_content, more_att = internal_vs_external_dependencies(jira_access, projects.keys(), total_m)
+        more_analysis_content, more_att = internal_vs_external_dependencies(jira_access, project_list, total_m)
         new_content += page.embed_expand_macro(more_analysis_content, "More analysis...")
         attachments += more_att
 
     new_content += page.format_table(table)
 
-    with page.Confluence(conf_url, (conf_username, conf_password)) as c:
-        page_builder = page.PageBuilder(c)
+    return new_content, attachments
 
-        page_builder.create_or_update(
-            space_key=conf_space_key, 
-            title=conf_summary_page, 
-            new_content=new_content, 
-            attachments = attachments,
-            parent_page_title=conf_parent_page
-        )

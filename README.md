@@ -150,12 +150,56 @@ ia.project - package to calculate and publish project  analysis
 
 ia.quality - package to calculate and publish quality analysis
 
+# Usage example:
+
+```
+import os
+import ia.common.jira.connection as jira_access
+import ia.dependency.confelem as elements
+import ia.dependency.algo as dependency
+import ia.dependency.metrics_store as metrics
+import ia.common.viz.conf.dashboard as confboard
+
+# Access variables
+jira_url = os.environ['JIRA_URL']
+jira_username = os.environ['JIRA_USERNAME']
+jira_password = os.environ['JIRA_PASSWORD']
+
+conf_url = os.environ['CONFLUENCE_URL']
+conf_username = os.environ['CONFLUENCE_USERNAME']
+conf_password = os.environ['CONFLUENCE_PASSWORD']
+
+# Report variables
+jira_project_id = "DANMR"
+conf_space_key = "~lswolkien"
+conf_parent_page = "Reports"
+conf_page_title = "Independence report"
+
+dashboard = confboard.Dashboard(conf_url, conf_username, conf_password, conf_page_title, conf_space_key, conf_parent_page)
+jira =  jira_access.connect(jira_url, basic_auth=(jira_username, jira_password))
+
+JQL = f'project = {jira_project_id} and status not in ("Done", "In Analysis")'
+p, all_issues, all_with_dep = dependency.dependency_factor(jira, JQL)
+independency_factor = 100-p
+
+metrics.save('BacklogRefinement', jira_project_id, independency_factor, all_issues, all_with_dep)
+metrics_history = metrics.read_independence_stats('BacklogRefinement', jira_project_id)
+
+report_head = confboard.Element(
+    confboard.report_head, # callable which returns content and attachments for the dashboard element
+    [conf_page_title, "External dependencies in backlog after refinement"] # arguments for callable object
+)
+
+report_dependency = confboard.Element(
+    elements.dependency_report, # callable which returns content and attachments for the dashboard element
+    [independency_factor, all_issues, all_with_dep, metrics_history] # arguments for callable object
+)
+
+# Create or Overwrite Confluance page
+dashboard.publish([report_head, report_dependency])
+
+```
 # Roadmap
-
-Code improvements:
-
-1. Move 'building blocks' of each dashboard to class Element and create generic ConfluanceDashboard with the publish method to construct custom dashboard from elements, i.e. conf_dashboard.publish([independency_trends, dependency_split, dependency_graph])
-
 
 Add more engineering metrics:
 

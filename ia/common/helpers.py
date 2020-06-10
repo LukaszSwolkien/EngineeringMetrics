@@ -25,5 +25,3 @@ def day_ts(dt = datetime.datetime.utcnow()):
     ''' timestamp in seconds for a day '''
     return to_ts(datetime.datetime(year=dt.year, month=dt.month, day=dt.day))
     
-
-
