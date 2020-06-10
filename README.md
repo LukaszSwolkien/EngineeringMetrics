@@ -144,18 +144,20 @@ ia.common - package with common stuff
     - charts - pie, bar, etc... chart plots
     - graph - visualise relations between jira issues
 
-ia.dependency - package to calculate and publish dependency analysis
+ia.dependency - algorithms and dashboard elements to visualize dependency analysis
 
-ia.project - package to calculate and publish project  analysis
+ia.project - algorithms and dashboard elements to visualize project execution analysis
 
-ia.quality - package to calculate and publish quality analysis
+ia.quality - algorithms and dashboard elements to visualize quality analysis
+
+ia.execution - algorithms and dashboard elements to visualize sprint execution analysis
 
 # Usage example:
 
 ```py
 import os
 import ia.common.jira.connection as jira_access
-import ia.dependency.confelem as elements
+import ia.dependency.conf.elements as elements
 import ia.dependency.algo as dependency
 import ia.dependency.metrics_store as metrics
 import ia.common.viz.conf.dashboard as conf
@@ -187,7 +189,7 @@ metrics_history = metrics.read_independence_stats('BacklogRefinement', jira_proj
 
 report_head = conf.Element(
     conf.report_head, # callable which returns content and attachments for the dashboard element
-    [conf_page_title, "External dependencies in backlog after refinement"] # arguments for callable object
+    [page_title, "External dependencies in backlog after refinement"] # arguments for callable object
 )
 
 report_dependency = conf.Element(
@@ -197,7 +199,6 @@ report_dependency = conf.Element(
 
 # Create or Overwrite Confluance page
 dashboard.publish([report_head, report_dependency])
-
 ```
 # Roadmap
 

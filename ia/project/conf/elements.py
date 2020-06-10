@@ -1,21 +1,7 @@
 import ia.common.viz.conf.page as page
-import ia.dependency.confelem as dependency_elements
+import ia.dependency.conf.elements as dependency_elements
 import ia.common.viz.conf.dashboard as confboard
-
-def sprint_report(jira_access, board_name, project_key):
-    board = jira_access.boards(type="scrum", name=board_name)[0]
-    sprint = jira_access.sprints(board_id=board.id, state='active')[0]
-    
-    content = page.format_text("h4", f'Current Sprint: {sprint.name}')
-    content += page.format_text("p", f'Start: {sprint.startDate.split("T")[0]}, End: {sprint.endDate.split("T")[0]}')
-    content += page.format_text("p", f'Goal: "{sprint.goal}"')
-
-    content += page.embed_expand_macro(
-        page.embed_jira_macro(f'project = "{project_key}" and sprint in OpenSprints()'), 
-            "Ongoing in current sprint"
-    )
-
-    return content, []
+import ia.execution.conf.elements as sprint_elements
 
 
 def risks_report(product_name):
@@ -35,7 +21,7 @@ def project_report(percentage, all_issues, jql_all_issues, status_done, product_
         content += page.format_text("h4", f'Percentage done: {percentage}%')
 
         if board_name:
-            content += sprint_report(jira_access, board_name, project_key)[0]
+            content += sprint_elements.sprint_report(jira_access, board_name, project_key)[0]
         
         content += page.format_text("h4", f'All issues: {len(all_issues)}')
         content += page.embed_expand_macro(page.embed_jira_macro(jql_all_issues), "All issues")
