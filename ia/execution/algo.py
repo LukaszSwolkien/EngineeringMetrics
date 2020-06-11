@@ -2,6 +2,26 @@ import ia.common.jira.issue as ticket
 import re
 
 
+class ExecutionMetrics:
+    def __init__(self, all_issues, done_in_sprint, done_by_now):
+        self._all_issues = all_issues
+        self._done_in_sprint = done_in_sprint
+        self._done_by_now = done_by_now
+
+    def get_progress_in_sprint(self):
+        c_all = len(self._all_issues)
+        c_done_in_sprint = len(self._done_in_sprint)
+        return round(c_done_in_sprint*100/c_all, 0) if c_all else 0
+
+    def get_progress_by_now(self):
+        c_all = len(self._all_issues)
+        c_done_by_now = len(self._done_by_now)
+        return round(c_done_by_now*100/c_all, 0) if c_all else 0
+
+    progress_in_sprint = property(get_progress_in_sprint)
+    progress_by_now = property(get_progress_by_now)
+
+
 def progress(jira_access, JQL, status_done=('Done', 'Waiting for production')):
     all_issues = ticket.search_issues(jira_access, JQL)
     c_all = len(all_issues)
@@ -46,9 +66,23 @@ def progress_history(
     history = {}
     for s in sprints:
         sprint_name = s.name
-        JQL = f'sprint = "{sprint_name}" and issuetype in {issuetype}'
-        pr = progress(jira_access, JQL, status_done)
-        history[sprint_name] = pr
+        sprint_end_date = s.endDate
 
+        JQL = f'sprint = "{sprint_name}" and issuetype in {issuetype}'
+
+        all_issues = ticket.search_issues(jira_access, JQL)
+
+        done_by_now = []
+        done_in_sprint = []
+
+        for i in all_issues:
+            if i.fields.status.name in status_done:
+                done_by_now.append(i)
+                if i.fields.resolutiondate and i.fields.resolutiondate <= sprint_end_date:
+                    done_in_sprint.append(i)
+
+        history[sprint_name] = ExecutionMetrics(all_issues, done_in_sprint, done_by_now)
     return history
+
+
 
