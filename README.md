@@ -6,6 +6,32 @@ The ultimate goal is to use those metrics to continuously improve efficiency and
 
 There are many tools available, such as eazyBI or build in Jira dashboard gadgets and Confluance macros, but thanks to the custom code we can do everything. This approach also does not require any administrator privileges in Jira or Confluance. Just use the credentials of your regular user to access data in Jira and generate a custom dashboard on the Confluance page(s). You can also add custom code to generate report in any other format
 
+## Report screenshots
+
+### Independence summary
+
+<img src="./screenshots/independence summary.png"
+     alt="Independence summary"
+     style="margin-right: 10px;" />
+
+### Dependency split
+
+<img src="./screenshots/dependency split.png"
+     alt="Dependency split"
+     style="margin-right: 10px;" />
+
+### Dependency graphs
+
+<img src="./screenshots/dependency graphs.png"
+     alt="Dependency graphs"
+     style="margin-right: 10px;" />
+
+### Execution progress
+
+<img src="./screenshots/execution progress.png"
+     alt="Execution progress"
+     style="margin-right: 10px;" />
+
 ## Algorithms
 
 1. __Dependency factor__ calculates the number of issues with external dependencies to the total number of issues not Done yet, but after refinement (estimated in the backlog or already planned for the sprint).

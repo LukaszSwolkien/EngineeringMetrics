@@ -2,9 +2,7 @@
 .ipynb_checkpoints/
 __pycache__/
 venv/
-png
 metrics.json
 _metrics.json
 spike.py
-*.png
 *.html
