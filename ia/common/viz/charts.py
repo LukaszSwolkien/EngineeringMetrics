@@ -107,21 +107,25 @@ def barh_progress(labels, done_on_time, done_later=None, title=None, invert_labe
     ax.set_yticklabels(labels)
 
     for i, _ in enumerate(labels):
+        grey_size = 100
         done_on_time_size = done_on_time[i]
-        ax.barh(y_pos[i], done_on_time_size, color='green', edgecolor='white', label='done on time')
+        grey_size -= done_on_time_size
+        ax.barh(y_pos[i], done_on_time_size, color='green', edgecolor='white')
 
         if done_on_time_size:
             ax.text(done_on_time_size/2., y_pos[i], f'{done_on_time_size}%', fontsize=10, va='center', color='white')
 
         if done_later is not None:
             done_later_size = done_later[i]
-            ax.barh(y_pos[i], done_later_size, left=done_on_time_size, color='#b5ffb9', edgecolor='white', label='done later')
+            grey_size -= done_later_size
+            ax.barh(y_pos[i], done_later_size, left=done_on_time_size, color='#b5ffb9', edgecolor='white')
             if done_later_size:
                 ax.text(done_on_time_size + done_later_size/2., i, f'{done_later_size}%', fontsize=10, va='center', color='black')
+
             done_on_time_patch = mpatches.Patch(color='green', label='done on time')
             done_later_patch = mpatches.Patch(color='#b5ffb9', label='done later')
             plt.legend(handles=[done_on_time_patch, done_later_patch], loc='upper center', bbox_to_anchor=(0.5, -0.05), fancybox=True, shadow=False, ncol=2)
-
+        ax.barh(y_pos[i], grey_size, left=100-grey_size, color='lightgrey', edgecolor='white')
     if invert_labels:
         ax.invert_yaxis()
     if title is not None:

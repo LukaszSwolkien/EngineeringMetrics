@@ -70,3 +70,11 @@ def execution_report(projetcs_progress):
     content = page.embed_image(filename = barh_chart_filename)
     return content, [barh_chart_filename]
 
+
+def carry_over_issues(
+        jira_access,
+        project_key,
+        status_done=('Done')
+    ):
+    JQL = f'project = {project_key} AND type not in (Sub-bug, "Sub Story", "Sub Task", Sub-Task) and sprint is not EMPTY AND sprint in closedSprints() AND sprint in openSprints() AND status not in ({status_done})'
+    return page.embed_expand_macro(page.embed_jira_macro(JQL), "Carry over issues"), []

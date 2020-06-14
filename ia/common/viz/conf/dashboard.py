@@ -40,14 +40,17 @@ class Component:
         return self._func(*self._args)
 
 
-
-
 def report_head(title, description=None):
     content = page.format_text("h5", f"Report timestamp {datetime.datetime.now():%Y-%m-%d %H:%M}")
     content += page.format_text("h2", title)
     if description is not None:
         content += page.format_text("p", description)
 
+    return content, []
+
+
+def report_heading(tag, text):
+    content = page.format_text(tag, text)
     return content, []
 
 
