@@ -42,7 +42,31 @@ def sprint_report(jira_access, board_name, project_key):
     return content, []
 
 
-def execution_report(history):
+def history_execution_report(history):
     barh_chart_filename = execution_progress_chart(history)
     content = page.embed_image(filename = barh_chart_filename)
     return content, [barh_chart_filename]
+
+
+def execution_report(projetcs_progress):
+    labels = []
+    progress = []
+    all_stories_count = 0
+    done_stories_count = 0
+    for project_key, sprint_progress in projetcs_progress.items():
+        labels.append(project_key)
+        p = round(sprint_progress[0])
+        all_stories_count += len(sprint_progress[1])
+        done_stories_count += len(sprint_progress[2])
+        progress.append(p)
+
+    labels.append("Total")
+    progress.append(round(done_stories_count*100/all_stories_count, 0) if all_stories_count else 0)
+
+    plt = charts.barh_progress(labels, progress, None, "DM execution status", invert_labels=False)
+    barh_chart_filename = f'DM execution barh {datetime.datetime.utcnow():%Y-%m-%d %H_%M_%S}.png'
+    plt.savefig(barh_chart_filename)
+    plt.close()
+    content = page.embed_image(filename = barh_chart_filename)
+    return content, [barh_chart_filename]
+
