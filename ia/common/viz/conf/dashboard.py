@@ -30,7 +30,7 @@ class Dashboard:
                 parent_page_title=page_parent or self._page_parent
             )
 
-class Element:
+class Component:
     def __init__(self, func, args):
         self._func = func
         self._args = args

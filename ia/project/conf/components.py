@@ -1,7 +1,7 @@
 import ia.common.viz.conf.page as page
-import ia.dependency.conf.elements as dependency_elements
+import ia.dependency.conf.components as dependency_components
 import ia.common.viz.conf.dashboard as confboard
-import ia.execution.conf.elements as sprint_elements
+import ia.execution.conf.components as sprint_components
 
 
 def risks_report(product_name):
@@ -21,7 +21,7 @@ def project_report(percentage, all_issues, jql_all_issues, status_done, product_
         content += page.format_text("h4", f'Percentage done: {percentage}%')
 
         if board_name:
-            content += sprint_elements.sprint_report(jira_access, board_name, project_key)[0]
+            content += sprint_components.sprint_report(jira_access, board_name, project_key)[0]
         
         content += page.format_text("h4", f'All issues: {len(all_issues)}')
         content += page.embed_expand_macro(page.embed_jira_macro(jql_all_issues), "All issues")
@@ -38,7 +38,7 @@ def project_report(percentage, all_issues, jql_all_issues, status_done, product_
         if len(issues_with_links):
             content += page.format_text('h4', f'Blocked stories')
             content += page.embed_jira_macro(f'status = Blocked and {jql_all_issues}')
-            dependency_content, dependency_graphs = dependency_elements.dependency_analysis(issues_with_links)
+            dependency_content, dependency_graphs = dependency_components.dependency_analysis(issues_with_links)
             content += dependency_content
             attachments += dependency_graphs
    

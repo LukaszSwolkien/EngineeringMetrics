@@ -170,20 +170,20 @@ ia.common - package with common stuff
     - charts - pie, bar, etc... chart plots
     - graph - visualise relations between jira issues
 
-ia.dependency - algorithms and dashboard elements to visualize dependency analysis
+ia.dependency - algorithms and dashboard components to visualize dependency analysis
 
-ia.project - algorithms and dashboard elements to visualize project execution analysis
+ia.project - algorithms and dashboard components to visualize project execution analysis
 
-ia.quality - algorithms and dashboard elements to visualize quality analysis
+ia.quality - algorithms and dashboard components to visualize quality analysis
 
-ia.execution - algorithms and dashboard elements to visualize sprint execution analysis
+ia.execution - algorithms and dashboard components to visualize sprint execution analysis
 
 # Usage example:
 
 ```py
 import os
 import ia.common.jira.connection as jira_access
-import ia.dependency.conf.elements as elements
+import ia.dependency.conf.components as components
 import ia.dependency.algo as dependency
 import ia.dependency.metrics_store as metrics
 import ia.common.viz.conf.dashboard as conf
@@ -213,13 +213,13 @@ independency_factor = 100-p
 metrics.save('BacklogRefinement', jira_project_id, independency_factor, all_issues, all_with_dep)
 metrics_history = metrics.read_independence_stats('BacklogRefinement', jira_project_id)
 
-report_head = conf.Element(
+report_head = conf.Component(
     conf.report_head, # callable which returns content and attachments for the dashboard element
     [page_title, "External dependencies in backlog after refinement"] # arguments for callable object
 )
 
-report_dependency = conf.Element(
-    elements.dependency_report, # callable which returns content and attachments for the dashboard element
+report_dependency = conf.Component(
+    components.dependency_report, # callable which returns content and attachments for the dashboard element
     [independency_factor, all_issues, all_with_dep, metrics_history] # arguments for callable object
 )
 
