@@ -52,7 +52,7 @@ def last_sprints(jira_access, board_name, start_at, last_sprints=5):
 
     closed_sprints = jira_access.sprints(board_id=board.id, state='closed', startAt=index)
 
-    sprints = [current_sprint] + [s for s in closed_sprints]
+    sprints = [s for s in closed_sprints] + [current_sprint]
     return sprints
 
 

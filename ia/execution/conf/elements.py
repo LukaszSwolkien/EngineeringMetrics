@@ -1,5 +1,26 @@
 import ia.common.viz.conf.page as page
 import ia.execution.algo as algo
+import ia.common.viz.charts as charts
+import datetime
+
+
+def execution_progress_chart(history):
+    labels = []
+    done_on_time = []
+    done_later = []
+    for sprint_name, metrics in history.items():
+        labels.append(sprint_name)
+        p_in_sprint = round(metrics.progress_in_sprint)
+        p_by_now = round(metrics.progress_by_now - p_in_sprint)
+        done_on_time.append(p_in_sprint)
+        done_later.append(p_by_now)
+
+    plt = charts.barh_progress(labels, done_on_time, done_later, "History of execution")
+    barh_chart_filename = f'execution barh {datetime.datetime.utcnow():%Y-%m-%d %H_%M_%S}.png'
+    plt.savefig(barh_chart_filename)
+    plt.close()
+    return barh_chart_filename
+
 
 def sprint_report(jira_access, board_name, project_key):
     board = jira_access.boards(type="scrum", name=board_name)[0]
@@ -22,11 +43,6 @@ def sprint_report(jira_access, board_name, project_key):
 
 
 def execution_report(history):
-    # TODO - make a chart from it
-    content = ''
-    for sprint_name, metrics in history.items():
-        content += page.format_text("p", f"Sprint: {sprint_name}")
-        content += page.format_text("p", f'Sprint execution progress: {metrics.progress_in_sprint}%')
-        content += page.format_text("p", f'Execution progress by now: {metrics.progress_by_now}%')
-
-    return content, []
+    barh_chart_filename = execution_progress_chart(history)
+    content = page.embed_image(filename = barh_chart_filename)
+    return content, [barh_chart_filename]

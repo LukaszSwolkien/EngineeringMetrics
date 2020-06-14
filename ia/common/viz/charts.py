@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import matplotlib.ticker as mtick
+import matplotlib.patches as mpatches
 import numpy as np
 import datetime
 
@@ -92,4 +93,39 @@ def bar_chart_percent_stacked(dates, total_counts, part_counts):
     plt.bar(dates, green_bar, color='green', label="independent")
     plt.bar(dates, red_bar, bottom=green_bar, color='red', label="with dependency")
     plt.legend(loc='upper center', bbox_to_anchor=(0.5, -0.05), fancybox=True, shadow=False, ncol=2)
+    return plt
+
+
+def barh_progress(labels, done_on_time, done_later, title=None, invert_labels=True):
+    f = plt.figure(1, figsize=(8,4))
+    ax = f.add_subplot(111)
+
+    ax.xaxis.set_major_formatter(mtick.PercentFormatter())
+
+    y_pos = range(len(labels))
+    ax.set_yticks(y_pos)
+    ax.set_yticklabels(labels)
+
+    for i, _ in enumerate(labels):
+        done_on_time_size = done_on_time[i]
+        done_later_size = done_later[i]
+        ax.barh(y_pos[i], done_on_time_size, color='green', edgecolor='white', label='done on time')
+        ax.barh(y_pos[i], done_later_size, left=done_on_time_size, color='#b5ffb9', edgecolor='white', label='done later')
+
+        if done_on_time_size:
+            ax.text(done_on_time_size/2., y_pos[i], f'{done_on_time_size}%', fontsize=10, va='center', color='white')
+        if done_later_size:
+            ax.text(done_on_time_size + done_later_size/2., i, f'{done_later_size}%', fontsize=10, va='center', color='black')
+
+
+    if invert_labels:
+        ax.invert_yaxis()
+    if title is not None:
+        ax.set_title(title)
+
+    done_on_time_patch = mpatches.Patch(color='green', label='done on time')
+    done_later_patch = mpatches.Patch(color='#b5ffb9', label='done later')
+
+    plt.legend(handles=[done_on_time_patch, done_later_patch], loc='upper center', bbox_to_anchor=(0.5, -0.05), fancybox=True, shadow=False, ncol=2)
+    f.tight_layout()
     return plt
