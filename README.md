@@ -8,41 +8,44 @@ There are many tools available, such as eazyBI or build in Jira dashboard gadget
 
 ## Report screenshots
 
-### Independence summary
+### Independence summary (organisation level)
 
 <img src="./screenshots/independence summary.png"
      alt="Independence summary"
      style="margin-right: 10px;" />
 
-### Dependency split
+### Dependency split (squad level)
 
 <img src="./screenshots/dependency split.png"
      alt="Dependency split"
      style="margin-right: 10px;" />
 
-### Dependency graphs
+### Dependency graphs (squad level)
 
 <img src="./screenshots/dependency graphs.png"
      alt="Dependency graphs"
      style="margin-right: 10px;" />
 
-### Project (epic) progress
+### Project progress (epic level)
 
 <img src="./screenshots/project progress.png"
      alt="Project progress"
      style="margin-right: 10px;" />
 
-### Squad execution history
+### Execution in current sprint (organisation level)
+
+<img src="./screenshots/execution in squads.png"
+     alt="Execution in squads"
+     style="margin-right: 10px;" />
+
+The amount of work done compared to work carried over to the next iteration. Unlike the Story Points, the percentage of work done compared to planned can be compared between teams. Such metrics can also be aggregated on the organisation level
+
+### Squad execution history (squad level)
 
 <img src="./screenshots/history of execution.png"
      alt="Squad execution history"
      style="margin-right: 10px;" />
 
-### Organisation (all squads) execution
-
-<img src="./screenshots/execution in squads.png"
-     alt="Execution in squads"
-     style="margin-right: 10px;" />
 ## Algorithms
 
 1. __Dependency factor__ calculates the number of issues with external dependencies to the total number of issues not Done yet, but after refinement (estimated in the backlog or already planned for the sprint).
