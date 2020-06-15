@@ -26,12 +26,23 @@ There are many tools available, such as eazyBI or build in Jira dashboard gadget
      alt="Dependency graphs"
      style="margin-right: 10px;" />
 
-### Execution progress
+### Project (epic) progress
 
-<img src="./screenshots/execution progress.png"
-     alt="Execution progress"
+<img src="./screenshots/project progress.png"
+     alt="Project progress"
      style="margin-right: 10px;" />
 
+### Squad execution history
+
+<img src="./screenshots/history of execution.png"
+     alt="Squad execution history"
+     style="margin-right: 10px;" />
+
+### Organisation (all squads) execution
+
+<img src="./screenshots/execution in squads.png"
+     alt="Execution in squads"
+     style="margin-right: 10px;" />
 ## Algorithms
 
 1. __Dependency factor__ calculates the number of issues with external dependencies to the total number of issues not Done yet, but after refinement (estimated in the backlog or already planned for the sprint).
