@@ -51,7 +51,7 @@ The amount of work committed vs delivered. This data shows how predictable the t
 1. __Dependency factor__ calculates the number of issues with external dependencies to the total number of issues not Done yet, but after refinement (estimated in the backlog or already planned for the sprint).
 Note that you need to specify Workload & Statuses to determin which issues are Ready for Development (after refinement) 
 
-    Issues selection in the example (notebooks/Dependency_metrics.ipynb) is based on the below JQL:
+    Issues selection in the example (notebooks/Dependency metrics.ipynb) is based on the below JQL:
 
     `'project = {jira_project_id} AND issuetype not in ("Test", "Sub-Task", "Release", "Risk", "Incident") and status not in ("Done", "In Analysis", "Open")'`
 
@@ -86,7 +86,7 @@ Unlike the Story Points, the percentage of work done compared to planned can be 
 
 3. __Project progress__ calculates progress of the project based on number of issues done vs defined for the given epic(initiative)
 
-    Issues selection in the example (notebooks/Project_execution_metrics.ipynb) is based on the below parameters:
+    Issues selection in the example (notebooks/Project metrics.ipynb) is based on the below parameters:
 
     `jql = f'"Epic Link" = {epic_key}'`
     
