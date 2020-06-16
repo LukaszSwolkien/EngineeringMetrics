@@ -38,7 +38,7 @@ There are many tools available, such as eazyBI or build in Jira dashboard gadget
      alt="Execution in squads"
      style="margin-right: 10px;" />
 
-The amount of work done compared to work carried over to the next iteration. Unlike the Story Points, the percentage of work done compared to planned can be compared between teams. Such metrics can also be aggregated on the organisation level
+The amount of work commited vs delivered. This data shows how predictable the team is. Unlike the Story Points, the percentage of work done compared to planned can be compared between teams. Such metrics can also be aggregated on the organisation level
 
 ### Squad execution history (squad level)
 
