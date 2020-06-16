@@ -38,7 +38,7 @@ There are many tools available, such as eazyBI or build in Jira dashboard gadget
      alt="Execution in squads"
      style="margin-right: 10px;" />
 
-The amount of work commited vs delivered. This data shows how predictable the team is. Unlike the Story Points, the percentage of work done compared to planned can be compared between teams. Such metrics can also be aggregated on the organisation level
+The amount of work committed vs delivered. This data shows how predictable the team is. Unlike the Story Points, the percentage of work done compared to planned can be compared between teams. Such metrics can also be aggregated on the organisation level
 
 ### Squad execution history (squad level)
 
@@ -77,7 +77,14 @@ Note that you need to specify Workload & Statuses to determin which issues are R
     - All teams independence factor > 90% (no more than 10% stories dependent on work from other team)
     - Single team independence factor > 80%
 
-2. __Project progress__ calculates progress of the project based on number of issues done vs defined for the given epic(initiative)
+2. __Execution metrics__ to measure the amount of work commited vs delivered. This data shows how predictable the team is. 
+Unlike the Story Points, the percentage of work done compared to planned can be compared between teams. Such metrics can also be aggregated on the organisation level
+
+    Example of key results:
+
+    - 90% of sprint content committed by the team is delivered
+
+3. __Project progress__ calculates progress of the project based on number of issues done vs defined for the given epic(initiative)
 
     Issues selection in the example (notebooks/Project_execution_metrics.ipynb) is based on the below parameters:
 
@@ -244,14 +251,7 @@ dashboard.publish([report_head, report_dependency])
 
 Add more engineering metrics:
 
-1. Add execution metrics. Measure the amount of work commited vs delivered. This data shows how predictable the team is. 
-Unlike the Story Points, the percentage of work done compared to planned can be compared between teams. Such metrics can also be aggregated on the organisation level
-
-    Example of key results:
-
-    - 90% of sprint content committed by the team is delivered
-
-2. Add Quality metrics on different levels (organisation level, squad level, chapter level). Goal is to monitor negative impact on end user, error budget, waste factor, etc.
+1. Add Quality metrics on different levels (organisation level, squad level, chapter level). Goal is to monitor negative impact on end user, error budget, waste factor, etc.
 
     Example of key results:
 
