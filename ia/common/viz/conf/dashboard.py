@@ -32,13 +32,23 @@ class Dashboard:
 
 class Component:
     def __init__(self, func, args):
-        self._func = func
-        self._args = args
-
+        self._func = [func]
+        self._args = [args]
 
     def __call__(self):
-        return self._func(*self._args)
+        content = ''
+        attr = []
+        for i, f in enumerate(self._func):
+            ret = f(*self._args[i])
+            content += ret[0]
+            attr += ret[1]
+        return content, attr
 
+    def __add__(self, other):
+        self._func += other._func
+        self._args += other._args
+        return self
+        
 
 def report_head(title, description=None):
     content = page.format_text("h5", f"Report timestamp {datetime.datetime.now():%Y-%m-%d %H:%M}")

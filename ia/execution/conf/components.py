@@ -16,7 +16,7 @@ def execution_progress_chart(history):
         done_later.append(p_by_now)
 
     plt = charts.barh_progress(labels, done_on_time, done_later, "History of execution")
-    barh_chart_filename = f'execution barh {datetime.datetime.utcnow():%Y-%m-%d %H_%M_%S}.png'
+    barh_chart_filename = f'execution history {id(history)}.png'
     plt.savefig(barh_chart_filename)
     plt.close()
     return barh_chart_filename

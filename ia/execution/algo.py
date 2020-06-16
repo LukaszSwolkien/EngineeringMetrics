@@ -41,23 +41,38 @@ def active_sprint_progress(
     return progress(jira_access, JQL, status_done)
 
 
-def last_sprints(jira_access, board_name, start_at, last_sprints=5):
+def all_sprints(jira_access, board_id, state='closed'):
+    sprints = []
+    startAt = 0
+    while True:
+        batch = jira_access.sprints(board_id=board_id, state=state, startAt=startAt, maxResults=10)
+        sprints += batch
+        if len(batch) < 10:
+            break
+        startAt += len(batch)
+    return sprints
+
+
+def last_sprints(jira_access, board_name, last_sprints=5):
     board = jira_access.boards(type="scrum", name=board_name)[0]
+
     current_sprint = jira_access.sprints(board_id=board.id, state='active')[0]
+    closed_sprints = all_sprints(jira_access, board.id, 'closed')
 
-    numbers_in_sprint_name = [int(s) for s in re.findall(r'\b\d+\b', current_sprint.name)]
+    # numbers_in_sprint_name = [int(s) for s in re.findall(r'\b\d+\b', current_sprint.name)]
     
-    index = numbers_in_sprint_name[-1]-start_at-last_sprints-1
-    assert(index > 0)
+    # index = numbers_in_sprint_name[-1]-start_at-last_sprints-1
+    # assert(index > 0)
 
-    closed_sprints = jira_access.sprints(board_id=board.id, state='closed', startAt=index)
+    # closed_sprints = jira_access.sprints(board_id=board.id, state='closed', maxResults=last_sprints, startAt=index)
 
-    sprints = [s for s in closed_sprints] + [current_sprint]
+    sprints = closed_sprints[-last_sprints-1:] + [current_sprint]
     return sprints
 
 
 def progress_history(
         jira_access, 
+        project_key,
         sprints, 
         issuetype=("User Story", "Task", "Bug", "User Story Bug", "Technical Debt"), 
         status_done=('Done', 'Waiting for production')
@@ -68,7 +83,7 @@ def progress_history(
         sprint_name = s.name
         sprint_end_date = s.endDate
 
-        JQL = f'sprint = "{sprint_name}" and issuetype in {issuetype}'
+        JQL = f'project = {project_key} and sprint = "{sprint_name}" and issuetype in {issuetype}'
 
         all_issues = ticket.search_issues(jira_access, JQL)
 

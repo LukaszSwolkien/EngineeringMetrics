@@ -32,7 +32,7 @@ There are many tools available, such as eazyBI or build in Jira dashboard gadget
      alt="Project progress"
      style="margin-right: 10px;" />
 
-### Execution in current sprint (organisation level)
+### Sprint execution (organisation level)
 
 <img src="./screenshots/execution in squads.png"
      alt="Execution in squads"
@@ -244,17 +244,18 @@ dashboard.publish([report_head, report_dependency])
 
 Add more engineering metrics:
 
-1. Add execution metrics. Measure the amount of work done compared to work carried over to the next iteration. Unlike the Story Points, the percentage of work done compared to planned can be compared between teams. Such metrics can also be aggregated on the organisation level
+1. Add execution metrics. Measure the amount of work commited vs delivered. This data shows how predictable the team is. 
+Unlike the Story Points, the percentage of work done compared to planned can be compared between teams. Such metrics can also be aggregated on the organisation level
 
     Example of key results:
 
-    - 90% of sprint content committed by the team is delivered to production
+    - 90% of sprint content committed by the team is delivered
 
 2. Add Quality metrics on different levels (organisation level, squad level, chapter level). Goal is to monitor negative impact on end user, error budget, waste factor, etc.
 
     Example of key results:
 
-    - 15% or less Change Failure Rate
-    - 10% or less BAU is enough to make maintenance backlog stable
+    - 1 bug found on production for 10 releases
+    - 10% or less BAU is enough to keep maintenance backlog stable
     - 90% or more of test cases executed at least once a week
     
