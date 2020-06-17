@@ -72,5 +72,11 @@ def dependency_factor(jira_access, jql):
     '''After refinement (in backlog or in sprint)'''
     all_issues = search_issues(jira_access, jql)
     all_with_dep = [i for i in all_issues if len(i.load_linked_issues())>0]
+
+    # add issues with Blocked status even have no link (dependency on teams who don't use Jira)
+    blocked = [i for i in all_issues if i.status == "Blocked"]
+
+    all_with_dep += [i for i in blocked if i not in all_with_dep]
+
     percentage = round(len(all_with_dep)*100/len(all_issues), 2) if len(all_issues) else 0
     return percentage, all_issues, all_with_dep

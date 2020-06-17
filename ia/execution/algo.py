@@ -50,10 +50,11 @@ def active_sprint_progress(
 def all_sprints(jira_access, board_id, state='closed'):
     sprints = []
     startAt = 0
+    max_results = 50
     while True:
-        batch = jira_access.sprints(board_id=board_id, state=state, startAt=startAt, maxResults=10)
+        batch = jira_access.sprints(board_id=board_id, state=state, startAt=startAt, maxResults=max_results)
         sprints += batch
-        if len(batch) < 10:
+        if len(batch) < max_results:
             break
         startAt += len(batch)
     return sprints

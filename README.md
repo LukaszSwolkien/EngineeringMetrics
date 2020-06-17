@@ -60,6 +60,7 @@ Note that you need to specify Workload & Statuses to determin which issues are R
     - search for 'external' dependencies, which might be direct or indirect (ignore pure internal dependencies)
     - link type  == ("Is blocked by", "Depends on").
     - filter out linked dependency if status == ('Done'). 
+    - plus dependency on teams who don't use Jira (with Blocked status but without link to the Jira item)
 
     Available analysis:
 
@@ -79,6 +80,12 @@ Note that you need to specify Workload & Statuses to determin which issues are R
 
 2. __Execution metrics__ to measure the amount of work commited vs delivered. This data shows how predictable the team is. 
 Unlike the Story Points, the percentage of work done compared to planned can be compared between teams. Such metrics can also be aggregated on the organisation level
+
+    Available analysis:
+
+    - Execution summary progress bar chart for the organisation
+    - Execution history progress bar chart for the team
+    - The goal of the last sprint for the team
 
     Example of key results:
 

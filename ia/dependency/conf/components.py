@@ -59,16 +59,17 @@ def dependency_graph(issue_cache):
     return filename
 
 
-def dependency_analysis(issues_with_links):
+def dependency_analysis(issues_with_dep):
     attachments = []
     content = ""
-    if len(issues_with_links):
+    if len(issues_with_dep):
         page_content = ""
-        for issue_cache in issues_with_links:
+        for issue_cache in issues_with_dep:
             graph_filename = dependency_graph(issue_cache)
             attachments.append(graph_filename)
             page_content += page.embed_image(graph_filename)
-            deps = issue_cache.linked_issues.keys()
+            deps = [*issue_cache.linked_issues]
+            deps.append(issue_cache.key)
             page_content += page.embed_jira_macro(f'issuekey in ({", ".join(deps)})')
             page_content += '<hr />'
         content += page_content # page.embed_expand_macro(page_content, "Dependency graphs")
