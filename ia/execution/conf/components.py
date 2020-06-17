@@ -45,6 +45,12 @@ def sprint_report(jira_access, board_name, project_key):
 def history_execution_report(history):
     barh_chart_filename = execution_progress_chart(history)
     content = page.embed_image(filename = barh_chart_filename)
+
+    last_sprint_key = next(reversed(history.keys()))
+    last_sprint = history[last_sprint_key].sprint
+
+    content += page.format_text("p", f'The goal of the last sprint: "{last_sprint.goal}"')
+
     return content, [barh_chart_filename]
 
 
