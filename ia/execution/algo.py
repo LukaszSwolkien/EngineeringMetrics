@@ -63,14 +63,17 @@ def all_sprints(jira_access, board_id, state='closed'):
 def last_sprints(jira_access, board_name, last_sprints=5, sprint_name_prefix=None):
     board = jira_access.boards(type="scrum", name=board_name)[0]
 
-    current_sprint = jira_access.sprints(board_id=board.id, state='active')[0]
+    active_sprints = jira_access.sprints(board_id=board.id, state='active')
+    current_sprint = []
+    if len(active_sprints) > 0:
+        current_sprint.append(active_sprints[0])
     closed_sprints = all_sprints(jira_access, board.id, 'closed')
 
     if sprint_name_prefix:
         filtered_closed_sprints = [s for s in closed_sprints if s.name.startswith(sprint_name_prefix)]
-        sprints = filtered_closed_sprints[-last_sprints-1:] + [current_sprint]
+        sprints = filtered_closed_sprints[-last_sprints-1:] + current_sprint
     else:
-        sprints = closed_sprints[-last_sprints-1:] + [current_sprint]
+        sprints = closed_sprints[-last_sprints-1:] + current_sprint
     return sprints
 
 

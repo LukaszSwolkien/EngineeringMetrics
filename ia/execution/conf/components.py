@@ -69,8 +69,8 @@ def execution_report(projetcs_progress):
     labels.append("Total")
     progress.append(round(done_stories_count*100/all_stories_count, 0) if all_stories_count else 0)
 
-    plt = charts.barh_progress(labels, progress, None, "DM execution status", invert_labels=False)
-    barh_chart_filename = f'DM execution barh {datetime.datetime.utcnow():%Y-%m-%d %H_%M_%S}.png'
+    plt = charts.barh_progress(labels, progress, None, "Execution summary", invert_labels=False)
+    barh_chart_filename = f'execution summary {id(progress)}.png'
     plt.savefig(barh_chart_filename)
     plt.close()
     content = page.embed_image(filename = barh_chart_filename)

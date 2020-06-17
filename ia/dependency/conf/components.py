@@ -87,7 +87,8 @@ def dependency_report(independence, all_issues, all_with_dep, metrics_history=No
     if len(all_with_dep):
         # dependency charts
         content += page.format_text("h2","External dependency split")
-        stats_list = dep.count_stats(all_with_dep)
+        count_stats = dep.count_stats(all_with_dep)
+        stats_list = [i for i in count_stats if len(i) > 0]
         att = []
         att.append(
             stats_pie_charts(

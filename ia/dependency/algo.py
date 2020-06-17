@@ -12,6 +12,8 @@ def count_stats(list_of_issues):
     link_epic_count = {}
 
     def add_stat(counter, key):
+        if key is None or (isinstance(key, str) and not key.strip()):
+            key = "None"
         if key in counter:
             counter[key] += 1
         else:
