@@ -94,7 +94,7 @@ def dependency_report(independence, all_issues, all_with_dep, metrics_history=No
             stats_pie_charts(
                 stats_list, 
                 title=None,
-                sub_titles=("By projects", "By Epic", "By external epic")
+                sub_titles=("By team", "By Epic", "By external epic")
             )
         )
         content += page.embed_images(filename_list = att)
@@ -131,7 +131,7 @@ def dependency_summary(jira_access, metrics_history, project_list):
 
     total_m = metrics_store.merge(metrics_history.values())
 
-    new_content += page.format_text("h3", f'DM factor = {total_m.latest["independence"]}% ')
+    new_content += page.format_text("h3", f'Total factor = {total_m.latest["independence"]}% ')
 
     chart_file = metrics_history_chart(total_m)
     attachments.append(chart_file)
