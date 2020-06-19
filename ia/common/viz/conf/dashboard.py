@@ -70,7 +70,5 @@ def report_notes(conf_page_with_notes):
 
 def report_legend(legend, title="Legend"):
     content = page.format_text("h2", title)
-    for l in legend:
-        content += page.format_text("p", l)
-
+    content += page.format_unordered_list(legend)
     return content, []

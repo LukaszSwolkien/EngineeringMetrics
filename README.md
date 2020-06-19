@@ -59,12 +59,12 @@ Note that you need to specify Workload & Statuses to determin which issues are R
 
     `'project = {jira_project_id} AND issuetype not in ("Test", "Sub-Task", "Release", "Risk", "Incident") and status not in ("Done", "In Analysis", "Open")'`
 
-    The dependency factor algorithm is following below criterias:
+    The dependency factor is calculated according to the following rules:
 
-    - search for 'external' dependencies, which might be direct or indirect (ignore pure internal dependencies)
-    - link type  == ("Is blocked by", "Depends on").
-    - filter out linked dependency if status == ('Done'). 
-    - plus dependency on teams who don't use Jira (with Blocked status but without link to the Jira item)
+    - searches for 'external' dependencies that can be direct or indirect (internal dependencies are ignored)
+    - link type is "Is blocked by" or "Depends on".
+    - related dependencies are filtered if their status is "Done". 
+    - plus Jira items in the Blocked state that don't have links. This is taken into account because there are teams that do not use Jira
 
     Available analysis:
 

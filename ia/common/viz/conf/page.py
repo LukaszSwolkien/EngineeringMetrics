@@ -103,6 +103,22 @@ def format_text(format, text):
     return f'<{format}>{t}</{format}>'
 
 
+def format_unordered_list(list_items):
+    text = "<ul>"
+    for i in list_items:
+        text += format_text('li', i)
+    text += "</ul>"
+    return text
+
+
+def format_ordered_list(list_items):
+    text = "<ol>"
+    for i in list_items:
+        text += format_text('li', i)
+    text += "</ol>"
+    return text
+
+
 def embed_image(filename):
     return f'<p><ac:image><ri:attachment ri:filename="{filename}" /></ac:image></p>'
 
