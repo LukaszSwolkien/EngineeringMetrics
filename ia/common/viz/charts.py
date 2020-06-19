@@ -133,7 +133,7 @@ def barh_progress(labels, done_on_time, done_later=None, title=None, invert_labe
     f.tight_layout()
     return plt
 
-def bars_to_compre(data, labels, title=None, colors=None, group_width=0.8, single_width=1):
+def bars_to_compare(data, labels, title=None, colors=None, group_width=0.8, single_width=1):
     """
 
     Parameters

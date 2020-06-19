@@ -96,12 +96,16 @@ def progress_history(
 
         done_by_now = []
         done_in_sprint = []
+        not_done_yet = []
 
         for i in all_issues:
             if i.fields.status.name in status_done:
                 done_by_now.append(i)
                 if i.fields.resolutiondate and i.fields.resolutiondate <= sprint_end_date:
                     done_in_sprint.append(i)
+            else:
+                not_done_yet.append(i)
+
 
         history[sprint_name] = ExecutionMetrics(all_issues, done_in_sprint, done_by_now, s)
     return history
