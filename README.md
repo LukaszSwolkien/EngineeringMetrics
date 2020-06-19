@@ -46,9 +46,9 @@ The amount of work committed vs delivered. This data shows how predictable the t
      alt="Squad execution history"
      style="margin-right: 10px;" />
 
-"done on time" - there are work items that were actually done in the sprint.
+"done on time" - work items that were actually done in the sprint.
 
-"done later" - these are work items that were in the sprint but finished in the next iteration(s). Therefore execution history for "done later" items will change over time. In this way we can check if there are any items we never deliver (removed from the scope) due to different reasons
+"done later" - work items that were in the sprint but finished in the next iteration(s). Therefore execution history for "done later" items will change over time. In this way we can check if there are any items we never deliver (removed from the scope) due to different reasons
 
 ## Algorithms
 

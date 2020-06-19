@@ -66,3 +66,11 @@ def report_heading(tag, text):
 
 def report_notes(conf_page_with_notes):
     return page.embed_conf_page(conf_page_with_notes), []
+
+
+def report_legend(legend, title="Legend"):
+    content = page.format_text("h2", title)
+    for l in legend:
+        content += page.format_text("p", l)
+
+    return content, []

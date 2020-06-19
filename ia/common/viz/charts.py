@@ -108,19 +108,31 @@ def barh_progress(labels, done_on_time, done_later=None, title=None, invert_labe
 
     for i, _ in enumerate(labels):
         grey_size = 100
-        done_on_time_size = done_on_time[i]
+        done_on_time_size = 0
+        done_on_time_label = ''
+        if type(done_on_time[i]) is tuple:
+            done_on_time_size = done_on_time[i][0]  
+            done_on_time_label = done_on_time[i][1] 
+        else:
+            done_on_time_size = done_on_time[i]
         grey_size -= done_on_time_size
         ax.barh(y_pos[i], done_on_time_size, color='green', edgecolor='white')
 
         if done_on_time_size:
-            ax.text(done_on_time_size/2., y_pos[i], f'{done_on_time_size}%', fontsize=10, va='center', color='white')
+            ax.text(done_on_time_size/2., y_pos[i], f'{done_on_time_size}%{done_on_time_label}', fontsize=10, va='center', color='white')
 
         if done_later is not None:
-            done_later_size = done_later[i]
+            done_later_size = 0
+            done_later_label = ''
+            if type(done_later[i]) is tuple:
+                done_later_size = done_later[i][0]
+                done_later_label = done_later[i][1]
+            else:
+                done_later_size = done_later[i]
             grey_size -= done_later_size
             ax.barh(y_pos[i], done_later_size, left=done_on_time_size, color='#b5ffb9', edgecolor='white')
             if done_later_size:
-                ax.text(done_on_time_size + done_later_size/2., i, f'{done_later_size}%', fontsize=10, va='center', color='black')
+                ax.text(done_on_time_size + done_later_size/2., i, f'{done_later_size}%{done_later_label}', fontsize=10, va='center', color='black')
 
             done_on_time_patch = mpatches.Patch(color='green', label='done on time')
             done_later_patch = mpatches.Patch(color='#b5ffb9', label='done later')

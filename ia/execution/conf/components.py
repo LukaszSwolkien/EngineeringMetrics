@@ -10,10 +10,10 @@ def execution_progress_chart(history):
     done_later = []
     for sprint_name, metrics in history.items():
         labels.append(sprint_name)
-        p_in_sprint = round(metrics.progress_in_sprint)
-        p_by_now = round(metrics.progress_by_now - p_in_sprint)
-        done_on_time.append(p_in_sprint)
-        done_later.append(p_by_now)
+        p_done_in_sprint = round(metrics.progress_in_sprint)
+        p_done_late = round(metrics.progress_by_now - p_done_in_sprint)
+        done_on_time.append((p_done_in_sprint, f" ({metrics.count_done_in_sprint})"))
+        done_later.append((p_done_late, f" ({metrics.count_done_late})"))
 
     plt = charts.barh_progress(labels, done_on_time, done_later, "History of execution")
     barh_chart_filename = f'execution history {id(history)}.png'
@@ -48,9 +48,14 @@ def history_execution_report(history):
 
     last_sprint_key = next(reversed(history.keys()))
     last_sprint = history[last_sprint_key].sprint
-
-    content += page.format_text("p", f'The goal of the last sprint: "{last_sprint.goal}"')
-
+    goal = last_sprint.goal if hasattr(last_sprint, "goal") else ''
+    if last_sprint.state == 'active':
+        content += page.format_text("p", f'Active sprint: "{last_sprint.name}"')
+        content += page.format_text("p", f'The goal of the active sprint: "{goal}"')
+    else:
+        content += page.format_text("p", f'No sprint is active. Last sprint: "{last_sprint.name}"')
+        content += page.format_text("p", f'The goal of the last sprint: "{goal}"')
+    content += page.format_text("p", f'Start: {last_sprint.startDate.split("T")[0]}, End: {last_sprint.endDate.split("T")[0]}')
     return content, [barh_chart_filename]
 
 

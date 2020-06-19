@@ -23,9 +23,21 @@ class ExecutionMetrics:
     def get_sprint(self):
         return self._sprint
 
+    def get_done_in_sprint_count(self):
+        return len(self._done_in_sprint)
+
+    def get_done_by_now_count(self):
+        return len(self._done_by_now)
+
+    def get_done_late_count(self):
+        return self.count_done_by_now - self.count_done_in_sprint
+
     progress_in_sprint = property(get_progress_in_sprint)
     progress_by_now = property(get_progress_by_now)
     sprint = property(get_sprint)
+    count_done_in_sprint = property(get_done_in_sprint_count)
+    count_done_by_now = property(get_done_by_now_count)
+    count_done_late = property(get_done_late_count)
 
 
 def progress(jira_access, JQL, status_done=('Done', 'Waiting for production')):
