@@ -6,7 +6,8 @@ from cachetools import cached
 
 issues_cache = {}
 
-@cached(cache = issues_cache)
+
+@cached(cache=issues_cache)
 def get_issue_by_key(jira_obj, issue_key):
     issue_details = []
     jql = f"'key'='{issue_key}'"
@@ -20,10 +21,10 @@ def get_issue_by_key(jira_obj, issue_key):
     issue = issue_details[0] if len(issue_details) else None
     return IssueCache(jira_obj, issue) if issue else None
 
-@cached(cache = issues_cache)
+
+@cached(cache=issues_cache)
 def search_issues(jira_access, jql):
     found_issues = jira_access.search_issues(jql, maxResults=500)
-
 
     issues = []
     for iss in found_issues:
@@ -44,11 +45,13 @@ def get_issue_in_json(jira_obj, issue_id):
     error = None
     jql = f"'key'='{issue_id}'"
     try:
-        issue_details = jira_obj.search_issues(jql, fields='issue links', json_result=True) #,created,status,reporter  expand='changelog',
+        issue_details = jira_obj.search_issues(
+            jql, fields="issue links", json_result=True
+        )  # ,created,status,reporter  expand='changelog',
     except JIRAError as error:
         error = f"error_code:{error.status_code}, error_msg:{error.text}"
 
-    return {'issue':issue_details, 'error':error}
+    return {"issue": issue_details, "error": error}
 
 
 def get_project_name(jira_obj, project_id):
@@ -57,11 +60,15 @@ def get_project_name(jira_obj, project_id):
 
 
 def get_open_sprint(issue):
-    if hasattr(issue, "fields") and hasattr(issue.fields, "customfield_11220") and isinstance(issue.fields.customfield_11220, list):
-        gh_fields = issue.fields.customfield_11220[0].split(',')
+    if (
+        hasattr(issue, "fields")
+        and hasattr(issue.fields, "customfield_11220")
+        and isinstance(issue.fields.customfield_11220, list)
+    ):
+        gh_fields = issue.fields.customfield_11220[0].split(",")
         for f in gh_fields:
             kv = f.split("=")
-            if len(kv) > 1 and kv[0] == 'name':
+            if len(kv) > 1 and kv[0] == "name":
                 open_sprint = kv[1]
                 return open_sprint
     return ""
@@ -69,11 +76,15 @@ def get_open_sprint(issue):
 
 def get_components(issue):
     components = []
-    if hasattr(issue, "fields") and hasattr(issue.fields, "components") and isinstance(issue.fields.components, list):
+    if (
+        hasattr(issue, "fields")
+        and hasattr(issue.fields, "components")
+        and isinstance(issue.fields.components, list)
+    ):
         cps = set()
         for c in issue.fields.components:
             cps.add(c.name)
-        
+
         components = list(cps)
 
     return components
@@ -85,7 +96,9 @@ class IssueCache:
         self._issue = issue
         self._epic_issue = None
         self._epic_name = None
-        self._linked_issues = {}  # filtered linked issues (inward, outward, both,..., external, internal, both...)
+        self._linked_issues = (
+            {}
+        )  # filtered linked issues (inward, outward, both,..., external, internal, both...)
 
     def get_jira_access(self):
         return self._jira
@@ -95,7 +108,7 @@ class IssueCache:
 
     def get_fields(self):
         return self.issue.fields
-    
+
     def get_project(self):
         return self.fields.project
 
@@ -117,14 +130,13 @@ class IssueCache:
     def get_linked_issues(self):
         return self._linked_issues
 
-    def load_linked_issues(self, max_level=2, filter_out_status=('Done')):
+    def load_linked_issues(self, max_level=2, filter_out_status=("Done")):
         load_external_issues(self, max_level, filter_out_status)
         return self._linked_issues
 
-
     def get_key(self):
         return self.issue.key
-    
+
     jira_access = property(get_jira_access)
     issue = property(get_issue)
     fields = property(get_fields)
@@ -165,16 +177,25 @@ def get_indirect_external_dependencies(jira_access, issue, links_with_external_d
     project_name = issue.fields.project.key
     keys_with_external_dep = [l.key for l in links_with_external_deps]
     for link in issue.fields.issuelinks:
-        l_type = 'inwardIssue' if hasattr(link, 'inwardIssue') else 'outwardIssue'
+        l_type = "inwardIssue" if hasattr(link, "inwardIssue") else "outwardIssue"
         link.key = getattr(link, l_type).key
 
-        if is_internal(link.key, project_name) and (link.type.name == 'Dependancy' and l_type == 'outwardIssue' or link.type.name == 'Blocks' and l_type == 'inwardIssue'):
+        if is_internal(link.key, project_name) and (
+            link.type.name == "Dependancy"
+            and l_type == "outwardIssue"
+            or link.type.name == "Blocks"
+            and l_type == "inwardIssue"
+        ):
             if link.key in keys_with_external_dep:
-                print(f'Found indirect dependency: {link.key}')
+                print(f"Found indirect dependency: {link.key}")
                 links.add(link)
             else:
                 # Recurtion to check other internal links which may have dependency on the issue with external dependency
                 l_issue = get_issue_by_key(jira_access, link.key)
-                links = links.union(get_indirect_external_dependencies(jira_access, l_issue, links_with_external_deps))
+                links = links.union(
+                    get_indirect_external_dependencies(
+                        jira_access, l_issue, links_with_external_deps
+                    )
+                )
 
-    return links 
+    return links

@@ -13,12 +13,12 @@ class ExecutionMetrics:
     def get_progress_in_sprint(self):
         c_all = len(self._all_issues)
         c_done_in_sprint = len(self._done_in_sprint)
-        return round(c_done_in_sprint*100/c_all, 0) if c_all else 0
+        return round(c_done_in_sprint * 100 / c_all, 0) if c_all else 0
 
     def get_progress_by_now(self):
         c_all = len(self._all_issues)
         c_done_by_now = len(self._done_by_now)
-        return round(c_done_by_now*100/c_all, 0) if c_all else 0
+        return round(c_done_by_now * 100 / c_all, 0) if c_all else 0
 
     def get_sprint(self):
         return self._sprint
@@ -40,31 +40,33 @@ class ExecutionMetrics:
     count_done_late = property(get_done_late_count)
 
 
-def progress(jira_access, JQL, status_done=('Done', 'Waiting for production')):
+def progress(jira_access, JQL, status_done=("Done", "Waiting for production")):
     all_issues = ticket.search_issues(jira_access, JQL)
     c_all = len(all_issues)
     done_issues = [i for i in all_issues if i.fields.status.name in status_done]
     c_done = len(done_issues)
-    percentage = round(c_done*100/c_all, 0) if c_all else 0
-    return percentage, all_issues, done_issues 
+    percentage = round(c_done * 100 / c_all, 0) if c_all else 0
+    return percentage, all_issues, done_issues
 
 
 def active_sprint_progress(
-        jira_access, 
-        project_key, 
-        issuetype=("User Story", "Task", "Bug", "User Story Bug", "Technical Debt"), 
-        status_done=('Done', 'Waiting for production')
-    ):
+    jira_access,
+    project_key,
+    issuetype=("User Story", "Task", "Bug", "User Story Bug", "Technical Debt"),
+    status_done=("Done", "Waiting for production"),
+):
     JQL = f'project = "{project_key}" and sprint in OpenSprints() and issuetype in {issuetype}'
     return progress(jira_access, JQL, status_done)
 
 
-def all_sprints(jira_access, board_id, state='closed'):
+def all_sprints(jira_access, board_id, state="closed"):
     sprints = []
     startAt = 0
     max_results = 50
     while True:
-        batch = jira_access.sprints(board_id=board_id, state=state, startAt=startAt, maxResults=max_results)
+        batch = jira_access.sprints(
+            board_id=board_id, state=state, startAt=startAt, maxResults=max_results
+        )
         sprints += batch
         if len(batch) < max_results:
             break
@@ -75,28 +77,30 @@ def all_sprints(jira_access, board_id, state='closed'):
 def last_sprints(jira_access, board_name, last_sprints=5, sprint_name_prefix=None):
     board = jira_access.boards(type="scrum", name=board_name)[0]
 
-    active_sprints = jira_access.sprints(board_id=board.id, state='active')
+    active_sprints = jira_access.sprints(board_id=board.id, state="active")
     current_sprint = []
     if len(active_sprints) > 0:
         current_sprint.append(active_sprints[0])
-    closed_sprints = all_sprints(jira_access, board.id, 'closed')
+    closed_sprints = all_sprints(jira_access, board.id, "closed")
 
     if sprint_name_prefix:
-        filtered_closed_sprints = [s for s in closed_sprints if s.name.startswith(sprint_name_prefix)]
-        sprints = filtered_closed_sprints[-last_sprints-1:] + current_sprint
+        filtered_closed_sprints = [
+            s for s in closed_sprints if s.name.startswith(sprint_name_prefix)
+        ]
+        sprints = filtered_closed_sprints[-last_sprints - 1 :] + current_sprint
     else:
-        sprints = closed_sprints[-last_sprints-1:] + current_sprint
+        sprints = closed_sprints[-last_sprints - 1 :] + current_sprint
     return sprints
 
 
 def progress_history(
-        jira_access, 
-        project_key,
-        sprints, 
-        issuetype=("User Story", "Task", "Bug", "User Story Bug", "Technical Debt"), 
-        status_done=('Done', 'Waiting for production')
-    ):
-    
+    jira_access,
+    project_key,
+    sprints,
+    issuetype=("User Story", "Task", "Bug", "User Story Bug", "Technical Debt"),
+    status_done=("Done", "Waiting for production"),
+):
+
     history = collections.OrderedDict()
     for s in sprints:
         sprint_name = s.name
@@ -113,17 +117,15 @@ def progress_history(
         for i in all_issues:
             if i.fields.status.name in status_done:
                 done_by_now.append(i)
-                if i.fields.resolutiondate and i.fields.resolutiondate <= sprint_end_date:
+                if (
+                    i.fields.resolutiondate
+                    and i.fields.resolutiondate <= sprint_end_date
+                ):
                     done_in_sprint.append(i)
             else:
                 not_done_yet.append(i)
 
-
-        history[sprint_name] = ExecutionMetrics(all_issues, done_in_sprint, done_by_now, s)
+        history[sprint_name] = ExecutionMetrics(
+            all_issues, done_in_sprint, done_by_now, s
+        )
     return history
-
-
-
-
-
-

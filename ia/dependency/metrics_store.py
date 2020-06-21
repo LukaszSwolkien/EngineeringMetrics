@@ -3,21 +3,24 @@ from tinydb import TinyDB, Query
 from ia.common.helpers import to_dt, to_ts, day_ts
 
 
-__db = TinyDB('metrics.json')
+__db = TinyDB("metrics.json")
 
 
 def save(name, squad_name, independency, all_issues, all_with_dep):
     Metrics = Query()
     ts = day_ts()
-    return __db.upsert({
-            'name': name,
-            'squad': squad_name,
-            'independence': independency,
-            'all_issues': [i.key for i in all_issues],
-            'all_with_dep': [i.key for i in all_with_dep],
-            'timestamp': ts
-        }, 
-        Metrics.timestamp == ts and Metrics.name == name and Metrics.Squad == squad_name
+    return __db.upsert(
+        {
+            "name": name,
+            "squad": squad_name,
+            "independence": independency,
+            "all_issues": [i.key for i in all_issues],
+            "all_with_dep": [i.key for i in all_with_dep],
+            "timestamp": ts,
+        },
+        Metrics.timestamp == ts
+        and Metrics.name == name
+        and Metrics.Squad == squad_name,
     )
 
 
@@ -48,7 +51,7 @@ class IndependenceMetrics:
         self._metrics = metrics
         m_hist = {}
         for f in metrics:
-            f_ts = f.get('timestamp')
+            f_ts = f.get("timestamp")
             m_hist[to_dt(f_ts).date()] = f
         self.__history = m_hist
         self.__date_index = sorted(self.__history.keys())
@@ -62,7 +65,6 @@ class IndependenceMetrics:
             values.append(self.__history[d])
         return values
 
-
     def get_latest(self):
         if len(self.__date_index) > 0:
             latest_day = self.__date_index[-1]
@@ -71,7 +73,12 @@ class IndependenceMetrics:
             return {}
 
     def get_trend(self):
-        return 0 if len(self.__history) <= 1 else self.__history[self.__date_index[-1]]["independence"] - self.__history[self.__date_index[-2]]["independence"]
+        return (
+            0
+            if len(self.__history) <= 1
+            else self.__history[self.__date_index[-1]]["independence"]
+            - self.__history[self.__date_index[-2]]["independence"]
+        )
 
     def get_history(self):
         return self.__history
@@ -87,24 +94,32 @@ def merge(independence_metrics_list):
     for im in independence_metrics_list:
         dates = dates.union(im.get_sorted_dates())
 
-
     for d in sorted(list(dates)):
         all_issues_by_date = set()
         all_with_deps_by_date = set()
         for im in independence_metrics_list:
             m = im.history.get(d, {})
             if len(m) > 0:
-                name = m.get('name', '__merged__')
-                all_issues_by_date = all_issues_by_date.union(m.get('all_issues', []))
-                all_with_deps_by_date = all_with_deps_by_date.union(m.get('all_with_dep', []))
+                name = m.get("name", "__merged__")
+                all_issues_by_date = all_issues_by_date.union(m.get("all_issues", []))
+                all_with_deps_by_date = all_with_deps_by_date.union(
+                    m.get("all_with_dep", [])
+                )
 
-        total_metrics.append({
-            'name': name,
-            'squad': 'Merged',
-            'independence': round(100-len(all_with_deps_by_date)*100/len(all_issues_by_date)) if len(all_issues_by_date) else 0,
-            'all_issues': all_issues_by_date,
-            'all_with_dep': all_with_deps_by_date,
-            'timestamp': to_ts(datetime.datetime(year=d.year, month=d.month, day=d.day))
-        })
+        total_metrics.append(
+            {
+                "name": name,
+                "squad": "Merged",
+                "independence": round(
+                    100 - len(all_with_deps_by_date) * 100 / len(all_issues_by_date)
+                )
+                if len(all_issues_by_date)
+                else 0,
+                "all_issues": all_issues_by_date,
+                "all_with_dep": all_with_deps_by_date,
+                "timestamp": to_ts(
+                    datetime.datetime(year=d.year, month=d.month, day=d.day)
+                ),
+            }
+        )
     return IndependenceMetrics(total_metrics)
-

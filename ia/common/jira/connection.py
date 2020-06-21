@@ -7,11 +7,11 @@ from jira.resources import GreenHopperResource
 def connect(url, basic_auth, timeout=None):
     try:
         jira = JIRA(
-            server=url, 
-            basic_auth=basic_auth, 
-            timeout=timeout, 
-            options={"agile_rest_path" : GreenHopperResource.AGILE_BASE_REST_PATH}
-    )
+            server=url,
+            basic_auth=basic_auth,
+            timeout=timeout,
+            options={"agile_rest_path": GreenHopperResource.AGILE_BASE_REST_PATH},
+        )
     except JIRAError as e:
         raise iae.IAException(e.status_code, e.text, e.url)
     except ConnectionError as e:

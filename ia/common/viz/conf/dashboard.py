@@ -1,18 +1,26 @@
 import ia.common.viz.conf.page as page
 import datetime
 
+
 class Dashboard:
-    def __init__(self, conf_url, conf_username, conf_password, conf_page_title=None, conf_space=None, conf_page_parent=None):
+    def __init__(
+        self,
+        conf_url,
+        conf_username,
+        conf_password,
+        conf_page_title=None,
+        conf_space=None,
+        conf_page_parent=None,
+    ):
         self._url = conf_url
         self._username = conf_username
         self._password = conf_password
         self._page_title = conf_page_title
         self._page_space = conf_space
         self._page_parent = conf_page_parent
-        
 
     def publish(self, elements, page_title=None, page_space=None, page_parent=None):
-        content = ''
+        content = ""
         attachments = []
         for elem in elements:
             elem_content, elem_attachments = elem()
@@ -23,12 +31,13 @@ class Dashboard:
             page_builder = page.PageBuilder(c)
 
             page_builder.create_or_update(
-                space_key=page_space or self._page_space, 
-                title=page_title or self._page_title, 
-                new_content=content, 
-                attachments = attachments,
-                parent_page_title=page_parent or self._page_parent
+                space_key=page_space or self._page_space,
+                title=page_title or self._page_title,
+                new_content=content,
+                attachments=attachments,
+                parent_page_title=page_parent or self._page_parent,
             )
+
 
 class Component:
     def __init__(self, func, args):
@@ -36,7 +45,7 @@ class Component:
         self._args = [args]
 
     def __call__(self):
-        content = ''
+        content = ""
         attr = []
         for i, f in enumerate(self._func):
             ret = f(*self._args[i])
@@ -48,10 +57,12 @@ class Component:
         self._func += other._func
         self._args += other._args
         return self
-        
+
 
 def report_head(title, description=None):
-    content = page.format_text("h5", f"Report timestamp {datetime.datetime.now():%Y-%m-%d %H:%M}")
+    content = page.format_text(
+        "h5", f"Report timestamp {datetime.datetime.now():%Y-%m-%d %H:%M}"
+    )
     content += page.format_text("h2", title)
     if description is not None:
         content += page.format_text("p", description)
