@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import matplotlib.ticker as mtick
 import matplotlib.patches as mpatches
+from matplotlib.ticker import MaxNLocator
 import numpy as np
 import datetime
 
@@ -257,6 +258,7 @@ def bars_to_compare(
     x_pos = range(len(labels))
     ax.set_xticks(x_pos)
     ax.set_xticklabels(labels)
+    ax.yaxis.set_major_locator(MaxNLocator(integer=True))
 
     # The width of a single bar
     bar_width = group_width / n_bars

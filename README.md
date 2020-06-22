@@ -85,6 +85,8 @@ Note that you need to specify Workload & Statuses to determin which issues are R
 2. __Execution metrics__ to measure the amount of work commited vs delivered. This data shows how predictable the team is. 
 Unlike the Story Points, the percentage of work done compared to planned can be compared between teams. Such metrics can also be aggregated on the organisation level
 
+    Sprint end date and resolution date for each issue matters
+
     Available analysis:
 
     - Execution summary progress bar chart for the organisation
@@ -93,7 +95,7 @@ Unlike the Story Points, the percentage of work done compared to planned can be 
 
     Example of key results:
 
-    - 90% of sprint content committed by the team is delivered
+    - 90% of sprint content committed by the team is delivered. 
 
 3. __Project progress__ calculates progress of the project based on number of issues done vs defined for the given epic(initiative)
 

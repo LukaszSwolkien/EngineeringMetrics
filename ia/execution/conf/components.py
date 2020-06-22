@@ -22,6 +22,24 @@ def execution_progress_chart(history):
     return barh_chart_filename
 
 
+def sprint_churn_chart(labels, added, removed):
+    data = {
+        "added": added,
+        "removed": removed
+    }
+    plt = charts.bars_to_compare(data, labels=labels, title="Sprint churn", colors=['blue', 'purple'])
+    sprint_churn_chart = f"split churn {id(labels)}.png"
+    plt.savefig(sprint_churn_chart)
+    plt.close()
+    return sprint_churn_chart
+
+
+def sprint_churn_report(labels, added, removed):
+    chart_filename = sprint_churn_chart(labels, added, removed)
+    content = page.embed_image(filename=chart_filename)
+    return content, [chart_filename]
+
+
 def sprint_report(jira_access, board_name, project_key):
     board = jira_access.boards(type="scrum", name=board_name)[0]
     sprint = jira_access.sprints(board_id=board.id, state="active")[0]

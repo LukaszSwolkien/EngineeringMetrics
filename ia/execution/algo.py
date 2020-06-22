@@ -2,7 +2,7 @@ import ia.common.jira.issue as ticket
 import collections
 import re
 import datetime
-
+import itertools
 
 class ExecutionMetrics:
     def __init__(self, all_issues, done_in_sprint, done_by_now, sprint):
@@ -88,9 +88,9 @@ def last_sprints(jira_access, board_name, last_sprints=5, sprint_name_prefix=Non
         filtered_closed_sprints = [
             s for s in closed_sprints if s.name.startswith(sprint_name_prefix)
         ]
-        sprints = filtered_closed_sprints[-last_sprints - 1 :] + current_sprint
+        sprints = filtered_closed_sprints[-last_sprints:] + current_sprint
     else:
-        sprints = closed_sprints[-last_sprints - 1 :] + current_sprint
+        sprints = closed_sprints[-last_sprints:] + current_sprint
     return sprints
 
 
@@ -132,7 +132,7 @@ def progress_history(
     return history
 
 
-def sprint_churn(jira_access, project_key, sprint):
+def sprint_churn(jira_access, project_key, sprint, ignore_same=True):
     # date_string_format = "%y-%m-%dT%H:%M:%S.%f"
     day_string_format = "%Y-%m-%d"
     issues_added = {}
@@ -151,6 +151,7 @@ def sprint_churn(jira_access, project_key, sprint):
     sprint_name = sprint.name
 
     JQL = f"project = {project_key} and issuetype not in subtaskIssueTypes() AND type != Epic and updatedDate >{start_day}"
+    # print(JQL)
     changed_during_sprint = ticket.search_issues(jira_access, JQL, expand="changelog")
 
     for issue_cache in changed_during_sprint:
@@ -169,13 +170,69 @@ def sprint_churn(jira_access, project_key, sprint):
                         if item.toString == sprint_name:
                             add_issue(issues_added, change_date, issue_cache)
     # ignore those which were added, then removed
-    for day in issues_added.keys():
-        if day in issues_removed:
-            issues_added[day], issues_removed[day] = (
-                issues_added[day] - issues_removed[day],
-                issues_removed[day] - issues_added[day],
-            )
+    if ignore_same:
+        for day in issues_added.keys():
+            if day in issues_removed:
+                issues_added[day], issues_removed[day] = (
+                    issues_added[day] - issues_removed[day],
+                    issues_removed[day] - issues_added[day],
+                )
     return issues_added, issues_removed
 
+
+def sprint_churn_history(jira_access, project_key, history):
+    added = []
+    removed = []
+    labels = []
+    for sprint_name, em in history.items():
+        sprint = em.sprint
+        issues_added, issues_removed = sprint_churn(jira_access, project_key, sprint, ignore_same=False)
+
+        a = [j for i in issues_added.values() for j in i]
+        r = [j for i in issues_removed.values() for j in i]
+
+        # a = sum(issues_added.values(), [])
+        # r = sum(issues_removed.values(), [])
+        # a = []
+        # for i in issues_added.values():
+        #     a += i
+
+        # r = []
+        # for i in issues_removed.values():
+        #     r += i
+
+        added.append(len(a))
+        removed.append(-len(r))
+        labels.append(sprint_name)
+
+    return labels, added, removed
+
+
+def blocked_during_sprint(jira_access, project_key, sprint):
+    issues_to_return = []
+    sprint_name = sprint.name
+    start_day = sprint.startDate.split("T")[0]
+    end_day = sprint.endDate.split("T")[0]
+    sprint_start_date = datetime.datetime.strptime(start_day, "%Y-%m-%d")
+    sprint_end_date = datetime.datetime.strptime(end_day, "%Y-%m-%d")
+
+    JQL = f'project = {project_key} and sprint = "{sprint_name}" and issuetype not in subtaskIssueTypes() AND type != Epic and updatedDate >{start_day}'
+    updated_in_sprint = ticket.search_issues(jira_access, JQL, expand="changelog")
+
+    for issue_cache in updated_in_sprint:
+        issue = issue_cache.issue
+
+        for history in issue.changelog.histories:
+            change_date = datetime.datetime.strptime(
+                history.created.split("T")[0], "%Y-%m-%d"
+            )
+
+            if change_date > sprint_start_date and change_date < sprint_end_date:
+                for item in history.items:
+                    if item.field in ["Status"]:
+                        if item.toString == "Blocked":  # [ 10060 ]:
+                            issues_to_return.append(issue_cache)
+
+    return issues_to_return
 
 
