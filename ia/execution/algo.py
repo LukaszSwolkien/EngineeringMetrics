@@ -1,6 +1,7 @@
 import ia.common.jira.issue as ticket
 import collections
 import re
+import datetime
 
 
 class ExecutionMetrics:
@@ -129,3 +130,52 @@ def progress_history(
             all_issues, done_in_sprint, done_by_now, s
         )
     return history
+
+
+def sprint_churn(jira_access, project_key, sprint):
+    # date_string_format = "%y-%m-%dT%H:%M:%S.%f"
+    day_string_format = "%Y-%m-%d"
+    issues_added = {}
+    issues_removed = {}
+
+    def add_issue(issues_dict, change_date, issue_cache):
+        if change_date in issues_dict:
+            issues_dict[change_date].add(issue_cache)
+        else:
+            issues_dict[change_date] = set({issue_cache})
+
+    start_day = sprint.startDate.split("T")[0]
+    end_day = sprint.endDate.split("T")[0]
+    sprint_start_date = datetime.datetime.strptime(start_day, day_string_format)
+    sprint_end_date = datetime.datetime.strptime(end_day, day_string_format)
+    sprint_name = sprint.name
+
+    JQL = f"project = {project_key} and issuetype not in subtaskIssueTypes() AND type != Epic and updatedDate >{start_day}"
+    changed_during_sprint = ticket.search_issues(jira_access, JQL, expand="changelog")
+
+    for issue_cache in changed_during_sprint:
+        issue = issue_cache.issue
+
+        for history in issue.changelog.histories:
+            change_date = datetime.datetime.strptime(
+                history.created.split("T")[0], day_string_format
+            )
+
+            if change_date > sprint_start_date and change_date < sprint_end_date:
+                for item in history.items:
+                    if item.field in ["Sprint"]:
+                        if item.fromString == sprint_name:
+                            add_issue(issues_removed, change_date, issue_cache)
+                        if item.toString == sprint_name:
+                            add_issue(issues_added, change_date, issue_cache)
+    # ignore those which were added, then removed
+    for day in issues_added.keys():
+        if day in issues_removed:
+            issues_added[day], issues_removed[day] = (
+                issues_added[day] - issues_removed[day],
+                issues_removed[day] - issues_added[day],
+            )
+    return issues_added, issues_removed
+
+
+

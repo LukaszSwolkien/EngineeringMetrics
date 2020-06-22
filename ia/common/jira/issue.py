@@ -8,11 +8,13 @@ issues_cache = {}
 
 
 @cached(cache=issues_cache)
-def get_issue_by_key(jira_obj, issue_key):
+def get_issue_by_key(jira_obj, issue_key, fields=None, expand=None):
     issue_details = []
     jql = f"'key'='{issue_key}'"
     try:
-        issue_details = jira_obj.search_issues(jql)
+        issue_details = jira_obj.search_issues(
+            jql, maxResults=1, fields=fields, expand=expand
+        )
     except JIRAError as error:
         # print(f"error_code:{error.status_code}, error_msg:{error.text}")
         # import traceback, sys
@@ -23,8 +25,10 @@ def get_issue_by_key(jira_obj, issue_key):
 
 
 @cached(cache=issues_cache)
-def search_issues(jira_access, jql):
-    found_issues = jira_access.search_issues(jql, maxResults=500)
+def search_issues(jira_access, jql, fields=None, expand=None):
+    found_issues = jira_access.search_issues(
+        jql, maxResults=500, fields=fields, expand=expand
+    )
 
     issues = []
     for iss in found_issues:
