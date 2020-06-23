@@ -4,6 +4,7 @@ import re
 import datetime
 import itertools
 
+
 class ExecutionMetrics:
     def __init__(self, all_issues, done_in_sprint, done_by_now, sprint):
         self._all_issues = all_issues
@@ -98,14 +99,18 @@ def progress_history(
     jira_access,
     project_key,
     sprints,
-    issuetype=("User Story", "Task", "Bug", "User Story Bug", "Technical Debt"),
-    status_done=("Done", "Waiting for production"),
+    issuetype=("User Story", "Task", "Bug", "Technical Debt"),
+    status_done=("Done"),  # , "Waiting for production"),
 ):
-
+    day_string_format = "%Y-%m-%d"
     history = collections.OrderedDict()
+    # seen = set() # some issues can be carry over in multiple sprints. Consider them once.
     for s in sprints:
         sprint_name = s.name
-        sprint_end_date = s.endDate
+        start_day = s.startDate.split("T")[0]
+        end_day = s.endDate.split("T")[0]
+        sprint_start_date = datetime.datetime.strptime(start_day, day_string_format)
+        sprint_end_date = datetime.datetime.strptime(end_day, day_string_format)
 
         JQL = f'project = {project_key} and sprint = "{sprint_name}" and issuetype in {issuetype}'
 
@@ -116,15 +121,29 @@ def progress_history(
         not_done_yet = []
 
         for i in all_issues:
+            # if i not in seen:
             if i.fields.status.name in status_done:
                 done_by_now.append(i)
-                if (
-                    i.fields.resolutiondate
-                    and i.fields.resolutiondate <= sprint_end_date
-                ):
-                    done_in_sprint.append(i)
+                # if len(i.sprints) == 1:
+                #     done_in_sprint.append(i)
+
+                if i.fields.resolutiondate:
+                    resolution_day = datetime.datetime.strptime(
+                        i.fields.resolutiondate.split("T")[0], day_string_format
+                    )
+                    if resolution_day <= sprint_end_date:
+                        done_in_sprint.append(i)
+
+                # if (
+                #     i.fields.resolutiondate
+                #     and i.fields.resolutiondate <= sprint_end_date
+                # ):
+                # elif i.fields
+                # elif sprint_name[-2:] == '28':
+                #     print(f"done late {i.key}")
             else:
                 not_done_yet.append(i)
+        # seen.add(i)
 
         history[sprint_name] = ExecutionMetrics(
             all_issues, done_in_sprint, done_by_now, s
@@ -132,26 +151,30 @@ def progress_history(
     return history
 
 
-def sprint_churn(jira_access, project_key, sprint, ignore_same=True):
+def sprint_churn(
+    jira_access,
+    project_key,
+    sprint,
+    ignore_same=True,
+    issuetype=("User Story", "Task", "Bug", "Technical Debt"),
+):
     # date_string_format = "%y-%m-%dT%H:%M:%S.%f"
     day_string_format = "%Y-%m-%d"
     issues_added = {}
     issues_removed = {}
 
     def add_issue(issues_dict, change_date, issue_cache):
-        if change_date in issues_dict:
-            issues_dict[change_date].add(issue_cache)
-        else:
-            issues_dict[change_date] = set({issue_cache})
+        if change_date not in issues_dict:
+            issues_dict[change_date] = set()
+        issues_dict[change_date].add(issue_cache)
 
     start_day = sprint.startDate.split("T")[0]
-    end_day = sprint.endDate.split("T")[0]
     sprint_start_date = datetime.datetime.strptime(start_day, day_string_format)
-    sprint_end_date = datetime.datetime.strptime(end_day, day_string_format)
+    # end_day = sprint.endDate.split("T")[0]
+    # sprint_end_date = datetime.datetime.strptime(end_day, day_string_format)
     sprint_name = sprint.name
 
-    JQL = f"project = {project_key} and issuetype not in subtaskIssueTypes() AND type != Epic and updatedDate >{start_day}"
-    # print(JQL)
+    JQL = f"project = {project_key} and issuetype in {issuetype} and updatedDate >{start_day}"
     changed_during_sprint = ticket.search_issues(jira_access, JQL, expand="changelog")
 
     for issue_cache in changed_during_sprint:
@@ -162,14 +185,22 @@ def sprint_churn(jira_access, project_key, sprint, ignore_same=True):
                 history.created.split("T")[0], day_string_format
             )
 
-            if change_date > sprint_start_date and change_date < sprint_end_date:
+            if (
+                change_date > sprint_start_date
+            ):  # and change_date < sprint_end_date: - some changes for past sprint can be done later!
                 for item in history.items:
                     if item.field in ["Sprint"]:
-                        if item.fromString == sprint_name:
-                            add_issue(issues_removed, change_date, issue_cache)
-                        if item.toString == sprint_name:
-                            add_issue(issues_added, change_date, issue_cache)
-    # ignore those which were added, then removed
+                        if item.fromString and sprint_name in item.fromString:
+                            if not item.toString or (sprint_name not in item.toString):
+                                add_issue(issues_removed, change_date, issue_cache)
+
+                        if item.toString and sprint_name in item.toString:
+                            if not item.fromString or (
+                                sprint_name not in item.fromString
+                            ):
+                                add_issue(issues_added, change_date, issue_cache)
+
+    # ignore those which were added, then removed on the same day
     if ignore_same:
         for day in issues_added.keys():
             if day in issues_removed:
@@ -186,20 +217,12 @@ def sprint_churn_history(jira_access, project_key, history):
     labels = []
     for sprint_name, em in history.items():
         sprint = em.sprint
-        issues_added, issues_removed = sprint_churn(jira_access, project_key, sprint, ignore_same=False)
+        issues_added, issues_removed = sprint_churn(
+            jira_access, project_key, sprint, ignore_same=True
+        )
 
         a = [j for i in issues_added.values() for j in i]
         r = [j for i in issues_removed.values() for j in i]
-
-        # a = sum(issues_added.values(), [])
-        # r = sum(issues_removed.values(), [])
-        # a = []
-        # for i in issues_added.values():
-        #     a += i
-
-        # r = []
-        # for i in issues_removed.values():
-        #     r += i
 
         added.append(len(a))
         removed.append(-len(r))
@@ -209,13 +232,13 @@ def sprint_churn_history(jira_access, project_key, history):
 
 
 def blocked_during_sprint(jira_access, project_key, sprint):
-    issues_to_return = []
+    issues_to_return = set()
     sprint_name = sprint.name
     start_day = sprint.startDate.split("T")[0]
     end_day = sprint.endDate.split("T")[0]
     sprint_start_date = datetime.datetime.strptime(start_day, "%Y-%m-%d")
     sprint_end_date = datetime.datetime.strptime(end_day, "%Y-%m-%d")
-
+    # and issuetype not in subtaskIssueTypes() AND type != Epic
     JQL = f'project = {project_key} and sprint = "{sprint_name}" and issuetype not in subtaskIssueTypes() AND type != Epic and updatedDate >{start_day}'
     updated_in_sprint = ticket.search_issues(jira_access, JQL, expand="changelog")
 
@@ -229,10 +252,7 @@ def blocked_during_sprint(jira_access, project_key, sprint):
 
             if change_date > sprint_start_date and change_date < sprint_end_date:
                 for item in history.items:
-                    if item.field in ["Status"]:
-                        if item.toString == "Blocked":  # [ 10060 ]:
-                            issues_to_return.append(issue_cache)
+                    if item.field in ["status"] and item.toString == "Blocked":
+                        issues_to_return.add(issue_cache)
 
     return issues_to_return
-
-

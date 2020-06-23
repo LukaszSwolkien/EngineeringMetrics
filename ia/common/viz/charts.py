@@ -267,24 +267,54 @@ def bars_to_compare(
     bars = []
 
     # Iterate over all data
+    negative = False
     for i, (name, values) in enumerate(data.items()):
         # The offset in x direction of that bar
         x_offset = (i - n_bars / 2) * bar_width + bar_width / 2
 
         # Draw a bar for every value of that type
         for x, y in enumerate(values):
+            if y < 0:
+                negative = True
             bar = ax.bar(
                 x + x_offset,
                 y,
                 width=bar_width * single_width,
                 color=colors[i % len(colors)],
             )
+            if y != 0:
+                no = f"+{y}" if y > 0 else f"-{y}"
+                ax.text(
+                    x + x_offset,
+                    y / 2.0,
+                    f"{no}",
+                    fontsize=10,
+                    ha="center",
+                    color="white",
+                )
 
         # Add a handle to the last drawn bar, which we'll need for the legend
         bars.append(bar[0])
 
-    ax.legend(bars, data.keys())
+    if negative:
+        plt.axhline(y=0, color="gray", linestyle="solid")
+    ax.xaxis.grid()
+    # ax.legend(bars, data.keys())
+    h = []
+    for i, l in enumerate(data.keys()):
+        h.append(mpatches.Patch(color=colors[i], label=l))
+
+    plt.legend(
+        handles=h,
+        loc="upper center",
+        bbox_to_anchor=(0.5, -0.05),
+        fancybox=True,
+        shadow=False,
+        ncol=2,
+    )
     if title is not None:
         ax.set_title(title)
     f.tight_layout()
+    # plt.grid()
+
     return plt

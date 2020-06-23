@@ -23,11 +23,14 @@ def execution_progress_chart(history):
 
 
 def sprint_churn_chart(labels, added, removed):
-    data = {
-        "added": added,
-        "removed": removed
-    }
-    plt = charts.bars_to_compare(data, labels=labels, title="Sprint churn", colors=['blue', 'purple'])
+    data = {"added": added, "removed": removed}
+
+    if len(labels) > 3:
+        labels = [l[-23:] for l in labels]
+
+    plt = charts.bars_to_compare(
+        data, labels=labels, title="Scope change", colors=["blue", "purple"]
+    )
     sprint_churn_chart = f"split churn {id(labels)}.png"
     plt.savefig(sprint_churn_chart)
     plt.close()

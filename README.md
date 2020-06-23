@@ -92,6 +92,8 @@ Unlike the Story Points, the percentage of work done compared to planned can be 
     - Execution summary progress bar chart for the organisation
     - Execution history progress bar chart for the team
     - The goal of the last sprint for the team
+    - Scope change history
+    - Carry over issues that were in more than one sprint and have not yet been Done
 
     Example of key results:
 

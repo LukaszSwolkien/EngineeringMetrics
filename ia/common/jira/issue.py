@@ -35,7 +35,7 @@ def search_issues(jira_access, jql, fields=None, expand=None):
         issue_wrapper = IssueCache(jira_access, iss)
         issues.append(issue_wrapper)
         # add to cache
-        issues_cache[(jira_access, issue_wrapper.key)] = issue_wrapper
+        issues_cache[(jira_access, issue_wrapper.key, fields, expand)] = issue_wrapper
     return issues
 
 
@@ -119,6 +119,22 @@ class IssueCache:
     def get_status(self):
         return self.fields.status.name
 
+    def get_sprints(self):
+        sprints = []
+        try:
+            sprint_raw_list = self.issue.fields.customfield_11220
+            for r in sprint_raw_list:
+                # example: r = 'com.atlassian.greenhopper.service.sprint.Sprint@28c838e2[id=8455,rapidViewId=3498,state=CLOSED,name=Retention Sprint 24,startDate=2020-04-22T13:58:48.202Z,endDate=2020-05-06T13:58:00.000Z,completeDate=2020-05-06T14:11:07.481Z,activatedDate=2020-04-22T13:58:48.202Z,sequence=8455,goal=Churn Journey demo for Account Balance]'
+                attr_string = r.split("[")[1].repalce("]", "")
+                sprint_attributes = dict(
+                    (x.strip(), y.strip())
+                    for x, y in (param.split("=") for param in attr_string.split(","))
+                )
+                sprints.append(sprint_attributes)
+        except Exception:
+            pass
+        return sprints
+
     def get_epic_name(self):
         if not self._epic_name:
             try:
@@ -149,6 +165,7 @@ class IssueCache:
     key = property(get_key)
     linked_issues = property(get_linked_issues)
     status = property(get_status)
+    sprints = property(get_sprints)
 
 
 def load_external_issues(issue_cache, max_level, filter_out_status):
