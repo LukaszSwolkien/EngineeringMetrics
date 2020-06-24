@@ -123,16 +123,32 @@ class IssueCache:
         sprints = []
         try:
             sprint_raw_list = self.issue.fields.customfield_11220
-            for r in sprint_raw_list:
-                # example: r = 'com.atlassian.greenhopper.service.sprint.Sprint@28c838e2[id=8455,rapidViewId=3498,state=CLOSED,name=Retention Sprint 24,startDate=2020-04-22T13:58:48.202Z,endDate=2020-05-06T13:58:00.000Z,completeDate=2020-05-06T14:11:07.481Z,activatedDate=2020-04-22T13:58:48.202Z,sequence=8455,goal=Churn Journey demo for Account Balance]'
-                attr_string = r.split("[")[1].repalce("]", "")
-                sprint_attributes = dict(
-                    (x.strip(), y.strip())
-                    for x, y in (param.split("=") for param in attr_string.split(","))
-                )
-                sprints.append(sprint_attributes)
-        except Exception:
-            pass
+            if self.key == "DANMR-121":
+                a = 1
+                pass
+            if isinstance(sprint_raw_list, list):
+                for r in sprint_raw_list:
+                    # example: r = 'com.atlassian.greenhopper.service.sprint.Sprint@28c838e2[id=8455,rapidViewId=3498,state=CLOSED,name=Retention Sprint 24,startDate=2020-04-22T13:58:48.202Z,endDate=2020-05-06T13:58:00.000Z,completeDate=2020-05-06T14:11:07.481Z,activatedDate=2020-04-22T13:58:48.202Z,sequence=8455,goal=Churn Journey demo for Account Balance]'
+                    if isinstance(r, str):
+                        attr_string = r.split("[")[1].replace("]", "")
+                        # 'id=7931,rapidViewId=3498,state=CLOSED,name=Retention Sprint 17,startDate=2020-01-15T15:21:47.787Z,endDate=2020-01-29T15:21:00.000Z,completeDate=2020-01-29T14:11:38.732Z,activatedDate=2020-01-15T15:21:47.787Z,sequence=7931,goal=UTM support + MCD 8.0 implementation, e2e testing, CRM redirect rough estimations'
+
+                        splitted = attr_string.split(",")
+                        sprint_attributes = {}
+                        for kv in splitted:
+                            params = kv.split("=")
+                            if len(params) == 2:
+                                sprint_attributes[params[0]] = params[1]
+
+                        # sprint_attributes = dict(
+                        #     (x.strip(), y.strip())
+                        #     for x, y in (param.split("=") for param in attr_string.split(","))
+                        # )
+                    sprints.append(sprint_attributes)
+        except Exception as e:
+            print(f'{self.key}: {e}')
+            print(f'raw: {sprint_raw_list}')
+            
         return sprints
 
     def get_epic_name(self):
