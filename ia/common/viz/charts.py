@@ -220,103 +220,68 @@ def barh_progress(
     return plt
 
 
-def bars_to_compare(
-    data, labels, title=None, colors=None, group_width=0.8, single_width=1
-):
-    """
+# def bars_to_compare(
+#     data, labels, title=None, colors=None, group_width=0.8, single_width=1
+# ):
+#     f = plt.figure(1, figsize=(8, 4))
+#     ax = f.add_subplot(111)
+#     if colors is None:
+#         colors = plt.rcParams["axes.prop_cycle"].by_key()["color"]
 
-    Parameters
-    ----------
-    data: dictionary
-        A dictionary containing the data we want to plot. Keys are the names of the
-        data, the items is a list of the values. We want to compare positives with negatives
+#     n_bars = len(data) / 2.0
+#     print(f"n_bars = {n_bars}")
 
-        Example:
-        data = {
-            "x":[1,-2,3,-4],
-            "y":[1,-2,3,-4],
-        }
-    labels: list
-        A list of labels for x axis. len(lables) has to be equal to len(data.values())
-    group_width : float, optional, default: 0.8
-        The width of a bar group. 0.8 means that 80% of the x-axis is covered
-        by bars and 20% will be spaces between the bars.
+#     x_pos = range(len(labels))
+#     ax.set_xticks(x_pos)
+#     ax.set_xticklabels(labels)
+#     ax.yaxis.set_major_locator(MaxNLocator(integer=True))
 
-    single_width: float, optional, default: 1
-        The relative width of a single bar within a group. 1 means the bars
-        will touch eachother within a group, values less than 1 will make
-        these bars thinner.
-    """
-    f = plt.figure(1, figsize=(8, 4))
-    ax = f.add_subplot(111)
-    if colors is None:
-        colors = plt.rcParams["axes.prop_cycle"].by_key()["color"]
+#     # The width of a single bar
+#     bar_width = group_width / n_bars
 
-    n_bars = len(data) / 2.0
-    print(f"n_bars = {n_bars}")
+#     # Iterate over all data
+#     negative = False
+#     for i, (name, values) in enumerate(data.items()):
+#         # The offset in x direction of that bar
+#         x_offset = (i - n_bars / 2) * bar_width  # + bar_width / 2
+#         # Draw a bar for every value of that type
+#         for x, y in enumerate(values):
+#             if y < 0:
+#                 negative = True
+#             else:
+#                 xx = x + x_offset / 2
 
-    x_pos = range(len(labels))
-    ax.set_xticks(x_pos)
-    ax.set_xticklabels(labels)
-    ax.yaxis.set_major_locator(MaxNLocator(integer=True))
+#             bar = ax.bar(
+#                 xx, y, width=bar_width * single_width, color=colors[i % len(colors)],
+#             )
+#             if y != 0:
+#                 no = f"{abs(y)}"
+#                 ax.text(
+#                     xx, y / 2.0, f"{no}", fontsize=10, ha="center", color="white",
+#                 )
 
-    # The width of a single bar
-    bar_width = group_width / n_bars
+#     if negative:
+#         plt.axhline(y=0, color="grey", linestyle="solid")
+#     ax.xaxis.grid()
+#     h = []
+#     for i, l in enumerate(data.keys()):
+#         h.append(mpatches.Patch(color=colors[i], label=l))
 
-    # Iterate over all data
-    negative = False
-    for i, (name, values) in enumerate(data.items()):
-        # The offset in x direction of that bar
-        x_offset = (i - n_bars / 2) * bar_width #+ bar_width / 2
-        # Draw a bar for every value of that type
-        for x, y in enumerate(values):
-            if y < 0:
-                negative = True
-            else:
-                xx = x + x_offset / 2
-          
-            bar = ax.bar(
-                xx,
-                y,
-                width=bar_width * single_width,
-                color=colors[i % len(colors)],
-            )
-            if y != 0:
-                no = f"{abs(y)}"
-                ax.text(
-                    xx,
-                    y / 2.0,
-                    f"{no}",
-                    fontsize=10,
-                    ha="center",
-                    color="white",
-                )
+#     plt.legend(
+#         handles=h,
+#         loc="upper center",
+#         bbox_to_anchor=(0.5, -0.05),
+#         fancybox=True,
+#         shadow=False,
+#         ncol=2,
+#     )
+#     if title is not None:
+#         ax.set_title(title)
+#     f.tight_layout()
+#     return plt
 
 
-    if negative:
-        plt.axhline(y=0, color="grey", linestyle="solid")
-    ax.xaxis.grid()
-    h = []
-    for i, l in enumerate(data.keys()):
-        h.append(mpatches.Patch(color=colors[i], label=l))
-
-    plt.legend(
-        handles=h,
-        loc="upper center",
-        bbox_to_anchor=(0.5, -0.05),
-        fancybox=True,
-        shadow=False,
-        ncol=2,
-    )
-    if title is not None:
-        ax.set_title(title)
-    f.tight_layout()
-    return plt
-
-
-def multibars(
-    data, labels, title=None, colors=None, group_width=0.8, single_width=1
-):
+def multibars(data, labels, title=None, colors=None, group_width=0.8, single_width=1):
     """
 
     Parameters
@@ -366,7 +331,7 @@ def multibars(
         for x, y in enumerate(values):
             if y < 0:
                 negative = True
-          
+
             bar = ax.bar(
                 x + x_offset,
                 y,
@@ -383,7 +348,6 @@ def multibars(
                     ha="center",
                     color="white",
                 )
-
 
     if negative:
         plt.axhline(y=0, color="gray", linestyle="solid")

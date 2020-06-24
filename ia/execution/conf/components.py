@@ -24,17 +24,20 @@ def execution_progress_chart(history):
 
 def sprint_blizzard_chart(labels, added, removed, unblocked, blocked):
     data = {
-        "added": added, 
+        "added": added,
         "removed": removed,
-        "unblocked": unblocked,
         "blocked": blocked,
+        "unblocked": unblocked,
     }
 
     if len(labels) > 3:
         labels = [l[-23:] for l in labels]
 
-    plt = charts.bars_to_compare(
-        data, labels=labels, title="Scope blizzard", colors=["blue", "purple", "gold", "silver"]
+    plt = charts.multibars(
+        data,
+        labels=labels,
+        title="Scope blizzard",
+        colors=["blue", "purple", "silver", "gold"],
     )
     sprint_blizzard_chart = f"split blizzard {id(labels)}.png"
     plt.savefig(sprint_blizzard_chart)

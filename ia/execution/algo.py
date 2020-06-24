@@ -9,6 +9,7 @@ BLOCKED_STATUS = "Blocked"
 STATUS_FIELD = "status"
 SPRINT_FIELD = "Sprint"
 
+
 class ExecutionMetrics:
     def __init__(self, all_issues, done_in_sprint, done_by_now, sprint):
         self._all_issues = all_issues
@@ -176,17 +177,30 @@ def sprint_blizzard(
             )
 
             if (
-                change_date > sprint_start_date # and change_date < sprint_end_date: - some changes for past sprint might be done day(s) after it finished!
-            ):  
+                change_date
+                > sprint_start_date  # and change_date < sprint_end_date: - some changes for past sprint might be done day(s) after it finished!
+            ):
                 for item in history.items:
                     if item.field.upper() == STATUS_FIELD.upper():
-                        issue_sprints = [i['name'] for i in issue_cache.sprints]
+                        issue_sprints = [i["name"] for i in issue_cache.sprints]
                         if sprint_name in issue_sprints:
-                            if item.toString and BLOCKED_STATUS.upper() in item.toString.upper():
+                            if (
+                                item.toString
+                                and BLOCKED_STATUS.upper() in item.toString.upper()
+                            ):
                                 add_issue(issues_blocked, change_date, issue_cache)
-                            elif item.fromString and BLOCKED_STATUS.upper() in item.fromString.upper():
-                                if not item.toString or (item.toString and BLOCKED_STATUS.upper() not in item.toString.upper()):
-                                    add_issue(issues_unblocked, change_date, issue_cache)
+                            elif (
+                                item.fromString
+                                and BLOCKED_STATUS.upper() in item.fromString.upper()
+                            ):
+                                if not item.toString or (
+                                    item.toString
+                                    and BLOCKED_STATUS.upper()
+                                    not in item.toString.upper()
+                                ):
+                                    add_issue(
+                                        issues_unblocked, change_date, issue_cache
+                                    )
                     elif item.field.upper() == SPRINT_FIELD.upper():
                         if item.fromString and sprint_name in item.fromString:
                             if not item.toString or (sprint_name not in item.toString):
@@ -204,7 +218,7 @@ def sprint_blizzard(
             if day in issues_removed:
                 issues_added[day], issues_removed[day] = (
                     issues_added[day] - issues_removed[day],
-                    issues_removed[day] - issues_added[day]
+                    issues_removed[day] - issues_added[day],
                 )
     return issues_added, issues_removed, issues_blocked, issues_unblocked
 
@@ -217,9 +231,12 @@ def sprint_blizzard_history(jira_access, project_key, history):
     labels = []
     for sprint_name, em in history.items():
         sprint = em.sprint
-        issues_added, issues_removed, issues_blocked, issues_unblocked = sprint_blizzard(
-            jira_access, project_key, sprint, ignore_same=True
-        )
+        (
+            issues_added,
+            issues_removed,
+            issues_blocked,
+            issues_unblocked,
+        ) = sprint_blizzard(jira_access, project_key, sprint, ignore_same=True)
 
         # flatten dict of sets to list (count in stories which were added->removed->added... on the different days)
         a = [j for i in issues_added.values() for j in i]
@@ -228,10 +245,9 @@ def sprint_blizzard_history(jira_access, project_key, history):
         u = [j for i in issues_unblocked.values() for j in i]
 
         added.append(len(a))
-        removed.append(-len(r))
+        removed.append(len(r))
         unblocked.append(len(u))
-        blocked.append(-len(b))
+        blocked.append(len(b))
         labels.append(sprint_name)
 
     return labels, added, removed, unblocked, blocked
-
