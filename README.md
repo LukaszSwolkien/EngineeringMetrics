@@ -1,58 +1,62 @@
 ﻿README
 ======
 
-Analyze Jira issues to measure teams efficiency in terms of engineering processes, structure and practices. Metrics once calculated can be later published on the Confluance page (Confluance Jira macros are supported for dynamic data refresh). It is also possible to publish data to the html file (notebook result). All the setup can be done in jupyter notebooks.
-The ultimate goal is to use those metrics to continuously improve efficiency and enable fast delivery
+Business side always expect plan and then execution but we all know that usually software projects are very complex. Initial requirements are never concrete enough nor complete, same with technology. No two projects are the same. Very often, what appears to be a simple problem is much harder to implement in reality. Development team “don’t know what they don’t know”, meaning that unknowns with the project can only be identified when they arise.
 
-There are many tools available, such as eazyBI or build in Jira dashboard gadgets and Confluance macros, but thanks to the custom code we can do everything. This approach also does not require any administrator privileges in Jira or Confluance. Just use the credentials of your regular user to access data in Jira and generate a custom dashboard on the Confluance page(s). You can also add custom code to generate report in any other format
+The right software indicators can help provide a common language between software engineering team and business leaders. From the other hand if we expect teams to adjust processes, we need to make sure that everyone really understands the problem we want to solve.
 
-## Report screenshots
+The goal of this library is to provide a flexible mechanism for building dashboard(s) from components designed to analyze team performance. Data calculated once can be later published on the Confluance website (Jira Confluance macros are supported for dynamic data refresh). All settings can be made in jupyter notebooks.
+The ultimate goal is to use these indicators to continuously increase team's productivity.
 
-### Independence summary (organisation level)
+There are many tools available, such as eazyBI or built-in gadgets and Jira dashboard reports, and Confluance macros, but thanks to custom code we can do everything, such as numerical measurements of key results. 
 
-<img src="./screenshots/independence summary.png"
-     alt="Independence summary"
-     style="margin-right: 10px;" />
+You don't need administrator privileges in Jira or Confluance. Just use the credentials of your regular user to access data in Jira and generate a custom dashboard on the Confluance page(s). You can also add custom code to generate report in any other format
 
-### Dependency split (squad level)
-
-<img src="./screenshots/dependency split.png"
-     alt="Dependency split"
-     style="margin-right: 10px;" />
-
-### Dependency graphs (squad level)
-
-<img src="./screenshots/dependency graphs.png"
-     alt="Dependency graphs"
-     style="margin-right: 10px;" />
-
-### Project progress (epic level)
-
-<img src="./screenshots/project progress.png"
-     alt="Project progress"
-     style="margin-right: 10px;" />
-
-### Sprint execution (organisation level)
-
-<img src="./screenshots/execution in squads.png"
-     alt="Execution in squads"
-     style="margin-right: 10px;" />
-
-The amount of work committed vs delivered. This data shows how predictable the team is. Unlike the Story Points, the percentage of work done compared to planned can be compared between teams. Such metrics can also be aggregated on the organisation level
-
-### Squad execution history (squad level)
-
-<img src="./screenshots/history of execution.png"
-     alt="Squad execution history"
-     style="margin-right: 10px;" />
-
-"done on time" - work items that were actually done in the sprint.
-
-"done later" - work items that were in the sprint but finished in the next iteration(s). Therefore execution history for "done later" items will change over time. In this way we can check if there are any items we never deliver (removed from the scope) due to different reasons
 
 ## Algorithms
+1. __Execution metrics__ to measure the amount of work commited vs delivered. This data shows how predictable the team is. 
+Unlike the Story Points, the percentage of work done compared to planned can be compared between teams. Such metrics can also be aggregated on the organisation level
 
-1. __Dependency factor__ calculates the number of issues with external dependencies to the total number of issues not Done yet, but after refinement (estimated in the backlog or already planned for the sprint).
+    Sprint end date and resolution date for each issue matters
+
+    Available analysis:
+
+    - Execution summary progress bar chart for the organisation
+    - Execution history progress bar chart for the team
+    - The goal of the last sprint for the team
+    - Scope blizzard history
+    - Carry over issues that were in more than one sprint and have not yet been Done
+
+    Example of key results:
+
+    - 90% of sprint content committed by the team is delivered. 
+
+    ### Sprint execution (organisation level)
+
+    <img src="./screenshots/execution in squads.png"
+        alt="Execution in squads"
+        style="margin-right: 10px;" />
+
+    ### Squad execution history (squad level)
+
+    <img src="./screenshots/history of execution.png"
+        alt="Squad execution history"
+        style="margin-right: 10px;" />
+
+    - "done on time" - work items that were actually done in the sprint.
+
+    - "done later" - work items that were in the sprint but finished in the next iteration(s). Therefore execution history for "done later" items will change over time. In this way we can check if there are any items we never deliver (removed from the scope) due to different reasons
+
+    ### Scope blizzard (squad level)
+
+    <img src="./screenshots/scope blizzard.png"
+        alt="Scope blizzard"
+        style="margin-right: 10px;" />
+    - "Scope blizzard" - the number of issues in the sprint which were added, removed, unblocked and blocked in each sprint
+
+    - "Carry over" - issues that were in more than one sprint and have not yet been Done
+
+2. __Dependency factor__ calculates the number of issues with external dependencies to the total number of issues not Done yet, but after refinement (estimated in the backlog or already planned for the sprint).
 Note that you need to specify Workload & Statuses to determin which issues are Ready for Development (after refinement) 
 
     Issues selection in the example (notebooks/Dependency metrics.ipynb) is based on the below JQL:
@@ -82,22 +86,23 @@ Note that you need to specify Workload & Statuses to determin which issues are R
     - All teams independence factor > 90% (no more than 10% stories dependent on work from other team)
     - Single team independence factor > 80%
 
-2. __Execution metrics__ to measure the amount of work commited vs delivered. This data shows how predictable the team is. 
-Unlike the Story Points, the percentage of work done compared to planned can be compared between teams. Such metrics can also be aggregated on the organisation level
+    ### Independence summary (organisation level)
 
-    Sprint end date and resolution date for each issue matters
+    <img src="./screenshots/independence summary.png"
+        alt="Independence summary"
+        style="margin-right: 10px;" />
 
-    Available analysis:
+    ### Dependency split (squad level)
 
-    - Execution summary progress bar chart for the organisation
-    - Execution history progress bar chart for the team
-    - The goal of the last sprint for the team
-    - Scope change history
-    - Carry over issues that were in more than one sprint and have not yet been Done
+    <img src="./screenshots/dependency split.png"
+        alt="Dependency split"
+        style="margin-right: 10px;" />
 
-    Example of key results:
+    ### Dependency graphs (squad level)
 
-    - 90% of sprint content committed by the team is delivered. 
+    <img src="./screenshots/dependency graphs.png"
+        alt="Dependency graphs"
+        style="margin-right: 10px;" />
 
 3. __Project progress__ calculates progress of the project based on number of issues done vs defined for the given epic(initiative)
 
