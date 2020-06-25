@@ -113,7 +113,7 @@ def progress_history(
         sprint_name = s.name
         start_day = s.startDate.split("T")[0]
         end_day = s.endDate.split("T")[0]
-        sprint_start_date = datetime.datetime.strptime(start_day, DAY_STRING_FORMAT)
+        # sprint_start_date = datetime.datetime.strptime(start_day, DAY_STRING_FORMAT)
         sprint_end_date = datetime.datetime.strptime(end_day, DAY_STRING_FORMAT)
 
         JQL = f'project = {project_key} and sprint = "{sprint_name}" and issuetype in {issuetype}'
@@ -182,7 +182,7 @@ def sprint_blizzard(
             ):
                 for item in history.items:
                     if item.field.upper() == STATUS_FIELD.upper():
-                        issue_sprints = [i["name"] for i in issue_cache.sprints]
+                        issue_sprints = [i.name for i in issue_cache.sprints]
                         if sprint_name in issue_sprints:
                             if (
                                 item.toString
@@ -251,3 +251,9 @@ def sprint_blizzard_history(jira_access, project_key, history):
         labels.append(sprint_name)
 
     return labels, added, removed, unblocked, blocked
+
+def blocked_during_sprint(jira_access, project_key, s):
+    issues_blocked = []
+    # TODO: 
+    # find dependencies to other external projects by Link 'is blocked by' field added during the sprint
+    return issues_blocked

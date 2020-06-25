@@ -1,5 +1,6 @@
 """Helpers to access jira issue fields"""
 from ia.common.jira.links import get_external_dependencies, is_internal
+from ia.common.jira.sprint import Sprint
 from jira import JIRAError
 from cachetools import cached
 
@@ -39,61 +40,6 @@ def search_issues(jira_access, jql, fields=None, expand=None):
     return issues
 
 
-def get_summary(jira_obj, issue_id):
-    issue = jira_obj.issue(issue_id)
-    return issue.fields.summary
-
-
-def get_issue_in_json(jira_obj, issue_id):
-    issue_details = None
-    error = None
-    jql = f"'key'='{issue_id}'"
-    try:
-        issue_details = jira_obj.search_issues(
-            jql, fields="issue links", json_result=True
-        )  # ,created,status,reporter  expand='changelog',
-    except JIRAError as error:
-        error = f"error_code:{error.status_code}, error_msg:{error.text}"
-
-    return {"issue": issue_details, "error": error}
-
-
-def get_project_name(jira_obj, project_id):
-    project = jira_obj.project(project_id)
-    return project.name
-
-
-def get_open_sprint(issue):
-    if (
-        hasattr(issue, "fields")
-        and hasattr(issue.fields, "customfield_11220")
-        and isinstance(issue.fields.customfield_11220, list)
-    ):
-        gh_fields = issue.fields.customfield_11220[0].split(",")
-        for f in gh_fields:
-            kv = f.split("=")
-            if len(kv) > 1 and kv[0] == "name":
-                open_sprint = kv[1]
-                return open_sprint
-    return ""
-
-
-def get_components(issue):
-    components = []
-    if (
-        hasattr(issue, "fields")
-        and hasattr(issue.fields, "components")
-        and isinstance(issue.fields.components, list)
-    ):
-        cps = set()
-        for c in issue.fields.components:
-            cps.add(c.name)
-
-        components = list(cps)
-
-    return components
-
-
 class IssueCache:
     def __init__(self, jira_access, issue):
         self._jira = jira_access
@@ -125,34 +71,9 @@ class IssueCache:
             sprint_raw_list = self.issue.fields.customfield_11220
             if isinstance(sprint_raw_list, list):
                 for r in sprint_raw_list:
-                    # 'com.atlassian.greenhopper.service.sprint.Sprint@28c838e2[id=8455,rapidViewId=3498,state=CLOSED,name=Retention Sprint 24,startDate=2020-04-22T13:58:48.202Z,endDate=2020-05-06T13:58:00.000Z,completeDate=2020-05-06T14:11:07.481Z,activatedDate=2020-04-22T13:58:48.202Z,sequence=8455,goal=Churn Journey demo for Account Balance]'
                     if isinstance(r, str):
-                        attr_string = r.split("[")[1].replace("]", "")
-                        # 'id=7931,rapidViewId=3498,state=CLOSED,name=Retention Sprint 17,startDate=2020-01-15T15:21:47.787Z,endDate=2020-01-29T15:21:00.000Z,completeDate=2020-01-29T14:11:38.732Z,activatedDate=2020-01-15T15:21:47.787Z,sequence=7931,goal=UTM support + MCD 8.0 implementation, e2e testing, CRM redirect rough estimations'
-
-                        splitted = attr_string.split(",")
-
-                        # sprint_attributes = dict(
-                        #     (x.strip(), y.strip())
-                        #     for x, y in (param.split("=") for param in attr_string.split(","))
-                        # )
-                        sprint_attributes = {}
-                        last_key = None
-                        for kv in splitted:
-                            try:
-                                params = kv.split("=")
-                                if len(params) == 2:
-                                    sprint_attributes[params[0]] = params[1]
-                                    last_key = params[0]
-                                if last_key and len(params) == 1:
-                                    val = sprint_attributes[last_key]
-                                    val += params[0]
-                                    sprint_attributes[last_key] = val
-                            except Exception as e:
-                                print(f"{self.key}: {e}")
-                                print(f"kv: {kv}")
-
-                    sprints.append(sprint_attributes)
+                        sprint = Sprint(r)
+                        sprints.append(sprint)
         except Exception as e:
             print(f"{self.key}: {e}")
             print(f"raw: {sprint_raw_list}")
