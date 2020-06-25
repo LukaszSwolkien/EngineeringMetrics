@@ -123,6 +123,83 @@ Note that you need to specify Workload & Statuses to determin which issues are R
 
     Example of key results:
     - 80% of the revenue generating use cases are delivered on time
+
+# Code structure
+
+ia.common - package with common stuff
+
+- jira - package with jira access features
+
+- viz - package with features to visualise data. 
+
+    - conf - useful methods to upload content on Confluance page
+    - charts - pie, bar, etc... chart plots
+    - graph - visualise relations between jira issues
+
+ia.dependency - algorithms and dashboard components to visualize dependency analysis
+
+ia.project - algorithms and dashboard components to visualize project execution analysis
+
+ia.quality - algorithms and dashboard components to visualize quality analysis
+
+ia.execution - algorithms and dashboard components to visualize sprint execution analysis
+
+# Usage example:
+
+```py
+import os
+import ia.common.jira.connection as jira_access
+import ia.common.viz.conf.dashboard as conf
+import ia.dependency.conf.components as components
+import ia.dependency.algo as dependency
+import ia.dependency.metrics_store as metrics
+
+
+# Access variables to read data from Jira and publish analysis to Confluance page
+jira_url = os.environ['JIRA_URL']
+jira_username = os.environ['JIRA_USERNAME']
+jira_password = os.environ['JIRA_PASSWORD']
+
+conf_url = os.environ['CONFLUENCE_URL']
+conf_username = os.environ['CONFLUENCE_USERNAME']
+conf_password = os.environ['CONFLUENCE_PASSWORD']
+
+# Report variables
+jira_project_id = "DANMR"
+# Confluance page variables
+space = "~lswolkien"
+parent_page = "Reports"
+page_title = "Independence report"
+
+# connect with Jira
+jira =  jira_access.connect(jira_url, basic_auth=(jira_username, jira_password))
+
+# select issues we want to check dependencies against ('Ready for development' in jira_project_id backlog)
+JQL = f'project = {jira_project_id} and status not in ("Done", "In Analysis")'
+p, all_issues, all_with_dep = dependency.dependency_factor(jira, JQL)
+independency_factor = 100-p
+
+# save metrics and read past date to build history how the independence stats were changing over time
+metrics.save('BacklogRefinement', jira_project_id, independency_factor, all_issues, all_with_dep)
+metrics_history = metrics.read_independence_stats('BacklogRefinement', jira_project_id)
+
+# create head component with title
+report_head = conf.Component(
+    conf.report_head, # callable which returns content and attachments for the dashboard element
+    [page_title, "External dependencies in backlog after refinement"] # arguments for callable object
+)
+
+# create dependency report component
+report_dependency = conf.Component(
+    components.dependency_report, # callable which returns content and attachments for the dashboard element
+    [independency_factor, all_issues, all_with_dep, metrics_history] # arguments for callable object
+)
+
+# Create or Overwrite Confluance page build from the list of components
+dashboard = conf.Dashboard(conf_url, conf_username, conf_password, page_title, space, parent_page)
+dashboard.publish([report_head, report_dependency])
+```
+
 # Setup project
 
 Create virtual environment
@@ -200,81 +277,6 @@ if you have notebooks setup you can execute all of them from the command line us
 
 Go to your Confluance page to see generated dashboard(s)
 
-# Code structure
-
-ia.common - package with common stuff
-
-- jira - package with jira access features
-
-- viz - package with features to visualise data. 
-
-    - conf - useful methods to upload content on Confluance page
-    - charts - pie, bar, etc... chart plots
-    - graph - visualise relations between jira issues
-
-ia.dependency - algorithms and dashboard components to visualize dependency analysis
-
-ia.project - algorithms and dashboard components to visualize project execution analysis
-
-ia.quality - algorithms and dashboard components to visualize quality analysis
-
-ia.execution - algorithms and dashboard components to visualize sprint execution analysis
-
-# Usage example:
-
-```py
-import os
-import ia.common.jira.connection as jira_access
-import ia.common.viz.conf.dashboard as conf
-import ia.dependency.conf.components as components
-import ia.dependency.algo as dependency
-import ia.dependency.metrics_store as metrics
-
-
-# Access variables to read data from Jira and publish analysis to Confluance page
-jira_url = os.environ['JIRA_URL']
-jira_username = os.environ['JIRA_USERNAME']
-jira_password = os.environ['JIRA_PASSWORD']
-
-conf_url = os.environ['CONFLUENCE_URL']
-conf_username = os.environ['CONFLUENCE_USERNAME']
-conf_password = os.environ['CONFLUENCE_PASSWORD']
-
-# Report variables
-jira_project_id = "DANMR"
-# Confluance page variables
-space = "~lswolkien"
-parent_page = "Reports"
-page_title = "Independence report"
-
-# connect with Jira
-jira =  jira_access.connect(jira_url, basic_auth=(jira_username, jira_password))
-
-# select issues we want to check dependencies against ('Ready for development' in jira_project_id backlog)
-JQL = f'project = {jira_project_id} and status not in ("Done", "In Analysis")'
-p, all_issues, all_with_dep = dependency.dependency_factor(jira, JQL)
-independency_factor = 100-p
-
-# save metrics and read past date to build history how the independence stats were changing over time
-metrics.save('BacklogRefinement', jira_project_id, independency_factor, all_issues, all_with_dep)
-metrics_history = metrics.read_independence_stats('BacklogRefinement', jira_project_id)
-
-# create head component with title
-report_head = conf.Component(
-    conf.report_head, # callable which returns content and attachments for the dashboard element
-    [page_title, "External dependencies in backlog after refinement"] # arguments for callable object
-)
-
-# create dependency report component
-report_dependency = conf.Component(
-    components.dependency_report, # callable which returns content and attachments for the dashboard element
-    [independency_factor, all_issues, all_with_dep, metrics_history] # arguments for callable object
-)
-
-# Create or Overwrite Confluance page build from the list of components
-dashboard = conf.Dashboard(conf_url, conf_username, conf_password, page_title, space, parent_page)
-dashboard.publish([report_head, report_dependency])
-```
 # Roadmap
 
 Add more engineering metrics:
