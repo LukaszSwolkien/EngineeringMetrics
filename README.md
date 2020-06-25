@@ -225,12 +225,13 @@ ia.execution - algorithms and dashboard components to visualize sprint execution
 ```py
 import os
 import ia.common.jira.connection as jira_access
+import ia.common.viz.conf.dashboard as conf
 import ia.dependency.conf.components as components
 import ia.dependency.algo as dependency
 import ia.dependency.metrics_store as metrics
-import ia.common.viz.conf.dashboard as conf
 
-# Access variables
+
+# Access variables to read data from Jira and publish analysis to Confluance page
 jira_url = os.environ['JIRA_URL']
 jira_username = os.environ['JIRA_USERNAME']
 jira_password = os.environ['JIRA_PASSWORD']
@@ -241,31 +242,37 @@ conf_password = os.environ['CONFLUENCE_PASSWORD']
 
 # Report variables
 jira_project_id = "DANMR"
+# Confluance page variables
 space = "~lswolkien"
 parent_page = "Reports"
 page_title = "Independence report"
 
-dashboard = conf.Dashboard(conf_url, conf_username, conf_password, page_title, space, parent_page)
+# connect with Jira
 jira =  jira_access.connect(jira_url, basic_auth=(jira_username, jira_password))
 
+# select issues we want to check dependencies against ('Ready for development' in jira_project_id backlog)
 JQL = f'project = {jira_project_id} and status not in ("Done", "In Analysis")'
 p, all_issues, all_with_dep = dependency.dependency_factor(jira, JQL)
 independency_factor = 100-p
 
+# save metrics and read past date to build history how the independence stats were changing over time
 metrics.save('BacklogRefinement', jira_project_id, independency_factor, all_issues, all_with_dep)
 metrics_history = metrics.read_independence_stats('BacklogRefinement', jira_project_id)
 
+# create head component with title
 report_head = conf.Component(
     conf.report_head, # callable which returns content and attachments for the dashboard element
     [page_title, "External dependencies in backlog after refinement"] # arguments for callable object
 )
 
+# create dependency report component
 report_dependency = conf.Component(
     components.dependency_report, # callable which returns content and attachments for the dashboard element
     [independency_factor, all_issues, all_with_dep, metrics_history] # arguments for callable object
 )
 
-# Create or Overwrite Confluance page
+# Create or Overwrite Confluance page build from the list of components
+dashboard = conf.Dashboard(conf_url, conf_username, conf_password, page_title, space, parent_page)
 dashboard.publish([report_head, report_dependency])
 ```
 # Roadmap
