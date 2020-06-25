@@ -12,6 +12,7 @@ There are many tools available, such as eazyBI or built-in gadgets and Jira dash
 
 You don't need administrator privileges in Jira or Confluance. Just use the credentials of your regular user to access data in Jira and generate a custom dashboard on the Confluance page(s). You can also add custom code to generate report in any other format
 
+Note: this is in addition to DORA (DevOps Research & Assessment) metrics from which we already know how successful we are at DevOps (DF – Deployment Frequency, MLT – Mean Lead Time for changes, MTTR – Mean Time to Recover, CFR – Change Failure Rate).
 
 ## Algorithms
 1. __Execution metrics__ to measure the amount of work commited vs delivered. This data shows how predictable the team is. 
@@ -271,11 +272,12 @@ dashboard.publish([report_head, report_dependency])
 
 Add more engineering metrics:
 
-1. Add Quality metrics on different levels (organisation level, squad level, chapter level). Goal is to monitor negative impact on end user, error budget, waste factor, etc.
+1. Add Quality metrics on different levels. Goal is to monitor negative impact on end user, error budget, manual vs automated testing etc.
 
     Example of key results:
 
-    - 1 bug found on production for 10 releases
+    - 1 incident found on production for 10 releases
     - 10% or less BAU is enough to keep maintenance backlog stable
     - 90% or more of test cases executed at least once a week
-    
+
+Note: This is in addition to DORA (DevOps Research & Assessment) metrics from which we already know how successful we are at DevOps (DF – Deployment Frequency, MLT – Mean Lead Time for changes, MTTR – Mean Time to Recover, CFR – Change Failure Rate). Since we already have them available, I have not added them to this library.
