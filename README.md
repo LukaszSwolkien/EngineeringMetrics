@@ -5,17 +5,18 @@ Business side always expect plan and then execution but we all know that usually
 
 The right software indicators can help provide a common language between software engineering team and business leaders. From the other hand if we expect teams to adjust processes, we need to make sure that everyone really understands the problem we want to solve.
 
-The goal of this library is to provide a flexible mechanism for building dashboard(s) from components designed to analyze team performance. Data calculated once can be later published on the Confluance website (Jira Confluance macros are supported for dynamic data refresh). All settings can be made in jupyter notebooks.
-The ultimate goal is to use these indicators to continuously increase team's productivity.
+The goal of this library is to provide a flexible mechanism for building dashboard(s) from components designed to observe and measure many dimmentions of work. Data calculated once can be later published on the Confluance website (Jira Confluance macros are supported for dynamic data refresh). All setup can be made in jupyter notebooks.
 
-There are many tools available, such as eazyBI or built-in gadgets and Jira dashboard reports, and Confluance macros, but thanks to custom code we can do everything, such as numerical measurements of key results. 
+There are many tools available, such as built-in gadgets and Jira dashboard reports, and Confluance macros, or paid tools like eazyBI, but thanks to custom code we can do everything, such as integrate data from all sources like Jira, Git, ServiceNow, and calculate numerical measurements of key results we expect team(s) to achive. 
 
 You don't need administrator privileges in Jira or Confluance. Just use the credentials of your regular user to access data in Jira and generate a custom dashboard on the Confluance page(s). You can also add custom code to generate report in any other format
 
-Note: this is in addition to DORA (DevOps Research & Assessment) metrics from which we already know how successful we are at DevOps (DF – Deployment Frequency, MLT – Mean Lead Time for changes, MTTR – Mean Time to Recover, CFR – Change Failure Rate).
+Note 1: this is in addition to DORA (DevOps Research & Assessment) metrics from which we already know how successful we are at DevOps (DF – Deployment Frequency, MLT – Mean Lead Time for changes, MTTR – Mean Time to Recover, CFR – Change Failure Rate). 
+
+Note 2: There are also other dimmentions not covered in this library which are very important like impact done by the software on customers, profitability, and engineers motivation, engagement, satisfaction, trust, attitute. 
 
 ## Algorithms
-1. __Execution metrics__ to measure the amount of work commited vs delivered. This data shows how predictable the team is. 
+1. __Execution metrics__ to measure the amount of work committed vs delivered. This data shows how predictable the team is. 
 Unlike the Story Points, the percentage of work done compared to planned can be compared between teams. Such metrics can also be aggregated on the organisation level
 
     Sprint end date and resolution date for each issue matters
@@ -48,21 +49,17 @@ Unlike the Story Points, the percentage of work done compared to planned can be 
 
     - "done later" - work items that were in the sprint but finished in the next iteration(s). Therefore execution history for "done later" items will change over time. In this way we can check if there are any items we never deliver (removed from the scope) due to different reasons
 
-    ### Scope blizzard (squad level)
+    ### Sprint scope churn (squad level)
 
-    <img src="./screenshots/scope blizzard.png"
-        alt="Scope blizzard"
+    <img src="./screenshots/scope churn.png"
+        alt="Scope churn"
         style="margin-right: 10px;" />
-    - "Scope blizzard" - the number of issues in the sprint which were added, removed, unblocked and blocked in each sprint
+    - "Scope churn" - the number of issues in the sprint which were added, removed, unblocked and blocked in each sprint
 
     - "Carry over" - issues that were in more than one sprint and have not yet been Done
 
 2. __Dependency factor__ calculates the number of issues with external dependencies to the total number of issues not Done yet, but after refinement (estimated in the backlog or already planned for the sprint).
 Note that you need to specify Workload & Statuses to determin which issues are Ready for Development (after refinement) 
-
-    Issues selection in the example (notebooks/Dependency metrics.ipynb) is based on the below JQL:
-
-    `'project = {jira_project_id} AND issuetype not in ("Test", "Sub-Task", "Release", "Risk", "Incident") and status not in ("Done", "In Analysis", "Open")'`
 
     The dependency factor is calculated according to the following rules:
 
@@ -105,13 +102,8 @@ Note that you need to specify Workload & Statuses to determin which issues are R
         alt="Dependency graphs"
         style="margin-right: 10px;" />
 
-3. __Project progress__ calculates progress of the project based on number of issues done vs defined for the given epic(initiative)
-
-    Issues selection in the example (notebooks/Project metrics.ipynb) is based on the below parameters:
-
-    `jql = f'"Epic Link" = {epic_key}'`
-    
-    `status_done=('Done', 'Waiting for production')`
+3. __Project metrics__ calculates progress of the project based on number of issues done vs defined for the given epic(initiative)
+    Execution metrics focus on sprints, not giving details on how much work was done for a given project. Project metrics focus on project progress.
 
     Available analysis:
     - Percentage done
@@ -289,4 +281,19 @@ Add more engineering metrics:
     - 10% or less BAU is enough to keep maintenance backlog stable
     - 90% or more of test cases executed at least once a week
 
+2. Add to __Execution metrics__ code churn analysis.
+
+    How much % of code is rewritten or deleted shortly after being written. Code churn depends on types of projects and where those projects are in the development lifecycle. There may be different causes of Code Churn:
+    - Project prototyping,
+    - Unclear requierements
+    - Learning new technology or solving difficult problem
+    - Perfectionism versus "good enough"
+
+    There is no "bad" code churn. This is additional context for the execution and project metrics.
+    This requires integration with GitLab.
+
+3. Add to __Dependency factor__ new blocking issues discovered during the sprint lifespan.
+
+    How many problems were ready to be developed, but we discovered blocking dependencies during a sprint that is related to the work that another team has to do (we don't take into account things that we can't predict, such as instability of environments etc.)
+    
 Note: This is in addition to DORA (DevOps Research & Assessment) metrics from which we already know how successful we are at DevOps (DF – Deployment Frequency, MLT – Mean Lead Time for changes, MTTR – Mean Time to Recover, CFR – Change Failure Rate). Since we already have them available, I have not added them to this library.

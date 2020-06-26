@@ -22,7 +22,7 @@ def execution_progress_chart(history):
     return barh_chart_filename
 
 
-def sprint_blizzard_chart(labels, added, removed, unblocked, blocked):
+def sprint_churn_chart(labels, added, removed, unblocked, blocked):
     data = {
         "added": added,
         "removed": removed,
@@ -36,17 +36,17 @@ def sprint_blizzard_chart(labels, added, removed, unblocked, blocked):
     plt = charts.multibars(
         data,
         labels=labels,
-        title="Scope blizzard",
+        title="Scope churn",
         colors=["blue", "purple", "silver", "gold"],
     )
-    sprint_blizzard_chart = f"split blizzard {id(labels)}.png"
-    plt.savefig(sprint_blizzard_chart)
+    sprint_churn_chart = f"split churn {id(labels)}.png"
+    plt.savefig(sprint_churn_chart)
     plt.close()
-    return sprint_blizzard_chart
+    return sprint_churn_chart
 
 
-def sprint_blizzard_report(labels, added, removed, unblocked, blocked):
-    chart_filename = sprint_blizzard_chart(labels, added, removed, unblocked, blocked)
+def sprint_churn_report(labels, added, removed, unblocked, blocked):
+    chart_filename = sprint_churn_chart(labels, added, removed, unblocked, blocked)
     content = page.embed_image(filename=chart_filename)
     return content, [chart_filename]
 

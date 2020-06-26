@@ -142,7 +142,7 @@ def progress_history(
     return history
 
 
-def sprint_blizzard(
+def sprint_churn(
     jira_access,
     project_key,
     sprint,
@@ -223,7 +223,7 @@ def sprint_blizzard(
     return issues_added, issues_removed, issues_blocked, issues_unblocked
 
 
-def sprint_blizzard_history(jira_access, project_key, history):
+def sprint_churn_history(jira_access, project_key, history):
     added = []
     removed = []
     blocked = []
@@ -236,7 +236,7 @@ def sprint_blizzard_history(jira_access, project_key, history):
             issues_removed,
             issues_blocked,
             issues_unblocked,
-        ) = sprint_blizzard(jira_access, project_key, sprint, ignore_same=True)
+        ) = sprint_churn(jira_access, project_key, sprint, ignore_same=True)
 
         # flatten dict of sets to list (count in stories which were added->removed->added... on the different days)
         a = [j for i in issues_added.values() for j in i]
