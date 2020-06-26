@@ -1,10 +1,6 @@
 ﻿README
 ======
 
-Business side always expect plan and then execution but we all know that usually software projects are very complex. Initial requirements are never concrete enough nor complete, same with technology. No two projects are the same. Very often, what appears to be a simple problem is much harder to implement in reality. Development team “don’t know what they don’t know”, meaning that unknowns with the project can only be identified when they arise.
-
-The right software indicators can help provide a common language between software engineering team and business leaders. From the other hand if we expect teams to adjust processes, we need to make sure that everyone really understands the problem we want to solve.
-
 The goal of this library is to provide a flexible mechanism for building dashboard(s) from components designed to observe and measure many dimmentions of work. Data calculated once can be later published on the Confluance website (Jira Confluance macros are supported for dynamic data refresh). All setup can be made in jupyter notebooks.
 
 There are many tools available, such as built-in gadgets and Jira dashboard reports, and Confluance macros, or paid tools like eazyBI, but thanks to custom code we can do everything, such as integrate data from all sources like Jira, Git, ServiceNow, and calculate numerical measurements of key results we expect team(s) to achive. 
