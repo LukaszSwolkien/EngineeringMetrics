@@ -1,6 +1,8 @@
 ﻿README
 ======
 
+Read [the software engineering metrics](https://medium.com/@lukasz.swolkien/the-software-engineering-metrics-c4ccb686447a) article to learn more about the details.
+
 The goal of this library is to provide a flexible mechanism for building dashboard(s) from components designed to observe and measure many dimentions of work. Data calculated once can be later published on the Confluance website (Jira Confluance macros are supported for dynamic data refresh). All setup can be made in jupyter notebooks.
 
 There are many tools available, such as built-in gadgets, dashboards and reports in Jira, or macros in Confluence, or tools like eazyBI, but thanks to custom code we can do everything (without license cost). For example, we can integrate data from different sources like Jira, Git, ServiceNow, and calculate numerical measurements of key results we expect team(s) to achieve. We can put everything on one page for the whole organization.
@@ -9,7 +11,7 @@ You don't need administrator privileges in Jira or Confluence. Just use the cred
 
 Note 1: this is in addition to DORA (DevOps Research & Assessment) metrics from which we already know how successful we are at DevOps (DF – Deployment Frequency, MLT – Mean Lead Time for changes, MTTR – Mean Time to Recover, CFR – Change Failure Rate). 
 
-Note 2: There are also other dimmentions not covered in this library which are very important like impact done by the software on customers, profitability, and engineers motivation, engagement, satisfaction, trust, attitute. 
+Note 2: There are also other dimentions not covered in this library which are very important like impact done by the software on customers, profitability, and engineers motivation, engagement, satisfaction, trust, attitute. 
 
 ## Algorithms
 1. __Execution metrics__ to measure the amount of work committed vs delivered. This data shows how predictable the team is. Unlike the Story Points, the percentage of work done compared to planned can be compared between teams. Such metrics can also be aggregated on the organisation level
@@ -63,12 +65,11 @@ Note that you need to specify Workload & Statuses to determine which issues are 
 
     Available analysis:
 
-    - Historical independency metrics ('all issues' vs 'issues with dependencies' - stacked bar chart with independency factor 0-100 on the Y axis and last 8 dates on the X axis)
-    - External dependency by Squad (Jira external projects)
-    - Issues with dependency by Initiative (Jira Epic in Squad project)
-    - Dependency issues initiatives (Jira Epics in external projects)
+    - Historical independency metrics ('all issues' vs 'issues with dependencies' - stacked bar chart with independency factor 0-100 on the Y axis and dates on the X axis)
+    - External dependency breakdown by team (Jira external projects)
+    - External dependency breakdown by initiative (Jira Epic)
     - Dependency graphs showing up to second level links
-    - External but in DM vs external outside of DM
+    - External versus internal dependencies on organisation level
     - Total Independency metric:  sum(all_issues) / sum(all_with_dep)
     - Total independency history chart
 
@@ -83,7 +84,7 @@ Note that you need to specify Workload & Statuses to determine which issues are 
         alt="Independence summary"
         style="margin-right: 10px;" />
 
-    ### Example of dependency split on squad level
+    ### Example of dependency breakdown to find out which teams we have dependencies on and which projects are blocked.
 
     <img src="./screenshots/dependency split.png"
         alt="Dependency split"
