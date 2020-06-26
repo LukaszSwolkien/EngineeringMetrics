@@ -1,6 +1,6 @@
 ﻿README
 ======
-Read [the software engineering metrics](https://medium.com/@lukasz.swolkien/the-software-engineering-metrics-c4ccb686447a) article to learn more about the details abd to see examples.
+Read [the software engineering metrics](https://medium.com/@lukasz.swolkien/the-software-engineering-metrics-c4ccb686447a) article to learn more about the details & see examples.
 
 The goal of this library is to provide a flexible mechanism for building dashboard(s) from components designed to observe and measure many dimentions of work. Data calculated once can be later published on the Confluance website (Jira Confluance macros are supported for dynamic data refresh). All setup can be made in jupyter notebooks.
 
