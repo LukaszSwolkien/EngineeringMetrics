@@ -1,41 +1,38 @@
 ﻿README
 ======
 
-The goal of this library is to provide a flexible mechanism for building dashboard(s) from components designed to observe and measure many dimmentions of work. Data calculated once can be later published on the Confluance website (Jira Confluance macros are supported for dynamic data refresh). All setup can be made in jupyter notebooks.
+The goal of this library is to provide a flexible mechanism for building dashboard(s) from components designed to observe and measure many dimentions of work. Data calculated once can be later published on the Confluance website (Jira Confluance macros are supported for dynamic data refresh). All setup can be made in jupyter notebooks.
 
-There are many tools available, such as built-in gadgets and Jira dashboard reports, and Confluance macros, or paid tools like eazyBI, but thanks to custom code we can do everything, such as integrate data from all sources like Jira, Git, ServiceNow, and calculate numerical measurements of key results we expect team(s) to achive. 
+There are many tools available, such as built-in gadgets, dashboards and reports in Jira, or macros in Confluence, or tools like eazyBI, but thanks to custom code we can do everything (without license cost). For example, we can integrate data from different sources like Jira, Git, ServiceNow, and calculate numerical measurements of key results we expect team(s) to achieve. We can put everything on one page for the whole organization.
 
-You don't need administrator privileges in Jira or Confluance. Just use the credentials of your regular user to access data in Jira and generate a custom dashboard on the Confluance page(s). You can also add custom code to generate report in any other format
+You don't need administrator privileges in Jira or Confluence. Just use the credentials of your regular user to access data in Jira and generate a custom dashboard on the Confluence page(s). You can also add custom code to generate report in any other format
 
 Note 1: this is in addition to DORA (DevOps Research & Assessment) metrics from which we already know how successful we are at DevOps (DF – Deployment Frequency, MLT – Mean Lead Time for changes, MTTR – Mean Time to Recover, CFR – Change Failure Rate). 
 
 Note 2: There are also other dimmentions not covered in this library which are very important like impact done by the software on customers, profitability, and engineers motivation, engagement, satisfaction, trust, attitute. 
 
 ## Algorithms
-1. __Execution metrics__ to measure the amount of work committed vs delivered. This data shows how predictable the team is. 
-Unlike the Story Points, the percentage of work done compared to planned can be compared between teams. Such metrics can also be aggregated on the organisation level
-
-    Sprint end date and resolution date for each issue matters
+1. __Execution metrics__ to measure the amount of work committed vs delivered. This data shows how predictable the team is. Unlike the Story Points, the percentage of work done compared to planned can be compared between teams. Such metrics can also be aggregated on the organisation level
 
     Available analysis:
 
     - Execution summary progress bar chart for the organisation
     - Execution history progress bar chart for the team
-    - The goal of the last sprint for the team
-    - Scope blizzard history
+    - The last sprint details like goal, start & end dates
+    - Scope churn history
     - Carry over issues that were in more than one sprint and have not yet been Done
 
     Example of key results:
 
     - 90% of sprint content committed by the team is delivered. 
 
-    ### Sprint execution (organisation level)
+    ### Example of execution metrics for active Sprints on organisation level
 
     <img src="./screenshots/execution in squads.png"
         alt="Execution in squads"
         style="margin-right: 10px;" />
 
-    ### Squad execution history (squad level)
+    ### Example of squad execution history
 
     <img src="./screenshots/history of execution.png"
         alt="Squad execution history"
@@ -43,26 +40,26 @@ Unlike the Story Points, the percentage of work done compared to planned can be 
 
     - "done on time" - work items that were actually done in the sprint.
 
-    - "done later" - work items that were in the sprint but finished in the next iteration(s). Therefore execution history for "done later" items will change over time. In this way we can check if there are any items we never deliver (removed from the scope) due to different reasons
+    - "done later" - work items that were in the sprint but finished in the next iteration(s). Therefore execution history for "done later" items will change over time. In this way we can check if there are any items we never deliver due to different reasons. We can see also how much work was carry over.
 
-    ### Sprint scope churn (squad level)
+    ### Example for scope churn history on squad level
+    "Scope churn" chart shows the number of issues in the sprint which were added, removed, unblocked and blocked in each sprint. These may be signs of problems with the product roadmap and/or adjustment of priorities between organisations, the lack of adequate pre-planning between sprints (backlog refinement), an insufficient number of stakeholders resulting in missing requirements, production incidents etc...
 
     <img src="./screenshots/scope churn.png"
         alt="Scope churn"
         style="margin-right: 10px;" />
-    - "Scope churn" - the number of issues in the sprint which were added, removed, unblocked and blocked in each sprint
 
     - "Carry over" - issues that were in more than one sprint and have not yet been Done
 
 2. __Dependency factor__ calculates the number of issues with external dependencies to the total number of issues not Done yet, but after refinement (estimated in the backlog or already planned for the sprint).
-Note that you need to specify Workload & Statuses to determin which issues are Ready for Development (after refinement) 
+Note that you need to specify Workload & Statuses to determine which issues are Ready for Development (after refinement) 
 
     The dependency factor is calculated according to the following rules:
 
     - searches for 'external' dependencies that can be direct or indirect (internal dependencies are ignored)
     - link type is "Is blocked by" or "Depends on".
     - related dependencies are filtered if their status is "Done". 
-    - plus Jira items in the Blocked state that don't have links. This is taken into account because there are teams that do not use Jira
+    - plus, Jira items in the Blocked state that don't have links. This is taken into account because there are teams that do not use Jira
 
     Available analysis:
 
@@ -80,31 +77,31 @@ Note that you need to specify Workload & Statuses to determin which issues are R
     - All teams independence factor > 90% (no more than 10% stories dependent on work from other team)
     - Single team independence factor > 80%
 
-    ### Independence summary (organisation level)
+    ### Example of independence summary on organisation level
 
     <img src="./screenshots/independence summary.png"
         alt="Independence summary"
         style="margin-right: 10px;" />
 
-    ### Dependency split (squad level)
+    ### Example of dependency split on squad level
 
     <img src="./screenshots/dependency split.png"
         alt="Dependency split"
         style="margin-right: 10px;" />
 
-    ### Dependency graphs (squad level)
+    ### Example of dependency graph on squad level
+    Usually there is number of dependencies in the work backlog for which we can see dependency graphs. Very often, we have many user stories blocked by one or many different dependencies, and sometimes, even a chain of dependencies. To better understand the situation and then prioritise, it is important to analyse the breakdown of dependencies between teams and check the graphs of dependencies.
 
     <img src="./screenshots/dependency graphs.png"
         alt="Dependency graphs"
         style="margin-right: 10px;" />
 
-3. __Project metrics__ calculates progress of the project based on number of issues done vs defined for the given epic(initiative)
-    Execution metrics focus on sprints, not giving details on how much work was done for a given project. Project metrics focus on project progress.
+3. __Project metrics__ calculates progress of the project based on number of issues done vs defined for the given epic(initiative). Execution metrics focus on sprints, not giving details on how much work was done for a given project. Project metrics focus on project progress.
 
     Available analysis:
     - Percentage done
     - Sprint details
-    - Pie chart by issue type (Confluance Jira macro)
+    - Pie chart by issue type (Confluence Jira macro)
     - Reminding work
     - Risks
     - Blocked stories (list and dependency graphs)
@@ -269,21 +266,25 @@ Go to your Confluance page to see generated dashboard(s)
 
 Add more engineering metrics:
 
-1. Add Quality metrics on different levels. Goal is to monitor negative impact on end user, error budget, manual vs automated testing etc.
+1. Add Quality metrics on different levels.
+    The goal is to monitor:
+    - Incidents found on production with negative impact on end user (software works differently than expected)
+    - An Error budget means that we can push the features until SLO is met, but no new features are allowed until the budget is rebalanced. SLOs must be defined for each service, measured to count non-compliant requests, for example, if the service latency increases, the budget will decrease.
+    - Manual versus automated testing balance. There are certain cases which require human to test a system (Usability testing, UI/UX, exploratory testing or ad-hoc testing which is not a part of regression). From the other hand test cases in regression suite should be automated as much as possible.
 
     Example of key results:
 
     - 1 incident found on production for 10 releases
-    - 10% or less BAU is enough to keep maintenance backlog stable
+    - 10% or less effort on BAU is enough to keep maintenance backlog stable (SLO is met)
     - 90% or more of test cases executed at least once a week
 
 2. Add to __Execution metrics__ code churn analysis.
 
     How much % of code is rewritten or deleted shortly after being written. Code churn depends on types of projects and where those projects are in the development lifecycle. There may be different causes of Code Churn:
-    - Project prototyping,
-    - Unclear requierements
-    - Learning new technology or solving difficult problem
-    - Perfectionism versus "good enough"
+    - project prototyping,
+    - unclear requierements,
+    - learning new technology or solving difficult problem,
+    - perfectionism versus "good enough",
 
     There is no "bad" code churn. This is additional context for the execution and project metrics.
     This requires integration with GitLab.
