@@ -1,17 +1,13 @@
 ﻿README
 ======
-
-Read [the software engineering metrics](https://medium.com/@lukasz.swolkien/the-software-engineering-metrics-c4ccb686447a) article to learn more about the details.
+Read [the software engineering metrics](https://medium.com/@lukasz.swolkien/the-software-engineering-metrics-c4ccb686447a) article to learn more about the details abd to see examples.
 
 The goal of this library is to provide a flexible mechanism for building dashboard(s) from components designed to observe and measure many dimentions of work. Data calculated once can be later published on the Confluance website (Jira Confluance macros are supported for dynamic data refresh). All setup can be made in jupyter notebooks.
 
-There are many tools available, such as built-in gadgets, dashboards and reports in Jira, or macros in Confluence, or tools like eazyBI, but thanks to custom code we can do everything (without license cost). For example, we can integrate data from different sources like Jira, Git, ServiceNow, and calculate numerical measurements of key results we expect team(s) to achieve. We can put everything on one page for the whole organization.
-
 You don't need administrator privileges in Jira or Confluence. Just use the credentials of your regular user to access data in Jira and generate a custom dashboard on the Confluence page(s). You can also add custom code to generate report in any other format
 
-Note 1: this is in addition to DORA (DevOps Research & Assessment) metrics from which we already know how successful we are at DevOps (DF – Deployment Frequency, MLT – Mean Lead Time for changes, MTTR – Mean Time to Recover, CFR – Change Failure Rate). 
+Note: There are also other dimensions not covered in this library which are very important like impact done by the software on customers, profitability, and engineers motivation, engagement, satisfaction, trust, attitude. 
 
-Note 2: There are also other dimentions not covered in this library which are very important like impact done by the software on customers, profitability, and engineers motivation, engagement, satisfaction, trust, attitute. 
 
 ## Algorithms
 1. __Execution metrics__ to measure the amount of work committed vs delivered. This data shows how predictable the team is. Unlike the Story Points, the percentage of work done compared to planned can be compared between teams. Such metrics can also be aggregated on the organisation level
@@ -294,4 +290,4 @@ Add more engineering metrics:
 
     How many problems were ready to be developed, but we discovered blocking dependencies during a sprint that is related to the work that another team has to do (we don't take into account things that we can't predict, such as instability of environments etc.)
     
-Note: This is in addition to DORA (DevOps Research & Assessment) metrics from which we already know how successful we are at DevOps (DF – Deployment Frequency, MLT – Mean Lead Time for changes, MTTR – Mean Time to Recover, CFR – Change Failure Rate). Since we already have them available, I have not added them to this library.
+Note: This metrics are in addition to DORA (DevOps Research & Assessment) metrics from which we already know how successful we are at DevOps (DF – Deployment Frequency, MLT – Mean Lead Time for changes, MTTR – Mean Time to Recover, CFR – Change Failure Rate). Since we already have them available, I have not added them to this library.
