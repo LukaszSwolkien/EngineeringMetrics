@@ -1,5 +1,8 @@
 ﻿README
 ======
+
+[![Join the chat at https://gitter.im/EngineeringMetricsTools/community](https://badges.gitter.im/EngineeringMetricsTools/community.svg)](https://gitter.im/EngineeringMetricsTools/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Read [the software engineering metrics](https://medium.com/@lukasz.swolkien/the-software-engineering-metrics-c4ccb686447a) article to learn more about the details & see examples.
 
 The goal of this library is to provide a flexible mechanism for building dashboard(s) from components designed to observe and measure many dimentions of work. Data calculated once can be later published on the Confluance website (Jira Confluance macros are supported for dynamic data refresh). All setup can be made in jupyter notebooks.
