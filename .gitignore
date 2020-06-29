@@ -5,4 +5,6 @@ venv/
 metrics.json
 _metrics.json
 spike.py
+coverage.xml
+.coverage
 *.html
