@@ -1,7 +1,10 @@
-import pytest
-from mock import Mock, PropertyMock, MagicMock
-from ia.common.jira.sprint import Sprint, DATE_TIME_FORMAT
 import datetime
+
+import pytest
+from mock import MagicMock, Mock, PropertyMock
+
+from ia.common.jira.sprint import DATE_TIME_FORMAT, Sprint
+
 # import tests.fakes as fakes
 
 

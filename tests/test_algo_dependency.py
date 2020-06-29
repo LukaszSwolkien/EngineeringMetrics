@@ -1,6 +1,7 @@
-import ia.dependency.algo as dep
-import pytest
 import mock
+import pytest
+
+import ia.dependency.algo as dep
 import tests.fakes as fakes
 
 

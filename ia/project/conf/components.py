@@ -1,6 +1,6 @@
+import ia.common.viz.conf.dashboard as confboard
 import ia.common.viz.conf.page as page
 import ia.dependency.conf.components as dependency_components
-import ia.common.viz.conf.dashboard as confboard
 import ia.execution.conf.components as sprint_components
 
 

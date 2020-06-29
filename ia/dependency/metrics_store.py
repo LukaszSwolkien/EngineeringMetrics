@@ -1,7 +1,8 @@
 import datetime
-from tinydb import TinyDB, Query
-from ia.common.helpers import to_dt, to_ts, day_ts
 
+from tinydb import Query, TinyDB
+
+from ia.common.helpers import day_ts, to_dt, to_ts
 
 __db = TinyDB("metrics.json")
 

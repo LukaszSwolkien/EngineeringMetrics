@@ -1,6 +1,7 @@
 import datetime
-import sys
 import locale
+import sys
+
 
 def die(message):
     print(message)
@@ -57,7 +58,7 @@ def to_num(s):
 
 def to_str(value):
     try:
-        strval = u''.join(value)
+        strval = u"".join(value)
     except TypeError:
-        strval = str(value, errors='ignore')
+        strval = str(value, errors="ignore")
     return strval

@@ -1,7 +1,8 @@
+import datetime
+
+import ia.common.viz.charts as charts
 import ia.common.viz.conf.page as page
 import ia.execution.algo as algo
-import ia.common.viz.charts as charts
-import datetime
 
 
 def execution_progress_chart(history):
@@ -130,7 +131,12 @@ def execution_report(projetcs_progress):
     return content, [barh_chart_filename]
 
 
-def carry_over_issues(jira_access, project_key, status_done=("Done"), issuetype=("User Story", "Task", "Bug", "User Story Bug", "Technical Debt")):
+def carry_over_issues(
+    jira_access,
+    project_key,
+    status_done=("Done"),
+    issuetype=("User Story", "Task", "Bug", "User Story Bug", "Technical Debt"),
+):
     # JQL = f'project = {project_key} AND type not in (Sub-bug, "Sub Story", "Sub Task", Sub-Task) and sprint is not EMPTY AND sprint in closedSprints() AND sprint in openSprints() AND status not in ({status_done})'
-    JQL = f'project = {project_key} and issuetype in {issuetype} and sprint is not EMPTY AND sprint in closedSprints() AND sprint in openSprints() AND status not in ({status_done})'
+    JQL = f"project = {project_key} and issuetype in {issuetype} and sprint is not EMPTY AND sprint in closedSprints() AND sprint in openSprints() AND status not in ({status_done})"
     return page.embed_expand_macro(page.embed_jira_macro(JQL), "Carry over issues"), []

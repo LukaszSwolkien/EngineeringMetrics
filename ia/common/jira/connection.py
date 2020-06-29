@@ -1,7 +1,8 @@
-import ia.common.exception as iae
-from ia.common.jira.issue import IssueCache
 from jira import JIRA, JIRAError
 from jira.resources import GreenHopperResource
+
+import ia.common.exception as iae
+from ia.common.jira.issue import IssueCache
 
 
 def connect(url, basic_auth, timeout=None):

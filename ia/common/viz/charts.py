@@ -1,10 +1,11 @@
-import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
-import matplotlib.ticker as mtick
-import matplotlib.patches as mpatches
-from matplotlib.ticker import MaxNLocator
-import numpy as np
 import datetime
+
+import matplotlib.dates as mdates
+import matplotlib.patches as mpatches
+import matplotlib.pyplot as plt
+import matplotlib.ticker as mtick
+import numpy as np
+from matplotlib.ticker import MaxNLocator
 
 
 def make_autopct(values):

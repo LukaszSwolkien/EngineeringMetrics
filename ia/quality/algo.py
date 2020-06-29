@@ -1,7 +1,9 @@
 """Quality check algorithms"""
-import ia.common.jira.issue as jira_logs
-from jira import JIRA
 import datetime
+
+from jira import JIRA
+
+import ia.common.jira.issue as jira_logs
 
 
 def maintenance_backlog(jira_access, project_key, issuetype, status_done):

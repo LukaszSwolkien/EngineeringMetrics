@@ -1,5 +1,6 @@
-from confluence.client import Confluence, ContentType, ConfluenceError
 import uuid
+
+from confluence.client import Confluence, ConfluenceError, ContentType
 
 
 def rightwards_arrow(color="rgb(0,0,255)"):

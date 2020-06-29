@@ -1,11 +1,12 @@
-import ia.common.viz.conf.page as page
-import ia.common.viz.conf.dashboard as confboard
-import ia.common.viz.graph as graph
-import ia.common.viz.charts as charts
+import datetime
+
 import ia.common.jira.issue as ticket
+import ia.common.viz.charts as charts
+import ia.common.viz.conf.dashboard as confboard
+import ia.common.viz.conf.page as page
+import ia.common.viz.graph as graph
 import ia.dependency.algo as dep
 import ia.dependency.metrics_store as metrics_store
-import datetime
 
 
 def metrics_history_chart(metrics_history, title="Independence factor", days=8):

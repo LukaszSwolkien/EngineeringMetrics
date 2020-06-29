@@ -1,8 +1,9 @@
-import ia.common.jira.issue as ticket
 import collections
-import re
 import datetime
 import itertools
+import re
+
+import ia.common.jira.issue as ticket
 
 DAY_STRING_FORMAT = "%Y-%m-%d"
 BLOCKED_STATUS = "Blocked"
@@ -252,8 +253,9 @@ def sprint_churn_history(jira_access, project_key, history):
 
     return labels, added, removed, unblocked, blocked
 
+
 def blocked_during_sprint(jira_access, project_key, s):
     issues_blocked = []
-    # TODO: 
+    # TODO:
     # find dependencies to other external projects by Link 'is blocked by' field added during the sprint
     return issues_blocked

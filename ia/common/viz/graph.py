@@ -1,5 +1,6 @@
-from ia.common.helpers import die
 from functools import partial
+
+from ia.common.helpers import die
 
 try:
     import pygraphviz as pgv

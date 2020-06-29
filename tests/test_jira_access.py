@@ -1,7 +1,9 @@
+import os
+
+import pytest
+
 import ia.common.exception as iae
 from ia.common.jira.connection import connect
-import pytest
-import os
 
 
 def test_jira_access_wrong_credentials():

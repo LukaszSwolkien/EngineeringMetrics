@@ -1,6 +1,6 @@
-import ia.quality.algo as algo
 import ia.common.jira.issue as jira_logs
 import ia.common.viz.conf.page as page
+import ia.quality.algo as algo
 
 
 def maintenance_report(created_defects, resolved_defects, title=""):

@@ -1,9 +1,9 @@
 """Helpers to access jira issue fields"""
+from cachetools import cached
+from jira import JIRAError
+
 from ia.common.jira.links import get_external_dependencies, is_internal
 from ia.common.jira.sprint import Sprint
-from jira import JIRAError
-from cachetools import cached
-
 
 issues_cache = {}
 

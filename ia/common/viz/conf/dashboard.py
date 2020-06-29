@@ -1,5 +1,6 @@
-import ia.common.viz.conf.page as page
 import datetime
+
+import ia.common.viz.conf.page as page
 
 
 class Dashboard:

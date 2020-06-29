@@ -67,4 +67,3 @@ class Issue:
 
     fields = property(get_fields)
     key = property(get_key)
-
