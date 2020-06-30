@@ -1,3 +1,4 @@
+# ignore testing code for data visualization and confluance macros
 ignore:
   - "**/conf/*"
   - "ia/common/viz/*"
