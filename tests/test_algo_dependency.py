@@ -61,3 +61,18 @@ def test_external_links_0(jira_mock): # issue-5 is a dependency for the other is
     assert p == 0
     assert len(all_with_dep) == 0
     assert len(all_issues) == 1
+
+
+# TODO - test cycle dependency: 
+# DANCOE-1155
+# DANCOE-1168
+# DANCOE-1048
+
+# DANCOE-1155
+# DANCOE-1168
+# DANCOE-1048
+
+# DANCOE-1155
+# DANCOE-1168
+# DANCOE-1048
+

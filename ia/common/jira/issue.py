@@ -140,28 +140,39 @@ def load_external_issues(issue_cache, max_level, filter_out_status):
 
 def get_indirect_external_dependencies(jira_access, issue, links_with_external_deps):
     links = set()
+    seen = set()
     project_name = issue.fields.project.key
     keys_with_external_dep = [l.key for l in links_with_external_deps]
-    for link in issue.fields.issuelinks:
-        l_type = "inwardIssue" if hasattr(link, "inwardIssue") else "outwardIssue"
-        link.key = getattr(link, l_type).key
 
-        if is_internal(link.key, project_name) and (
-            link.type.name == "Dependancy"
-            and l_type == "outwardIssue"
-            or link.type.name == "Blocks"
-            and l_type == "inwardIssue"
-        ):
-            if link.key in keys_with_external_dep:
-                print(f"Found indirect dependency: {link.key}")
-                links.add(link)
-            else:
-                # Recurtion to check other internal links which may have dependency on the issue with external dependency
-                l_issue = get_issue_by_key(jira_access, link.key)
-                links = links.union(
-                    get_indirect_external_dependencies(
-                        jira_access, l_issue, links_with_external_deps
-                    )
-                )
 
-    return links
+    def walk(jira_access, issue, keys_with_external_dep):
+        links = set()
+        seen.add(issue.key)
+        for link in issue.fields.issuelinks:
+            l_type = "inwardIssue" if hasattr(link, "inwardIssue") else "outwardIssue"
+            link.key = getattr(link, l_type).key
+
+
+            if is_internal(link.key, project_name) and (
+                link.type.name == "Dependancy"
+                and l_type == "outwardIssue"
+                or link.type.name == "Blocks"
+                and l_type == "inwardIssue"
+            ):
+                if link.key in keys_with_external_dep:
+                    print(f"Found indirect dependency: {link.key}")
+                    links.add(link)
+                else:
+                    # Recurtion to check other internal links which may have dependency on the issue with external dependency
+                    # print(link.key)
+                    if link.key not in seen:
+                        l_issue = get_issue_by_key(jira_access, link.key)
+                    
+                        links = links.union(
+                            walk(
+                                jira_access, l_issue, keys_with_external_dep
+                            )
+                        )
+        return links
+
+    return walk(jira_access, issue, keys_with_external_dep)
