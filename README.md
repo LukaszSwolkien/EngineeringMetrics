@@ -25,35 +25,6 @@ Note: There are also other dimensions not covered in this library which are very
     - Scope churn history
     - Carry over issues that were in more than one sprint and have not yet been Done
 
-    Example of key results:
-
-    - 90% of sprint content committed by the team is delivered. 
-
-    ### Example of execution metrics for active Sprints on organisation level
-
-    <img src="./screenshots/execution in squads.png"
-        alt="Execution in squads"
-        style="margin-right: 10px;" />
-
-    ### Example of squad execution history
-
-    <img src="./screenshots/history of execution.png"
-        alt="Squad execution history"
-        style="margin-right: 10px;" />
-
-    - "done on time" - work items that were actually done in the sprint.
-
-    - "done later" - work items that were in the sprint but finished in the next iteration(s). Therefore execution history for "done later" items will change over time. In this way we can check if there are any items we never deliver due to different reasons. We can see also how much work was carry over.
-
-    ### Example for scope churn history on squad level
-    "Scope churn" chart shows the number of issues in the sprint which were added, removed, unblocked and blocked in each sprint. These may be signs of problems with the product roadmap and/or adjustment of priorities between organisations, the lack of adequate pre-planning between sprints (backlog refinement), an insufficient number of stakeholders resulting in missing requirements, production incidents etc...
-
-    <img src="./screenshots/scope churn.png"
-        alt="Scope churn"
-        style="margin-right: 10px;" />
-
-    - "Carry over" - issues that were in more than one sprint and have not yet been Done
-
 2. __Dependency factor__ calculates the number of issues with external dependencies to the total number of issues not Done yet, but after refinement (estimated in the backlog or already planned for the sprint).
 Note that you need to specify Workload & Statuses to determine which issues are Ready for Development (after refinement) 
 
@@ -79,24 +50,6 @@ Note that you need to specify Workload & Statuses to determine which issues are 
     - All teams independence factor > 90% (no more than 10% stories dependent on work from other team)
     - Single team independence factor > 80%
 
-    ### Example of independence summary on organisation level
-
-    <img src="./screenshots/independence summary.png"
-        alt="Independence summary"
-        style="margin-right: 10px;" />
-
-    ### Example of dependency breakdown to find out which teams we have dependencies on and which projects are blocked.
-
-    <img src="./screenshots/dependency split.png"
-        alt="Dependency split"
-        style="margin-right: 10px;" />
-
-    ### Example of dependency graph on squad level
-    Usually there is number of dependencies in the work backlog for which we can see dependency graphs. Very often, we have many user stories blocked by one or many different dependencies, and sometimes, even a chain of dependencies. To better understand the situation and then prioritise, it is important to analyse the breakdown of dependencies between teams and check the graphs of dependencies.
-
-    <img src="./screenshots/dependency graphs.png"
-        alt="Dependency graphs"
-        style="margin-right: 10px;" />
 
 3. __Project metrics__ calculates progress of the project based on number of issues done vs defined for the given epic(initiative). Execution metrics focus on sprints, not giving details on how much work was done for a given project. Project metrics focus on project progress.
 
@@ -289,7 +242,7 @@ Add more engineering metrics:
     - perfectionism versus "good enough",
 
     There is no "bad" code churn. This is additional context for the execution and project metrics.
-    This requires integration with GitLab.
+    (analysis based on git commits, git log or git reflog)
 
 3. Add to __Dependency factor__ new blocking issues discovered during the sprint lifespan.
 
