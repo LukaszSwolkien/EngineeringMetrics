@@ -1,0 +1,3 @@
+ignore:
+  - "**/conf/*"
+  - "ia/common/viz/*"

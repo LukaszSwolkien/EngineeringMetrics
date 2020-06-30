@@ -7,4 +7,5 @@ _metrics.json
 spike.py
 coverage.xml
 .coverage
+test_cov.sh
 *.html
