@@ -3,7 +3,7 @@
 
 [![Join the chat at https://gitter.im/EngineeringMetricsTools/community](https://badges.gitter.im/EngineeringMetricsTools/community.svg)](https://gitter.im/EngineeringMetricsTools/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)
-<!---[![Test coverage: codedev](https://codecov.io/gh/LukaszSwolkien/EngineeringMetrics/coverage.svg?branch=master)](https://github.com/python/black)-->
+[![Test coverage: codedev](https://codecov.io/gh/LukaszSwolkien/EngineeringMetrics/coverage.svg?branch=master)](https://github.com/python/black)
 
 Read [the software engineering metrics](https://medium.com/@lukasz.swolkien/the-software-engineering-metrics-c4ccb686447a) article to learn more about the details & see examples.
 
