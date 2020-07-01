@@ -3,7 +3,7 @@ import locale
 import sys
 
 
-def die(message):
+def die(message): # pragma: no cover
     print(message)
     sys.exit(1)
 
@@ -29,7 +29,12 @@ def day_ts(dt=datetime.datetime.utcnow()):
 
 def is_int(s):
     try:
-        if isinstance(s, str) or isinstance(s, int):
+        if isinstance(s, str):
+            num = to_num(s)
+            if isinstance(num, float):
+                return num.is_integer()
+            return isinstance(num, int)
+        elif isinstance(s, int):
             int(s)
             return True
         else:
