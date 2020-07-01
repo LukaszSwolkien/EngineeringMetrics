@@ -43,7 +43,7 @@ def select_in(dt_1, dt_2):
 
 def read_independence_stats(name, squad_name):
     Metrics = Query()
-    found = __db.search(Metrics.name == name and Metrics.squad == squad_name)
+    found = __db.search((Metrics.name == name) & (Metrics.squad == squad_name))
     return IndependenceMetrics(found) if len(found) else None
 
 
