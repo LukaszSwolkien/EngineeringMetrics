@@ -9,7 +9,8 @@ DAY_STRING_FORMAT = "%Y-%m-%d"
 BLOCKED_STATUS = "Blocked"
 STATUS_FIELD = "status"
 SPRINT_FIELD = "Sprint"
-
+STATUS_DONE_DEFAULT = ("Done") #("Done" , "Waiting for production")
+MAIN_ISSUETYPE_DEFAULT = ("User Story", "Task", "Bug", "Technical Debt")
 
 class ExecutionMetrics:
     def __init__(self, all_issues, done_in_sprint, done_by_now, sprint):
@@ -48,7 +49,7 @@ class ExecutionMetrics:
     count_done_late = property(get_done_late_count)
 
 
-def progress(jira_access, JQL, status_done=("Done", "Waiting for production")):
+def progress(jira_access, JQL, status_done=STATUS_DONE_DEFAULT):
     all_issues = ticket.search_issues(jira_access, JQL)
     c_all = len(all_issues)
     done_issues = [i for i in all_issues if i.fields.status.name in status_done]
@@ -60,8 +61,8 @@ def progress(jira_access, JQL, status_done=("Done", "Waiting for production")):
 def active_sprint_progress(
     jira_access,
     project_key,
-    issuetype=("User Story", "Task", "Bug", "User Story Bug", "Technical Debt"),
-    status_done=("Done", "Waiting for production"),
+    issuetype=MAIN_ISSUETYPE_DEFAULT,
+    status_done=STATUS_DONE_DEFAULT,
 ):
     JQL = f'project = "{project_key}" and sprint in OpenSprints() and issuetype in {issuetype}'
     return progress(jira_access, JQL, status_done)
@@ -105,8 +106,8 @@ def progress_history(
     jira_access,
     project_key,
     sprints,
-    issuetype=("User Story", "Task", "Bug", "Technical Debt"),
-    status_done=("Done"),  # , "Waiting for production"),
+    issuetype=MAIN_ISSUETYPE_DEFAULT,
+    status_done=STATUS_DONE_DEFAULT,
 ):
     history = collections.OrderedDict()
     # seen = set() # some issues can be carry over in multiple sprints. Consider them once.
@@ -148,7 +149,7 @@ def sprint_churn(
     project_key,
     sprint,
     ignore_same=True,
-    issuetype=("User Story", "Task", "Bug", "Technical Debt"),
+    issuetype=MAIN_ISSUETYPE_DEFAULT,
 ):
     issues_added = {}
     issues_removed = {}
