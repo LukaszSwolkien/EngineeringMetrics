@@ -1,6 +1,5 @@
+import sys
 from functools import partial
-
-from ia.common.helpers import die
 
 try:
     import pygraphviz as pgv
@@ -10,7 +9,8 @@ except ImportError:
     brew install graphviz
     pip install pygraphviz --install-option="--include-path=/usr/local/include/graphviz/" --install-option="--library-path=/usr/local/lib/graphviz"
     """
-    die("Please install pygraphviz ")
+    print("Please install pygraphviz ")
+    sys.exit(1)
 
 
 def save_graph_image(graph, image_file):
@@ -61,9 +61,7 @@ def build_graph(issue_cache):
                             shape="box",
                             label=get_label_by_key(issue_cache, link.outwardIssue.key),
                         )
-                        graph.add_edge(
-                            issue.key, link.outwardIssue.key, label=link.type.outward
-                        )
+                        graph.add_edge(issue.key, link.outwardIssue.key, label=link.type.outward)
                 if hasattr(link, "inwardIssue"):
                     if (
                         link.inwardIssue.key in filtered_links
@@ -76,9 +74,7 @@ def build_graph(issue_cache):
                             shape="box",
                             label=get_label_by_key(issue_cache, link.inwardIssue.key),
                         )
-                        graph.add_edge(
-                            link.inwardIssue.key, issue.key, label=link.type.outward
-                        )
+                        graph.add_edge(link.inwardIssue.key, issue.key, label=link.type.outward)
 
         for l_key, l_issue_cache in linked_issues.items():
             if l_key not in seen:
@@ -96,10 +92,7 @@ def build_graph(issue_cache):
         epic_name = "| Epic: " + epic_name
     graph.graph_attr["label"] = f"{issue.key}: {issue.fields.summary} {epic_name}"
     graph.add_node(
-        issue.key,
-        color=get_color(issue_typename),
-        penwidth="5.0",
-        label=get_label(issue_cache),
+        issue.key, color=get_color(issue_typename), penwidth="5.0", label=get_label(issue_cache),
     )
 
     graph = walk(issue_cache, graph)

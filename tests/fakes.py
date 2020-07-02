@@ -21,6 +21,7 @@ class IssueLink:
 class Project:
     def __init__(self, issue_id):
         self._key = issue_id
+        self._name = "TestPrj"
 
     def get_key(self):
         return self._key
@@ -28,7 +29,14 @@ class Project:
     def set_key(self, new_key):
         self._key = new_key
 
+    def get_name(self):
+        return self._name
+
+    def set_name(self, new_name):
+        self._name = new_name
+
     key = property(get_key, set_key)
+    name = property(get_name, set_name)
 
 
 class Status:
@@ -74,10 +82,12 @@ class Fields:
     status = property(get_status)
 
 
-class Issue:
-    def __init__(self, issue_id, status_name="Open"):
+class Issue: 
+    def __init__(self, issue_id, status_name="Open", epic_name=None):
         self._key = issue_id
         self._fields = Fields(issue_id.split("-")[0], status_name)
+        self._epic_name = epic_name
+        self.project = self._fields.project
 
     def get_fields(self):
         return self._fields
@@ -85,5 +95,33 @@ class Issue:
     def get_key(self):
         return self._key
 
+    def get_epic_name(self):
+        return self._epic_name
+
+
     fields = property(get_fields)
     key = property(get_key)
+    epic_name = property(get_epic_name)
+
+
+class IssueCache:
+    def __init__(self, issue):
+        self.issue = issue
+
+    def get_fields(self):
+        return self.issue._fields
+
+    def get_key(self):
+        return self.issue._key
+
+    def get_epic_name(self):
+        return self.issue._epic_name
+
+    def get_project(self):
+        self.issue._fields.project
+
+    fields = property(get_fields)
+    key = property(get_key)
+    epic_name = property(get_epic_name)
+    project = property(get_project)
+    

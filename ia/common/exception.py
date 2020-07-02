@@ -8,10 +8,12 @@ class IAException(Exception):
 
     def __str__(self):
         """Return a string representation of the error."""
-        t = "JiraError HTTP %s" % self.status_code
+        t='IAException'
+        if self.status_code:
+            t += f" - status code: {self.status_code}"
         if self.url:
-            t += " url: %s" % self.url
+            t += f" url: {self.url}"
         if self.text:
-            t += "\n\ttext: %s" % self.text
+            t += f"\ntext: {self.text}"
 
         return t

@@ -80,6 +80,7 @@ def test_active_sprint_progress():
     assert done_issues[0].key == IssueCache(jira_mock, i1).key
     assert done_issues[1].key == IssueCache(jira_mock, i2).key
 
+
 def test_all_sprints(sprint_mock):
     jira_mock = mock.MagicMock()
     jira_mock.sprints.return_value = [sprint_mock]
@@ -90,3 +91,19 @@ def test_all_sprints(sprint_mock):
 def test_blocked_during_sprint(jira_mock, sprint_mock):
     blocked = algo.blocked_during_sprint(jira_mock, "UT", sprint_mock)
     assert blocked == []
+
+
+def test_last_sprints(jira_mock, sprint_mock):
+    jira_mock.boards.return_value = mock.MagicMock()
+    jira_mock.sprints.return_value = [sprint_mock]
+
+    sprints = algo.last_sprints(jira_mock, "board name")
+    assert len(sprints) == 2  # one active and one closed
+
+
+def test_progress_history(jira_mock, sprint_mock):
+    jira_mock.sprints.return_value = [sprint_mock]
+    found_sprints = algo.all_sprints(jira_mock, 1)
+    history = algo.progress_history(jira_mock, "PRJ", found_sprints)
+    assert len(history) == 1
+    

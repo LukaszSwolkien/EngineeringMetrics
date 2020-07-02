@@ -46,9 +46,7 @@ class IssueCache:
         self._issue = issue
         self._epic_issue = None
         self._epic_name = None
-        self._linked_issues = (
-            {}
-        )  # filtered linked issues (inward, outward, both,..., external, internal, both...)
+        self._linked_issues = {}
 
     def get_jira_access(self):
         return self._jira

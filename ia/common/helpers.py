@@ -1,16 +1,10 @@
 import datetime
 import locale
-import sys
-
-
-def die(message): # pragma: no cover
-    print(message)
-    sys.exit(1)
 
 
 def to_ts(dt):
     td = dt - datetime.datetime(1970, 1, 1)
-    return (td.microseconds + (td.seconds + td.days * 86400) * 10 ** 6) / 10 ** 6
+    return (td.microseconds + (td.seconds + td.days * 86400) * 10 ** 6) / 10 ** 6 - 60 * 60
 
 
 def to_dt(timestamp):
