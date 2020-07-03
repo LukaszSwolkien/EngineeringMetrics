@@ -8,7 +8,7 @@ class IAException(Exception):
 
     def __str__(self):
         """Return a string representation of the error."""
-        t='IAException'
+        t = "IAException"
         if self.status_code:
             t += f" - status code: {self.status_code}"
         if self.url:

@@ -29,7 +29,9 @@ class Sprint(object):
                 params = kv.split("=")
                 if len(params) == 2:
                     last_key = params[0]
-                    value = to_num(params[1]) if is_num(params[1]) else to_str(params[1])
+                    value = (
+                        to_num(params[1]) if is_num(params[1]) else to_str(params[1])
+                    )
                     sprint_attributes[last_key] = value
                 if last_key and len(params) == 1:
                     val = sprint_attributes[last_key]

@@ -4,7 +4,9 @@ from jira import JIRA
 import ia.common.jira.issue as jira_logs
 
 
-def maintenance_backlog(jira_access, project_key, issuetype, status_done): # pragma: no cover
+def maintenance_backlog(
+    jira_access, project_key, issuetype, status_done
+):  # pragma: no cover
     JQL = f"project = {project_key} and issuetype in ({issuetype}) and status not in ({status_done})"
     all_maintenance = jira_logs.search_issues(jira_access, JQL)
     return all_maintenance

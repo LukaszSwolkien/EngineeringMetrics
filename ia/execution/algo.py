@@ -1,7 +1,6 @@
 import collections
 import datetime
-import itertools
-import re
+
 
 import ia.common.jira.issue as ticket
 
@@ -9,7 +8,8 @@ DAY_STRING_FORMAT = "%Y-%m-%d"
 BLOCKED_STATUS = "Blocked"
 STATUS_FIELD = "status"
 SPRINT_FIELD = "Sprint"
-STATUS_DONE_DEFAULT = "Done"  # ("Done" , "Waiting for production")
+STATUS_DONE_DEFAULT = "Done"
+# ("Done" , "Waiting for production")
 MAIN_ISSUETYPE_DEFAULT = ("User Story", "Task", "Bug", "Technical Debt")
 
 
@@ -60,7 +60,10 @@ def progress(jira_access, JQL, status_done=STATUS_DONE_DEFAULT):
 
 
 def active_sprint_progress(
-    jira_access, project_key, issuetype=MAIN_ISSUETYPE_DEFAULT, status_done=STATUS_DONE_DEFAULT,
+    jira_access,
+    project_key,
+    issuetype=MAIN_ISSUETYPE_DEFAULT,
+    status_done=STATUS_DONE_DEFAULT,
 ):
     JQL = f'project = "{project_key}" and sprint in OpenSprints() and issuetype in {issuetype}'
     return progress(jira_access, JQL, status_done)
@@ -136,12 +139,18 @@ def progress_history(
             else:
                 not_done_yet.append(i)
 
-        history[sprint_name] = ExecutionMetrics(all_issues, done_in_sprint, done_by_now, s)
+        history[sprint_name] = ExecutionMetrics(
+            all_issues, done_in_sprint, done_by_now, s
+        )
     return history
 
 
 def sprint_churn(
-    jira_access, project_key, sprint, ignore_same=True, issuetype=MAIN_ISSUETYPE_DEFAULT,
+    jira_access,
+    project_key,
+    sprint,
+    ignore_same=True,
+    issuetype=MAIN_ISSUETYPE_DEFAULT,
 ):
     issues_added = {}
     issues_removed = {}
@@ -178,7 +187,10 @@ def sprint_churn(
                     if item.field.upper() == STATUS_FIELD.upper():
                         issue_sprints = [i.name for i in issue_cache.sprints]
                         if sprint_name in issue_sprints:
-                            if item.toString and BLOCKED_STATUS.upper() in item.toString.upper():
+                            if (
+                                item.toString
+                                and BLOCKED_STATUS.upper() in item.toString.upper()
+                            ):
                                 add_issue(issues_blocked, change_date, issue_cache)
                             elif (
                                 item.fromString
@@ -186,16 +198,21 @@ def sprint_churn(
                             ):
                                 if not item.toString or (
                                     item.toString
-                                    and BLOCKED_STATUS.upper() not in item.toString.upper()
+                                    and BLOCKED_STATUS.upper()
+                                    not in item.toString.upper()
                                 ):
-                                    add_issue(issues_unblocked, change_date, issue_cache)
+                                    add_issue(
+                                        issues_unblocked, change_date, issue_cache
+                                    )
                     elif item.field.upper() == SPRINT_FIELD.upper():
                         if item.fromString and sprint_name in item.fromString:
                             if not item.toString or (sprint_name not in item.toString):
                                 add_issue(issues_removed, change_date, issue_cache)
 
                         if item.toString and sprint_name in item.toString:
-                            if not item.fromString or (sprint_name not in item.fromString):
+                            if not item.fromString or (
+                                sprint_name not in item.fromString
+                            ):
                                 add_issue(issues_added, change_date, issue_cache)
 
     # ignore those which were added, then removed on the same day
@@ -217,9 +234,12 @@ def sprint_churn_history(jira_access, project_key, history):
     labels = []
     for sprint_name, em in history.items():
         sprint = em.sprint
-        (issues_added, issues_removed, issues_blocked, issues_unblocked,) = sprint_churn(
-            jira_access, project_key, sprint, ignore_same=True
-        )
+        (
+            issues_added,
+            issues_removed,
+            issues_blocked,
+            issues_unblocked,
+        ) = sprint_churn(jira_access, project_key, sprint, ignore_same=True)
 
         # flatten dict of sets to list (count in stories which were added->removed->added... on the different days)
         a = [j for i in issues_added.values() for j in i]

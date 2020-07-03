@@ -13,7 +13,9 @@ def get_issue_by_key(jira_obj, issue_key, fields=None, expand=None):
     issue_details = []
     jql = f"'key'='{issue_key}'"
     try:
-        issue_details = jira_obj.search_issues(jql, maxResults=1, fields=fields, expand=expand)
+        issue_details = jira_obj.search_issues(
+            jql, maxResults=1, fields=fields, expand=expand
+        )
     except JIRAError as error:
         # print(f"error_code:{error.status_code}, error_msg:{error.text}")
         # import traceback, sys
@@ -25,7 +27,9 @@ def get_issue_by_key(jira_obj, issue_key, fields=None, expand=None):
 
 @cached(cache=issues_cache)
 def search_issues(jira_access, jql, fields=None, expand=None):
-    found_issues = jira_access.search_issues(jql, maxResults=500, fields=fields, expand=expand)
+    found_issues = jira_access.search_issues(
+        jql, maxResults=500, fields=fields, expand=expand
+    )
 
     issues = []
     for iss in found_issues:
@@ -161,7 +165,9 @@ def get_indirect_external_dependencies(jira_access, issue, links_with_external_d
                     if link.key not in seen:
                         l_issue = get_issue_by_key(jira_access, link.key)
 
-                        links = links.union(walk(jira_access, l_issue, keys_with_external_dep))
+                        links = links.union(
+                            walk(jira_access, l_issue, keys_with_external_dep)
+                        )
         return links
 
     return walk(jira_access, issue, keys_with_external_dep)
