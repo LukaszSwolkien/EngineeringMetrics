@@ -196,7 +196,7 @@ Please remember to define following parameters in your ENV variables, example:
 
 vim ~/.bash_profile  
 
-```
+```bash
 export JIRA_USERNAME=lswolkien
 export JIRA_PASSWORD=TopS3cr3t
 export JIRA_URL=https://jira.mycompany.com/
@@ -249,3 +249,36 @@ Add more engineering metrics:
     How many problems were ready to be developed, but we discovered blocking dependencies during a sprint that is related to the work that another team has to do (we don't take into account things that we can't predict, such as instability of environments etc.)
     
 Note: This metrics are in addition to DORA (DevOps Research & Assessment) metrics from which we already know how successful we are at DevOps (DF – Deployment Frequency, MLT – Mean Lead Time for changes, MTTR – Mean Time to Recover, CFR – Change Failure Rate). Since we already have them available, I have not added them to this library.
+
+# Contributing
+
+You can contribute in the following ways:
+
+* write documentation
+* implement features
+* fix bugs
+* add tests
+* give suggestions, share ideas etc...
+
+Please format commit message using the [conventional-changelog](<https://github.com/angular/angular/blob/master/CONTRIBUTING.md#-commit-message-guidelines>).
+
+
+
+Code style
+----------
+
+Please use black as code formatter, 
+
+ ```bash
+  pip install --user black
+  black ia/
+```
+  
+Running unit tests
+------------------
+
+Before submitting a pull request please run unit tests. Tests are mandatory to get merge requests accepted.
+
+```bash
+pytest --cov=ia tests/ --cov-config=.coveragerc
+```
