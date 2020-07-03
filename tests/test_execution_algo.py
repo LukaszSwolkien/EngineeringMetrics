@@ -1,8 +1,8 @@
 import mock
 import pytest
+import tests.fakes as fakes
 
 import ia.execution.algo as algo
-import tests.fakes as fakes
 from ia.common.jira.issue import IssueCache
 from ia.common.jira.sprint import Sprint
 
@@ -88,11 +88,6 @@ def test_all_sprints(sprint_mock):
     assert found_sprints == [sprint_mock]
 
 
-def test_blocked_during_sprint(jira_mock, sprint_mock):
-    blocked = algo.blocked_during_sprint(jira_mock, "UT", sprint_mock)
-    assert blocked == []
-
-
 def test_last_sprints(jira_mock, sprint_mock):
     jira_mock.boards.return_value = mock.MagicMock()
     jira_mock.sprints.return_value = [sprint_mock]
@@ -129,3 +124,8 @@ def test_sprint_churn_history(jira_mock, sprint_mock):
     assert removed[0] == 0
     assert blocked[0] == 0
     assert unblocked[0] == 0
+
+
+def test_blocked_during_sprint(jira_mock, sprint_mock):
+    blocked = algo.blocked_during_sprint(jira_mock, "UT", sprint_mock)
+    assert blocked == []
