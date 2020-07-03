@@ -1,10 +1,8 @@
 import mock
 import pytest
-import tests.fakes as fakes
 
 import ia.project.algo as algo
-from ia.common.jira.sprint import Sprint
-from ia.common.jira.issue import IssueCache
+import tests.fakes as fakes
 
 
 @pytest.fixture()

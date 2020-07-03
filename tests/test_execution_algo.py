@@ -1,8 +1,8 @@
 import mock
 import pytest
-import tests.fakes as fakes
 
 import ia.execution.algo as algo
+import tests.fakes as fakes
 from ia.common.jira.issue import IssueCache
 from ia.common.jira.sprint import Sprint
 
@@ -106,4 +106,26 @@ def test_progress_history(jira_mock, sprint_mock):
     found_sprints = algo.all_sprints(jira_mock, 1)
     history = algo.progress_history(jira_mock, "PRJ", found_sprints)
     assert len(history) == 1
-    
+
+
+def test_sprint_churn(jira_mock, sprint_mock):
+    issues_added, issues_removed, issues_blocked, issues_unblocked = algo.sprint_churn(
+        jira_mock, "PRJ", sprint_mock
+    )
+    assert len(issues_added) == 0
+    assert len(issues_removed) == 0
+    assert len(issues_blocked) == 0
+    assert len(issues_unblocked) == 0
+
+
+def test_sprint_churn_history(jira_mock, sprint_mock):
+    history = algo.progress_history(jira_mock, "PRJ", [sprint_mock])
+    labels, added, removed, unblocked, blocked = algo.sprint_churn_history(
+        jira_mock, "PRJ", history
+    )
+
+    assert labels[0] == sprint_mock.name
+    assert added[0] == 0
+    assert removed[0] == 0
+    assert blocked[0] == 0
+    assert unblocked[0] == 0

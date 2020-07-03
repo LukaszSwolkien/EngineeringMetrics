@@ -1,13 +1,12 @@
-import mock
+import datetime as dt
+
 import pytest
+from tinydb import TinyDB
+from tinydb.storages import MemoryStorage
 
 import ia.dependency.metrics_store as metrics
 import tests.fakes as fakes
 
-from tinydb import Query, TinyDB
-from tinydb.storages import MemoryStorage
-
-import datetime as dt
 
 @pytest.fixture(autouse=True)
 def db_mock():

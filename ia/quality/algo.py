@@ -1,6 +1,4 @@
 """Quality check algorithms"""
-import datetime
-
 from jira import JIRA
 
 import ia.common.jira.issue as jira_logs

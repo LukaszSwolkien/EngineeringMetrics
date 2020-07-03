@@ -99,7 +99,7 @@ def test_count_by_link_type():
     issue_cache_2.linked_issues = {"ISSUE-20": fakes.Issue('ISSUE-20')}
 
     linked_issues = dep.count_by_link_type([issue_cache_1, issue_cache_2])
-    assert linked_issues == {'Dependancy': 2}
+    assert linked_issues == {'Dependency': 2}
 
 # TODO - test cycle dependency: 
 # DANCOE-1155
@@ -113,4 +113,3 @@ def test_count_by_link_type():
 # DANCOE-1155
 # DANCOE-1168
 # DANCOE-1048
-

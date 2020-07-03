@@ -1,5 +1,7 @@
 import datetime
 
+import mock
+
 
 class LinkType:
     def __init__(self, name):
@@ -12,7 +14,7 @@ class LinkType:
 
 
 class IssueLink:
-    def __init__(self, link_relation, key, link_type="Dependancy"):
+    def __init__(self, link_relation, key, link_type="Dependency"):
         self.type = LinkType(link_type)
         self.__setattr__(link_relation, type("obj", (object,), {"key": key}))
         self.key = key
@@ -82,12 +84,13 @@ class Fields:
     status = property(get_status)
 
 
-class Issue: 
+class Issue:
     def __init__(self, issue_id, status_name="Open", epic_name=None):
         self._key = issue_id
         self._fields = Fields(issue_id.split("-")[0], status_name)
         self._epic_name = epic_name
         self.project = self._fields.project
+        self.changelog = mock.MagicMock()
 
     def get_fields(self):
         return self._fields
@@ -97,7 +100,6 @@ class Issue:
 
     def get_epic_name(self):
         return self._epic_name
-
 
     fields = property(get_fields)
     key = property(get_key)
@@ -124,4 +126,3 @@ class IssueCache:
     key = property(get_key)
     epic_name = property(get_epic_name)
     project = property(get_project)
-    

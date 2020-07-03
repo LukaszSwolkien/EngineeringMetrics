@@ -13,9 +13,7 @@ def get_issue_by_key(jira_obj, issue_key, fields=None, expand=None):
     issue_details = []
     jql = f"'key'='{issue_key}'"
     try:
-        issue_details = jira_obj.search_issues(
-            jql, maxResults=1, fields=fields, expand=expand
-        )
+        issue_details = jira_obj.search_issues(jql, maxResults=1, fields=fields, expand=expand)
     except JIRAError as error:
         # print(f"error_code:{error.status_code}, error_msg:{error.text}")
         # import traceback, sys
@@ -27,9 +25,7 @@ def get_issue_by_key(jira_obj, issue_key, fields=None, expand=None):
 
 @cached(cache=issues_cache)
 def search_issues(jira_access, jql, fields=None, expand=None):
-    found_issues = jira_access.search_issues(
-        jql, maxResults=500, fields=fields, expand=expand
-    )
+    found_issues = jira_access.search_issues(jql, maxResults=500, fields=fields, expand=expand)
 
     issues = []
     for iss in found_issues:
@@ -65,6 +61,7 @@ class IssueCache:
 
     def get_sprints(self):
         sprints = []
+        sprint_raw_list = ""
         try:
             sprint_raw_list = self.issue.fields.customfield_11220
             if isinstance(sprint_raw_list, list):
@@ -142,7 +139,6 @@ def get_indirect_external_dependencies(jira_access, issue, links_with_external_d
     project_name = issue.fields.project.key
     keys_with_external_dep = [l.key for l in links_with_external_deps]
 
-
     def walk(jira_access, issue, keys_with_external_dep):
         links = set()
         seen.add(issue.key)
@@ -150,9 +146,8 @@ def get_indirect_external_dependencies(jira_access, issue, links_with_external_d
             l_type = "inwardIssue" if hasattr(link, "inwardIssue") else "outwardIssue"
             link.key = getattr(link, l_type).key
 
-
             if is_internal(link.key, project_name) and (
-                link.type.name == "Dependancy"
+                link.type.name in ("Dependancy", "Dependency")
                 and l_type == "outwardIssue"
                 or link.type.name == "Blocks"
                 and l_type == "inwardIssue"
@@ -161,16 +156,12 @@ def get_indirect_external_dependencies(jira_access, issue, links_with_external_d
                     print(f"Found indirect dependency: {link.key}")
                     links.add(link)
                 else:
-                    # Recurtion to check other internal links which may have dependency on the issue with external dependency
+                    # Recursion to check other internal links which may have dependency on the issue with external dependency
                     # print(link.key)
                     if link.key not in seen:
                         l_issue = get_issue_by_key(jira_access, link.key)
-                    
-                        links = links.union(
-                            walk(
-                                jira_access, l_issue, keys_with_external_dep
-                            )
-                        )
+
+                        links = links.union(walk(jira_access, l_issue, keys_with_external_dep))
         return links
 
     return walk(jira_access, issue, keys_with_external_dep)
