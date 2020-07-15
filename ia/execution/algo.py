@@ -1,7 +1,6 @@
 import collections
 import datetime
 
-
 import ia.common.jira.issue as ticket
 
 DAY_STRING_FORMAT = "%Y-%m-%d"
@@ -64,9 +63,28 @@ def active_sprint_progress(
     project_key,
     issuetype=MAIN_ISSUETYPE_DEFAULT,
     status_done=STATUS_DONE_DEFAULT,
+    labels=None,
 ):
     JQL = f'project = "{project_key}" and sprint in OpenSprints() and issuetype in {issuetype}'
+    if labels:
+        JQL += f" and labels in {labels}"
+    # print(JQL)
     return progress(jira_access, JQL, status_done)
+
+
+# def active_sprint_progress_by_board(
+#     jira_access,
+#     board_name,
+#     issuetype=MAIN_ISSUETYPE_DEFAULT,
+#     status_done=STATUS_DONE_DEFAULT,
+# ):
+#     board = jira_access.boards(type="scrum", name=board_name)[0]
+#     active_sprints = jira_access.sprints(board_id=board.id, state="active")
+#     if len(active_sprints) > 0:
+#         current_sprint = active_sprints[0]
+#         JQL = f'sprint = "{current_sprint}" and issuetype in {issuetype}'
+#         return progress(jira_access, JQL, status_done)
+#     return 0, [], []
 
 
 def all_sprints(jira_access, board_id, state="closed"):
@@ -109,6 +127,7 @@ def progress_history(
     sprints,
     issuetype=MAIN_ISSUETYPE_DEFAULT,
     status_done=STATUS_DONE_DEFAULT,
+    labels=None,
 ):
     history = collections.OrderedDict()
     # seen = set() # some issues can be carry over in multiple sprints. Consider them once.
@@ -120,6 +139,8 @@ def progress_history(
         sprint_end_date = datetime.datetime.strptime(end_day, DAY_STRING_FORMAT)
 
         JQL = f'project = {project_key} and sprint = "{sprint_name}" and issuetype in {issuetype}'
+        if labels:
+            JQL += f" and labels in {labels}"
 
         all_issues = ticket.search_issues(jira_access, JQL)
 
@@ -139,9 +160,7 @@ def progress_history(
             else:
                 not_done_yet.append(i)
 
-        history[sprint_name] = ExecutionMetrics(
-            all_issues, done_in_sprint, done_by_now, s
-        )
+        history[sprint_name] = ExecutionMetrics(all_issues, done_in_sprint, done_by_now, s)
     return history
 
 
@@ -151,6 +170,7 @@ def sprint_churn(
     sprint,
     ignore_same=True,
     issuetype=MAIN_ISSUETYPE_DEFAULT,
+    labels=None,
 ):
     issues_added = {}
     issues_removed = {}
@@ -169,6 +189,9 @@ def sprint_churn(
     sprint_name = sprint.name
 
     JQL = f"project = {project_key} and issuetype in {issuetype} and updatedDate >{start_day}"
+    if labels:
+        JQL += f" and labels in {labels}"
+    # print(JQL)
     changed_during_sprint = ticket.search_issues(jira_access, JQL, expand="changelog")
 
     for issue_cache in changed_during_sprint:
@@ -187,10 +210,7 @@ def sprint_churn(
                     if item.field.upper() == STATUS_FIELD.upper():
                         issue_sprints = [i.name for i in issue_cache.sprints]
                         if sprint_name in issue_sprints:
-                            if (
-                                item.toString
-                                and BLOCKED_STATUS.upper() in item.toString.upper()
-                            ):
+                            if item.toString and BLOCKED_STATUS.upper() in item.toString.upper():
                                 add_issue(issues_blocked, change_date, issue_cache)
                             elif (
                                 item.fromString
@@ -198,21 +218,16 @@ def sprint_churn(
                             ):
                                 if not item.toString or (
                                     item.toString
-                                    and BLOCKED_STATUS.upper()
-                                    not in item.toString.upper()
+                                    and BLOCKED_STATUS.upper() not in item.toString.upper()
                                 ):
-                                    add_issue(
-                                        issues_unblocked, change_date, issue_cache
-                                    )
+                                    add_issue(issues_unblocked, change_date, issue_cache)
                     elif item.field.upper() == SPRINT_FIELD.upper():
                         if item.fromString and sprint_name in item.fromString:
                             if not item.toString or (sprint_name not in item.toString):
                                 add_issue(issues_removed, change_date, issue_cache)
 
                         if item.toString and sprint_name in item.toString:
-                            if not item.fromString or (
-                                sprint_name not in item.fromString
-                            ):
+                            if not item.fromString or (sprint_name not in item.fromString):
                                 add_issue(issues_added, change_date, issue_cache)
 
     # ignore those which were added, then removed on the same day
@@ -226,20 +241,22 @@ def sprint_churn(
     return issues_added, issues_removed, issues_blocked, issues_unblocked
 
 
-def sprint_churn_history(jira_access, project_key, history):
+def sprint_churn_history(jira_access, project_key, history, labels=None):
     added = []
     removed = []
     blocked = []
     unblocked = []
-    labels = []
+    churn_labels = []
     for sprint_name, em in history.items():
         sprint = em.sprint
-        (
-            issues_added,
-            issues_removed,
-            issues_blocked,
-            issues_unblocked,
-        ) = sprint_churn(jira_access, project_key, sprint, ignore_same=True)
+        (issues_added, issues_removed, issues_blocked, issues_unblocked,) = sprint_churn(
+            jira_access,
+            project_key,
+            sprint,
+            ignore_same=True,
+            issuetype=MAIN_ISSUETYPE_DEFAULT,
+            labels=labels,
+        )
 
         # flatten dict of sets to list (count in stories which were added->removed->added... on the different days)
         a = [j for i in issues_added.values() for j in i]
@@ -251,9 +268,9 @@ def sprint_churn_history(jira_access, project_key, history):
         removed.append(len(r))
         unblocked.append(len(u))
         blocked.append(len(b))
-        labels.append(sprint_name)
+        churn_labels.append(sprint_name)
 
-    return labels, added, removed, unblocked, blocked
+    return churn_labels, added, removed, unblocked, blocked
 
 
 def blocked_during_sprint(jira_access, project_key, s):

@@ -237,7 +237,7 @@ Add more engineering metrics:
 
     How much % of code is rewritten or deleted shortly after being written. Code churn depends on types of projects and where those projects are in the development lifecycle. There may be different causes of Code Churn:
     - project prototyping,
-    - unclear requierements,
+    - unclear requirements,
     - learning new technology or solving difficult problem,
     - perfectionism versus "good enough",
 
