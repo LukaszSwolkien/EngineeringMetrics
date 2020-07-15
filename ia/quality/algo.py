@@ -10,7 +10,9 @@ import ia.execution.algo as exec
 DAY_STRING_FORMAT = "%Y-%m-%d"
 
 
-def maintenance_backlog(jira_access, project_keys, issuetype, status_done):  # pragma: no cover
+def maintenance_backlog(
+    jira_access, project_keys, issuetype, status_done
+):  # pragma: no cover
     JQL = f"project in {project_keys} and issuetype in ({issuetype}) and status not in ({status_done})"
     all_maintenance = jira_logs.search_issues(jira_access, JQL)
     return all_maintenance

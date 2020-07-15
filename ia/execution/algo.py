@@ -160,7 +160,9 @@ def progress_history(
             else:
                 not_done_yet.append(i)
 
-        history[sprint_name] = ExecutionMetrics(all_issues, done_in_sprint, done_by_now, s)
+        history[sprint_name] = ExecutionMetrics(
+            all_issues, done_in_sprint, done_by_now, s
+        )
     return history
 
 
@@ -210,7 +212,10 @@ def sprint_churn(
                     if item.field.upper() == STATUS_FIELD.upper():
                         issue_sprints = [i.name for i in issue_cache.sprints]
                         if sprint_name in issue_sprints:
-                            if item.toString and BLOCKED_STATUS.upper() in item.toString.upper():
+                            if (
+                                item.toString
+                                and BLOCKED_STATUS.upper() in item.toString.upper()
+                            ):
                                 add_issue(issues_blocked, change_date, issue_cache)
                             elif (
                                 item.fromString
@@ -218,16 +223,21 @@ def sprint_churn(
                             ):
                                 if not item.toString or (
                                     item.toString
-                                    and BLOCKED_STATUS.upper() not in item.toString.upper()
+                                    and BLOCKED_STATUS.upper()
+                                    not in item.toString.upper()
                                 ):
-                                    add_issue(issues_unblocked, change_date, issue_cache)
+                                    add_issue(
+                                        issues_unblocked, change_date, issue_cache
+                                    )
                     elif item.field.upper() == SPRINT_FIELD.upper():
                         if item.fromString and sprint_name in item.fromString:
                             if not item.toString or (sprint_name not in item.toString):
                                 add_issue(issues_removed, change_date, issue_cache)
 
                         if item.toString and sprint_name in item.toString:
-                            if not item.fromString or (sprint_name not in item.fromString):
+                            if not item.fromString or (
+                                sprint_name not in item.fromString
+                            ):
                                 add_issue(issues_added, change_date, issue_cache)
 
     # ignore those which were added, then removed on the same day
@@ -249,7 +259,12 @@ def sprint_churn_history(jira_access, project_key, history, labels=None):
     churn_labels = []
     for sprint_name, em in history.items():
         sprint = em.sprint
-        (issues_added, issues_removed, issues_blocked, issues_unblocked,) = sprint_churn(
+        (
+            issues_added,
+            issues_removed,
+            issues_blocked,
+            issues_unblocked,
+        ) = sprint_churn(
             jira_access,
             project_key,
             sprint,
