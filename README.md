@@ -93,6 +93,8 @@ import ia.common.viz.conf.dashboard as conf
 import ia.dependency.conf.components as components
 import ia.dependency.algo as dependency
 import ia.dependency.metrics_store as metrics
+from dotenv import load_dotenv
+load_dotenv() # Read the access variables from .env file and add them to environment variables
 
 
 # Access variables to read data from Jira and publish analysis to Confluance page
@@ -194,9 +196,9 @@ In case of python 3.8
 
 Please remember to define following parameters in your ENV variables, example:
 
-vim ~/.bash_profile  
+vim ./.env 
 
-```bash
+```zsh
 export JIRA_USERNAME=lswolkien
 export JIRA_PASSWORD=TopS3cr3t
 export JIRA_URL=https://jira.mycompany.com/

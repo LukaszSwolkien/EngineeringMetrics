@@ -9,3 +9,4 @@ coverage.xml
 .coverage
 test_cov.sh
 *.html
+.env

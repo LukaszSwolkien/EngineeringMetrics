@@ -71,22 +71,7 @@ def active_sprint_progress(
     # print(JQL)
     return progress(jira_access, JQL, status_done)
 
-
-# def active_sprint_progress_by_board(
-#     jira_access,
-#     board_name,
-#     issuetype=MAIN_ISSUETYPE_DEFAULT,
-#     status_done=STATUS_DONE_DEFAULT,
-# ):
-#     board = jira_access.boards(type="scrum", name=board_name)[0]
-#     active_sprints = jira_access.sprints(board_id=board.id, state="active")
-#     if len(active_sprints) > 0:
-#         current_sprint = active_sprints[0]
-#         JQL = f'sprint = "{current_sprint}" and issuetype in {issuetype}'
-#         return progress(jira_access, JQL, status_done)
-#     return 0, [], []
-
-
+ 
 def all_sprints(jira_access, board_id, state="closed"):
     sprints = []
     startAt = 0
