@@ -4,7 +4,8 @@ import pytest
 
 import ia.common.exception as iae
 from ia.common.jira.connection import connect
-
+from dotenv import load_dotenv
+load_dotenv()
 
 def test_jira_access_wrong_credentials():
     with pytest.raises(iae.IAException):

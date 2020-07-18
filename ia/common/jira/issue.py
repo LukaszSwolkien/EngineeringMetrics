@@ -4,8 +4,12 @@ from jira import JIRAError
 
 from ia.common.jira.links import get_external_dependencies, is_internal
 from ia.common.jira.sprint import Sprint
+import ia.common.helpers as h
+import datetime 
 
 issues_cache = {}
+
+DAY_STRING_FORMAT = "%Y-%m-%d"
 
 
 @cached(cache=issues_cache)
@@ -63,6 +67,9 @@ class IssueCache:
     def get_status(self):
         return self.fields.status.name
 
+    def get_summary(self):
+        return self.fields.summary
+        
     def get_sprints(self):
         sprints = []
         sprint_raw_list = ""
@@ -101,6 +108,31 @@ class IssueCache:
     def get_key(self):
         return self.issue.key
 
+    def get_created_day(self):
+        created_day = self.issue.fields.created.split("T")[0]
+        return datetime.datetime.strptime(created_day, DAY_STRING_FORMAT)
+
+    def get_resolution_day(self):
+        if self.issue.fields.resolutiondate:
+            resolved_day = self.issue.fields.resolutiondate.split("T")[0]
+            return datetime.datetime.strptime(resolved_day, DAY_STRING_FORMAT)
+        return None
+
+    def calc_lead_time(self) -> int:
+        """Counts the number of business days an issue took to resolve. 
+        Returns:
+            Number of days to resolve issue or -1 if issue is not resolved.
+        """
+        duration = -1
+        if self.resolution_date:
+            # full_duration = (self.resolution_date - self.created)
+            duration = h.business_days(self.created, self.resolution_date).days
+            
+        return duration
+
+    # TODO: Calculate the number of business days an issue took to resolve once work had begun
+    # def calc_cycle_time(self, begin_status: str = 'In Progress', resolution_status: str = 'Done') -> int:
+    
     jira_access = property(get_jira_access)
     issue = property(get_issue)
     fields = property(get_fields)
@@ -109,7 +141,10 @@ class IssueCache:
     key = property(get_key)
     linked_issues = property(get_linked_issues)
     status = property(get_status)
+    summary = property(get_summary)
     sprints = property(get_sprints)
+    created = property(get_created_day)
+    resolution_date = property(get_resolution_day)
 
 
 def load_external_issues(issue_cache, max_level, filter_out_status):

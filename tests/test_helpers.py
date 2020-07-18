@@ -58,3 +58,16 @@ def test_day_ts():
     day = datetime.datetime(year=dt.year, month=dt.month, day=dt.day)
     day_ts = h.day_ts(day)
     assert h.to_ts(day) == day_ts
+
+def test_business_days():
+    date_a = datetime.datetime(year=2020, month=7, day=16)
+    date_b = datetime.datetime(year=2020, month=7, day=20)
+
+    d = h.business_days(date_a, date_b)
+    assert d.days == 2
+
+    date_a = datetime.datetime(year=2020, month=7, day=17)
+    date_b = datetime.datetime(year=2020, month=7, day=17)
+
+    d = h.business_days(date_a, date_b)
+    assert d.days == 0

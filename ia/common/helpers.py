@@ -1,5 +1,6 @@
 import datetime
 import locale
+import numpy as np
 
 
 def to_ts(dt):
@@ -63,3 +64,17 @@ def to_str(value):
     except TypeError:
         strval = str(value, errors="ignore")
     return strval
+
+
+def business_days(earlier_date: datetime, later_date: datetime):
+    full_duration = later_date - earlier_date
+    # pylint: disable=no-member
+    bus_days = np.busday_count(earlier_date.date(), later_date.date()).item()
+    duration = full_duration
+
+    if full_duration.days == 2 and bus_days == 1:
+        duration = full_duration - datetime.timedelta(days=(2))
+    elif full_duration.days > bus_days:
+        duration = full_duration - datetime.timedelta(days=(full_duration.days - bus_days))
+
+    return duration

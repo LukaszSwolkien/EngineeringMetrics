@@ -369,3 +369,22 @@ def multibars(data, labels, title=None, colors=None, group_width=0.8, single_wid
         ax.set_title(title)
     f.tight_layout()
     return plt
+
+def errorbar(labels, values, errors, title=None):
+    f = plt.figure(1, figsize=(8, 4))
+    ax = f.add_subplot(111)
+    if title:
+        f.suptitle(title)
+
+    def autolabel(values, labels):
+        for i, _ in enumerate(values):
+            height = values[i]
+            plt.text(labels[i], height-5, f'{values[i]}', ha='center', va='bottom')
+
+    # ax.errorbar(labels, values, errors, linestyle='None', marker='^', capsize=3)
+    ax.bar(labels, values, align='center', yerr=errors, ecolor='grey')
+    autolabel(values, labels) 
+
+    return plt
+
+

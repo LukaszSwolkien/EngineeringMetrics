@@ -1,3 +1,4 @@
+import datetime
 import mock
 import pytest
 
@@ -27,6 +28,8 @@ def issue_mock():
         fakes.IssueLink("inwardIssue", "EXT-1", "Blocks"),
         fakes.IssueLink("outwardIssue", "EXT-2"),
     ])
+    type(m.fields).created = mock.PropertyMock(return_value='2020-03-03T15:02:23.310+0000')
+    type(m.fields).resolutiondate = mock.PropertyMock(return_value='2020-03-04T15:02:23.310+0000')
     return m
 
 def test_get_issue_by_key():
@@ -60,3 +63,4 @@ def test_issue_cache(jira_mock, issue_mock):
     assert ic.status
     assert ic.sprints == []
     assert ic.epic_name == None
+    assert ic.calc_lead_time() == 1
