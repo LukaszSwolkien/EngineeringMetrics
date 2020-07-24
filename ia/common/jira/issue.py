@@ -1,15 +1,18 @@
 """Helpers to access jira issue fields"""
+import datetime
+
+from dateutil import parser
 from cachetools import cached
 from jira import JIRAError
 
+import ia.common.helpers as h
 from ia.common.jira.links import get_external_dependencies, is_internal
 from ia.common.jira.sprint import Sprint
-import ia.common.helpers as h
-import datetime 
 
 issues_cache = {}
 
-DAY_STRING_FORMAT = "%Y-%m-%d"
+STATUS_FIELD = "status"
+STATE_FIELD = "state"
 
 
 @cached(cache=issues_cache)
@@ -17,9 +20,7 @@ def get_issue_by_key(jira_obj, issue_key, fields=None, expand=None):
     issue_details = []
     jql = f"'key'='{issue_key}'"
     try:
-        issue_details = jira_obj.search_issues(
-            jql, maxResults=1, fields=fields, expand=expand
-        )
+        issue_details = jira_obj.search_issues(jql, maxResults=1, fields=fields, expand=expand)
     except JIRAError as error:
         # print(f"error_code:{error.status_code}, error_msg:{error.text}")
         # import traceback, sys
@@ -31,9 +32,7 @@ def get_issue_by_key(jira_obj, issue_key, fields=None, expand=None):
 
 @cached(cache=issues_cache)
 def search_issues(jira_access, jql, fields=None, expand=None):
-    found_issues = jira_access.search_issues(
-        jql, maxResults=500, fields=fields, expand=expand
-    )
+    found_issues = jira_access.search_issues(jql, maxResults=500, fields=fields, expand=expand)
 
     issues = []
     for iss in found_issues:
@@ -51,6 +50,7 @@ class IssueCache:
         self._epic_issue = None
         self._epic_name = None
         self._linked_issues = {}
+        self._status_log = None
 
     def get_jira_access(self):
         return self._jira
@@ -69,7 +69,7 @@ class IssueCache:
 
     def get_summary(self):
         return self.fields.summary
-        
+
     def get_sprints(self):
         sprints = []
         sprint_raw_list = ""
@@ -109,30 +109,76 @@ class IssueCache:
         return self.issue.key
 
     def get_created_day(self):
-        created_day = self.issue.fields.created.split("T")[0]
-        return datetime.datetime.strptime(created_day, DAY_STRING_FORMAT)
+        return parser.parse(self.issue.fields.created)
 
     def get_resolution_day(self):
         if self.issue.fields.resolutiondate:
-            resolved_day = self.issue.fields.resolutiondate.split("T")[0]
-            return datetime.datetime.strptime(resolved_day, DAY_STRING_FORMAT)
+            return parser.parse(self.issue.fields.resolutiondate)
         return None
 
     def calc_lead_time(self) -> int:
-        """Counts the number of business days an issue took to resolve. 
+        """The number of business days an issue took to resolve. 
         Returns:
             Number of days to resolve issue or -1 if issue is not resolved.
         """
         duration = -1
         if self.resolution_date:
-            # full_duration = (self.resolution_date - self.created)
             duration = h.business_days(self.created, self.resolution_date).days
-            
+
         return duration
 
-    # TODO: Calculate the number of business days an issue took to resolve once work had begun
-    # def calc_cycle_time(self, begin_status: str = 'In Progress', resolution_status: str = 'Done') -> int:
-    
+    def calc_cycle_time(
+        self, begin_status: str = "In Progress", resolution_status: str = "Done"
+    ) -> int:
+        """The number of business days an issue took to resolve.
+
+        Args:
+            begin_status: when the work was started on this issue
+            resolution_status: used in the case no resolution date is set
+
+        Returns:
+            Number of days to resolve issue or -1 if issue is not resolved.
+        """
+
+        start_date = None
+        for log in self.status_log:
+            if log[STATE_FIELD] == begin_status:
+                start_date = log["at"]
+                break
+        if start_date == None:
+            start_date = self.created
+
+        resolution_date = None
+        for log in self.status_log:
+            if log[STATE_FIELD] == resolution_status:
+                resolution_date = log["at"]
+                break
+
+        if resolution_date == None and self.resolution_date:
+            resolution_date = self.resolution_date
+
+        if resolution_date != None:
+            return h.business_days(start_date, resolution_date).days
+
+        return -1
+
+    def get_status_log(self) -> list:
+        if self._status_log is None:
+            self._status_log = []
+            self._status_log.append(dict(at=self.created, state="Created"))
+            for history in self.issue.changelog.histories:
+                try:
+                    change_date = parser.parse(history.created)
+
+                    for item in history.items:
+                        if item.field.upper() == STATUS_FIELD.upper():
+                            self._status_log.append(
+                                dict(at=change_date, state=str(item.toString))
+                            )
+                except AttributeError:
+                    pass
+        return self._status_log
+
     jira_access = property(get_jira_access)
     issue = property(get_issue)
     fields = property(get_fields)
@@ -141,6 +187,7 @@ class IssueCache:
     key = property(get_key)
     linked_issues = property(get_linked_issues)
     status = property(get_status)
+    status_log = property(get_status_log)
     summary = property(get_summary)
     sprints = property(get_sprints)
     created = property(get_created_day)
@@ -172,8 +219,7 @@ def load_external_issues(issue_cache, max_level, filter_out_status):
     issue_cache._linked_issues = load_links(issue_cache)
 
 
-def get_indirect_external_dependencies(jira_access, issue, links_with_external_deps):
-    links = set()
+def get_indirect_external_dependencies(jira_access, issue, links_with_external_deps) -> set:
     seen = set()
     project_name = issue.fields.project.key
     keys_with_external_dep = [l.key for l in links_with_external_deps]
@@ -200,9 +246,7 @@ def get_indirect_external_dependencies(jira_access, issue, links_with_external_d
                     if link.key not in seen:
                         l_issue = get_issue_by_key(jira_access, link.key)
 
-                        links = links.union(
-                            walk(jira_access, l_issue, keys_with_external_dep)
-                        )
+                        links = links.union(walk(jira_access, l_issue, keys_with_external_dep))
         return links
 
     return walk(jira_access, issue, keys_with_external_dep)

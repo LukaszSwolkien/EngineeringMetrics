@@ -64,3 +64,4 @@ def test_issue_cache(jira_mock, issue_mock):
     assert ic.sprints == []
     assert ic.epic_name == None
     assert ic.calc_lead_time() == 1
+    assert ic.calc_cycle_time() == 1
