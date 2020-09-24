@@ -154,11 +154,27 @@ Activate venv
 
 `pip install -r requirements.txt `
 
-in case of `error: Error locating graphviz` on Mac OS do following:
+in case of `error: Error locating graphviz` do following:
 
 `brew install graphviz`
 
 `pip install pygraphviz --install-option="--include-path=/usr/local/include/graphviz/" --install-option="--library-path=/usr/local/lib/graphviz"`
+
+### Ubuntu
+Activate venv
+
+`. ./venv/bin/activate`
+
+`pip install -r requirements.txt `
+
+In case of error `Building wheel for pygraphviz (setup.py) ... error` do following:
+
+`sudo apt-get install build-essential`
+`sudo apt-get install python3-dev graphviz libgraphviz-dev pkg-config`
+
+and then run again: 
+
+`pip install -r requirements.txt `
 
 ### Windows 10
 
