@@ -270,33 +270,4 @@ Note: This metrics are in addition to DORA (DevOps Research & Assessment) metric
 
 # Contributing
 
-You can contribute in the following ways:
-
-* write documentation
-* implement features
-* fix bugs
-* add tests
-* give suggestions, share ideas etc...
-
-Please format commit message using the [conventional-changelog](<https://github.com/angular/angular/blob/master/CONTRIBUTING.md#-commit-message-guidelines>).
-
-
-
-Code style
-----------
-
-Please use black as code formatter, 
-
- ```bash
-  pip install --user black
-  black ia/
-```
-  
-Running unit tests
-------------------
-
-Before submitting a pull request please run unit tests. Tests are mandatory to get merge requests accepted.
-
-```bash
-pytest --cov=ia tests/ --cov-config=.coveragerc
-```
+Read [how you can contribute](CONTRIBUTING.md)
