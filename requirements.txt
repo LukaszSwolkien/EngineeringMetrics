@@ -62,7 +62,7 @@ prompt-toolkit==3.0.5
 ptyprocess==0.6.0
 py==1.10.0
 pycparser==2.20
-Pygments==2.7.4
+Pygments==2.15.0
 pygraphviz==1.5
 pylint==2.5.2
 pyparsing==2.4.6
