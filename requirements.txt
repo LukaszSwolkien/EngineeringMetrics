@@ -67,7 +67,7 @@ pygraphviz==1.5
 pylint==2.5.2
 pyparsing==2.4.6
 pyrsistent==0.16.0
-pytest==5.4.3
+pytest==9.0.3
 pytest-cov==2.10.0
 python-dateutil==2.8.1
 python-dotenv==0.14.0
